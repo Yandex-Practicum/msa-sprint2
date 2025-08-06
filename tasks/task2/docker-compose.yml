@@ -31,6 +31,34 @@ services:
     networks:
       - hotelio-net
 
+  booking:
+    build:
+      context: ../booking
+      dockerfile: Dockerfile
+    container_name: hotelio-booking
+    ports:
+      - "9090:9090"
+    networks:
+      - hotelio-net
+    environment:
+      BOOKING_DATABASE_URL: jdbc:postgresql://monolith-db:5432/hotelio
+      BOOKING_DATABASE_USERNAME: hotelio
+      BOOKING_DATABASE_PASSWORD: hotelio
+
+  booking-db:
+    image: postgres:15
+    container_name: booking-db
+    environment:
+      POSTGRES_USER: booking
+      POSTGRES_PASSWORD: booking
+      POSTGRES_DB: booking
+    ports:
+      - "5433:5432"
+    volumes:
+      - booking-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+
   kafka:
     image: confluentinc/cp-kafka:7.2.1
     ports:
