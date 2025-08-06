@@ -1,0 +1,89 @@
+@startuml Структура микросервисов системы бронирования отелей - Диаграмма контекста
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+title Схема взаимодействий
+
+top to bottom direction
+
+skinparam Padding 10
+skinparam Margin 100
+
+LAYOUT_WITH_LEGEND()
+
+
+Person(user, "User ", "Interacts with frontend")
+
+System(user_interfase, "Пользовательский интерфейс", "JS")
+
+System(bff_system, "Система бэкенд для фронтенда", "Apollo/Node.js")
+
+System(kafka, "Брокер сообщений", "Kafka")
+
+System_Boundary(user_auth_system, "Авторизация, аутентификация", "Java/gRpc" ) {
+    SystemDb(user_auth_db, "Postgresql", "База данных")
+    SystemDb(user_auth_redis, "Redis", "Система кеширования")
+    System(user_auth_server, "Java/gRPC", "Сервер пользователя")
+
+    user_auth_db <--> user_auth_server : "Данные пользователей"
+}
+
+System_Boundary(user_system, "Авторизация, аутентификация", "Java/gRpc") {
+    SystemDb(user_db, "Postgresql", "База данных")
+    SystemDb(user_redis, "Redis", "Система кеширования")
+    System(user_server, "Java/gRPC", "Сервер пользователя")
+
+    user_db <--> user_server : "Данные пользователей"
+    user_redis <-> user_server : "Кеш"
+}
+System_Boundary(booking_management_system, "Система управления бронированиями", "Java/gRpc") {
+    SystemDb(booking_management_db, "Postgresql", "База данных")
+    SystemDb(booking_management_redis, "Redis", "Система кеширования")
+    System(booking_management_server, "Java/gRPC", "Сервер системы бронирования")
+
+    booking_management_db <--> booking_management_server : "Данные бронирований"
+    booking_management_redis <-> booking_management_server : "Кеш"
+}
+System_Boundary(hotels_management_system, "Система управления данными отелей", "Java/gRpc") {
+    SystemDb(hotels_management_db, "Postgresql", "База данных")
+    SystemDb(hotels_management_redis, "Redis", "Система кеширования")
+    System(hotels_management_server, "Java/gRPC", "Сервер системы управления данными отелей")
+
+    hotels_management_db <--> hotels_management_server : "Данные отелей"
+    hotels_management_redis <-> hotels_management_server : "Кеш"
+}
+System_Boundary(reviews_management_system, "Система управления оценками и ревью", "Java/gRpc") {
+    SystemDb(reviews_management_db, "Postgresql", "База данных")
+    SystemDb(reviews_management_redis, "Redis", "Система кеширования")
+    System(reviews_management_server, "Java/gRPC", "Сервер системы управления оценками и ревью")
+
+    reviews_management_db <--> reviews_management_server : "Данные ревью"
+    reviews_management_redis <-> reviews_management_server : "Кеш"
+}
+System_Boundary(promocode_management_system, "Система управления промокодами", "Java/gRpc") {
+    SystemDb(promocode_management_db, "Postgresql", "База данных")
+    SystemDb(promocode_management_redis, "Redis", "Система кеширования")
+    System(promocode_management_server, "Java/gRPC", "Сервер системы управления промокодами")
+
+    promocode_management_db <--> promocode_management_server : "Данные промокодов"
+    promocode_management_redis <-> promocode_management_server : "Кеш"
+}
+
+bff_system <---> user_server : "Данные авторизации\nсериализованные\nданные пользователей"
+
+user_server --> kafka : "Авторизационные данные пользователей"
+kafka --> user_auth_server : "Авторизационные данные пользователей"
+
+bff_system <---> booking_management_server : "Id задачи\nподтверждениe\nбронирования\nспиосок бронирований"
+bff_system <---> hotels_management_server : "Список отелей,\nдоступность,\nналичие мест,\nтоп отелей"
+bff_system <---> reviews_management_server : "Список ревью"
+bff_system <---> promocode_management_server : "Объекты промокодов,\nвалидность промокодов"
+
+booking_management_server <---- hotels_management_server : "Данные об отеле"
+booking_management_server <---- reviews_management_server : "Доступность отеля,\nоценка пользователей"
+booking_management_server <---- promocode_management_server : "Валидность промокода"
+
+
+
+user <--> user_interfase : "Reads/Writes"
+user_interfase <--> bff_system : "Reads/Writes"
+
+@enduml

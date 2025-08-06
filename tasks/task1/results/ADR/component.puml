@@ -1,0 +1,223 @@
+@startuml Структура микросервисов системы бронирования отелей - Диаграмма контекста
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+title Схема взаимодействий
+
+top to bottom direction
+
+skinparam Padding 10
+skinparam Margin 100
+
+LAYOUT_WITH_LEGEND()
+
+
+Person(user, "User ", "Interacts with frontend")
+
+System(user_interfase, "Пользовательский интерфейс", "JS")
+
+System(bff_system, "Система бэкенд для фронтенда", "Apollo/Node.js")
+
+System(kafka, "Брокер сообщений", "Kafka")
+
+System_Boundary(user_auth_system, "Авторизация, аутентификация", "Java/gRpc" ) {
+    SystemDb(user_auth_db, "Postgresql", "База данных")
+    Container_Boundary(user_auth_server, "Java/gRPC", "Сервер пользователя") {
+        Container(user_auth_controller_login, "Контроллер: авторизация пользователя")
+        Container(user_auth_controller_is_authorized, "Контроллер: проверка авторизации")
+        Container(user_auth_controller_is_active, "Контроллер: проверка авторизации")
+        Container(user_auth_controller_blacklisted, "Контроллер:\nпроверка пользователя\nв чёрном списке")
+
+        Container(user_auth_consumer, "Консьюмер: авторизационные данные\nпользователя\nсообщения Kafka")
+
+        Container(user_auth_services, "Сервисы: авторизационные\nданные пользователя")
+        Container(user_auth_repository, "Репозиторий: авторизационные\nданные пользователей")
+    }
+
+    user_auth_controller_blacklisted <--> user_auth_services : "Авторизационные\nданные пользователей"
+    user_auth_controller_login <--> user_auth_services : "Авторизационные\nданные пользователей"
+    user_auth_controller_is_active <--> user_auth_services : "Авторизационные\nданные пользователей"
+    user_auth_controller_is_authorized <--> user_auth_services: "Авторизационные\nданные пользователей"
+    user_auth_consumer --> user_auth_services: ""Авторизационные\nданные пользователей""
+    user_auth_services <--> user_auth_repository : "Авторизационные\nданные пользователей"
+    user_auth_repository <--> user_auth_db : "Авторизационные\nданные пользователей"
+}
+
+System_Boundary(user_system, "Авторизация, аутентификация", "Java/gRpc") {
+    SystemDb(user_db, "Postgresql", "База данных")
+    SystemDb(user_redis, "Redis", "Система кеширования")
+
+    Container_Boundary(user_server, "Java/gRPC", "Сервер пользователя") {
+        Container(user_repository, "Репозиторий: данные пользователя")
+        Container(user_services, "Серивсы: данные пользователя")
+
+        Container(user_controller_status, "Контроллер:\nполучение статуса пользователя")
+        Container(user_controller_vip, "Контроллер:\nпроверка\nпользователь VIP")
+    }
+
+    user_controller_status <--> user_services : "Статус пользователя"
+    user_controller_vip <--> user_services : "булиево значение"
+
+    user_services <--> user_repository : "Данные пользователей"
+    user_repository <--> user_db : "Данные пользователей"
+
+    user_controller_status <--> user_redis : "Кеш"
+    user_controller_vip <--> user_redis : "Кеш"
+}
+
+System_Boundary(booking_management_system, "Система управления бронированиями", "Java/gRpc") {
+    SystemDb(booking_management_db, "Postgresql", "База данных")
+    SystemDb(booking_management_redis, "Redis", "Система кеширования\nлокальный менеджер очередей")
+
+    System(booking_management_distributed_task_queue, "Akka", "Система асинхронного выполнения задач")
+
+    Container_Boundary(booking_management_server, "Java/gRPC", "Сервер системы бронирования") {
+
+        Container(booking_management_services, "Серивсы: данные бронирований")
+        Container(booking_management_repository, "Репозиторий: данные бронирований")
+
+        Container(booking_management_connector_users, "Коннектор:\проверить пользователя")
+        Container(booking_management_connector_hotels, "Коннектор:\nпроверить доступность отеля")
+        Container(booking_management_connector_reviews, "Коннектор:\nпроверить оценку отеля")
+        Container(booking_management_connector_promocodes, "Коннектор:\nпроверить промокод")
+
+        Container(booking_management_controller_create_booking, "Контроллер: создать бронирование")
+        Container(booking_management_controller_get_bookings, "Контроллер:\nполучить список бронирований")
+    }
+
+    booking_management_repository <--> booking_management_db : "Данные бронирований"
+    booking_management_services <--> booking_management_repository : "Данные бронирований"
+    booking_management_distributed_task_queue --> booking_management_repository : "Данные бронирований"
+
+    booking_management_services --> booking_management_redis : "Cериализованная задача"
+    booking_management_redis --> booking_management_distributed_task_queue : "Cериализованная задача"
+
+    booking_management_distributed_task_queue <-- booking_management_connector_users : "Данные пользователя"
+    booking_management_distributed_task_queue <-- booking_management_connector_hotels : "Доступность отеля"
+    booking_management_distributed_task_queue <-- booking_management_connector_reviews : "Оценка отеля"
+    booking_management_distributed_task_queue <-- booking_management_connector_promocodes : "Данные промокода"
+
+    booking_management_controller_create_booking <--> booking_management_services : "ID задачи\nСтатус задачи\nподтверждение бронирования"
+    booking_management_controller_get_bookings <--> booking_management_services : "Данные бронирований"
+
+
+    booking_management_controller_get_bookings <-- booking_management_redis : "Кеш"
+}
+
+System_Boundary(hotels_management_system, "Система управления данными отелей", "Java/gRpc") {
+    SystemDb(hotels_management_db, "Postgresql", "База данных")
+    SystemDb(hotels_management_redis, "Redis", "Система кеширования")
+    Container_Boundary(hotels_management_server, "Java/gRPC", "Сервер системы управления данными отелей") {
+        Container(hotels_management_repository, "Репозиторий: данные отелей")
+        Container(hotels_management_services, "Серивсы: данные отелей")
+
+        Container(hotels_management_controller_get_hotel, "Контроллер:\nполучение информации\nоб отеле")
+        Container(hotels_management_controller_check_hotel_is_working, "Контроллер:\nпроверить\nработает ли отель")
+        Container(hotels_management_controller_check_hotel_fully_booked, "Контроллер:\nпроверить заполнен ли\nотель полностью")
+        Container(hotels_management_controller_get_hotels_in_city, "Контроллер:\nполучение списка отелей\nв городе")
+        Container(hotels_management_controller_get_top_hotels, "Контроллер:\nполучение топ отелей\nв городе")
+    }
+    hotels_management_repository <--> hotels_management_db : "Данные отелей"
+
+    hotels_management_services <--> hotels_management_repository : "Данные отелей"
+
+    hotels_management_controller_get_hotel <-- hotels_management_services : "Данные отелей"
+    hotels_management_controller_check_hotel_is_working <-- hotels_management_services : "Булево значение"
+    hotels_management_controller_check_hotel_fully_booked <-- hotels_management_services : "Булево значение"
+    hotels_management_controller_get_hotels_in_city <-- hotels_management_services : "Данные отелей"
+    hotels_management_controller_get_top_hotels <-- hotels_management_services : "Данные отелей"
+
+    hotels_management_controller_get_hotel <-- hotels_management_redis : "Кеш"
+    hotels_management_controller_check_hotel_is_working <-- hotels_management_redis : "Кеш"
+    hotels_management_controller_check_hotel_fully_booked <-- hotels_management_redis : "Кеш"
+    hotels_management_controller_get_hotels_in_city <-- hotels_management_redis : "Кеш"
+    hotels_management_controller_get_top_hotels <-- hotels_management_redis : "Кеш"
+}
+
+System_Boundary(reviews_management_system, "Система управления оценками и ревью", "Java/gRpc") {
+    SystemDb(reviews_management_db, "Postgresql", "База данных")
+    SystemDb(reviews_management_redis, "Redis", "Система кеширования")
+
+    Container_Boundary(reviews_management_server, "Java/gRPC", "Сервер системы управления оценками и ревью") {
+        Container(reviews_management_repository, "Репозиторий: ревью")
+        Container(reviews_management_services, "Серивсы: ревью")
+
+        Container(reviews_management_controller_get_reviews, "Контроллер:\nполучение ревью\n отеля")
+        Container(reviews_management_controller_check_hotel_is_trusted, "Контроллер:\nпроверить\nзаслуживает ли отель\nдоверия")
+    }
+
+    reviews_management_repository <--> reviews_management_db : "Данные ревью"
+
+    reviews_management_services <--> reviews_management_repository : "Данные ревью"
+
+
+    reviews_management_controller_get_reviews <-- reviews_management_services : "Данные ревью"
+    reviews_management_controller_check_hotel_is_trusted <-- reviews_management_services : "Булево значение"
+
+    reviews_management_controller_get_reviews <-- reviews_management_redis : "Кеш"
+    reviews_management_controller_check_hotel_is_trusted <-- reviews_management_redis : "Кеш"
+
+}
+
+System_Boundary(promocode_management_system, "Система управления промокодами", "Java/gRpc") {
+    SystemDb(promocode_management_db, "Postgresql", "База данных")
+
+    SystemDb(promocode_management_redis, "Redis", "Система кеширования")
+
+    Container_Boundary(promocode_management_server, "Java/gRPC", "Сервер системы управления промокодами") {
+        Container(promocode_management_repository, "Репозиторий: промокод")
+        Container(promocode_management_services, "Серивсы: промокод")
+
+        Container(promocode_management_controller_get_promocode, "Контроллер:\nполучение промокода")
+        Container(promocode_management_controller_check_promocode_is_valid, "Контроллер:\nпроверить\действителен\nли промокод")
+        Container(promocode_management_controller_check_promocode_is_valid_for_user, "Контроллер:\nдействителен\nли промокод\nдля пользователя")
+    }
+
+    promocode_management_repository <--> promocode_management_db : "Данные ревью"
+
+    promocode_management_services <--> promocode_management_repository : "Данные ревью"
+
+
+    promocode_management_controller_get_promocode <-- promocode_management_services : "Данные промокода"
+    promocode_management_controller_check_promocode_is_valid <-- promocode_management_services : "Булево значение"
+    promocode_management_controller_check_promocode_is_valid_for_user <-- promocode_management_services : "Булево значение"
+
+    promocode_management_controller_get_promocode <-- promocode_management_redis : "Кеш"
+    promocode_management_controller_check_promocode_is_valid <-- promocode_management_redis : "Кеш"
+    promocode_management_controller_check_promocode_is_valid_for_user <-- promocode_management_redis : "Кеш"
+}
+
+bff_system <---> user_server : "Данные авторизации\nсериализованные\nданные пользователей"
+
+user_server --> kafka : "Авторизационные данные пользователей"
+kafka --> user_auth_consumer : "Авторизационные данные пользователей"
+' booking
+bff_system <---> booking_management_controller_create_booking : "Id задачи\nподтверждениe\nбронирования\nспиосок бронирований"
+bff_system <--- booking_management_controller_get_bookings : "Список бронирований"
+' hotels
+bff_system <--> hotels_management_controller_get_hotel : "Данные отелей"
+bff_system <--> hotels_management_controller_get_hotels_in_city : "Данные отелей"
+bff_system <--> hotels_management_controller_get_top_hotels : "Данные отелей"
+' review
+bff_system <---> reviews_management_controller_get_reviews : "Список ревью"
+' promocode
+bff_system <---> promocode_management_controller_get_promocode : "Данные промокода"
+bff_system <---> promocode_management_controller_check_promocode_is_valid : "Булево значение"
+bff_system <---> promocode_management_controller_check_promocode_is_valid_for_user : "Булево значение"
+
+
+' user
+booking_management_connector_users <---- user_controller_status : "Булево значение"
+booking_management_connector_users <---- user_controller_vip : "Булево значение"
+' hotels
+booking_management_connector_hotels <---- hotels_management_controller_check_hotel_is_working : "Булево значение"
+booking_management_connector_hotels <---- hotels_management_controller_check_hotel_fully_booked : "Булево значение"
+' reviews
+booking_management_connector_reviews <---- reviews_management_controller_check_hotel_is_trusted : "Булево значение"
+' promocodes
+booking_management_connector_promocodes <---> promocode_management_controller_get_promocode : "Данные промокода"
+booking_management_connector_promocodes <---> promocode_management_controller_check_promocode_is_valid : "Булево значение"
+booking_management_connector_promocodes <---> promocode_management_controller_check_promocode_is_valid_for_user : "Булево значение"
+
+user <--> user_interfase
+user_interfase <--> bff_system : "Чтение/запись"
+
+@enduml

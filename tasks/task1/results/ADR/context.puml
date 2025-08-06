@@ -1,0 +1,49 @@
+@startuml Структура микросервисов системы бронирования отелей - Диаграмма контекста
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+title Схема взаимодействий
+
+top to bottom direction
+
+skinparam Padding 10
+skinparam Margin 100
+
+LAYOUT_WITH_LEGEND()
+
+
+Person(user, "User ", "Interacts with frontend")
+
+System(user_interfase, "Пользовательский интерфейс", "JS")
+
+System(bff_system, "Система бэкенд для фронтенда", "Apollo/Node.js")
+
+System(kafka, "Брокер сообщений", "Kafka")
+
+System(user_auth_system, "Система авторизации", "Java/gRpc")
+System(user_system, "Данные пользователя/система авторизации и аутентификации", "Java/gRpc")
+System(booking_management_system, "Система управления бронированиями", "Java/gRpc")
+System(hotels_management_system, "Система управления данными отелей", "Java/gRpc")
+System(reviews_management_system, "Система управления оценками и ревью ", "Java/gRpc")
+System(promocode_management_system, "Система управления промокодами", "Java/gRpc")
+
+
+bff_system <-> user_auth_system : "Авторизационные данные"
+
+user_system --> kafka : "Авторизационные данные пользователей"
+kafka --> user_auth_system : "Авторизационные данные пользователей"
+
+bff_system <---> user_system : "сериализованные данные пользователей"
+bff_system <---> booking_management_system : "Id задачи/подтверждение бронирования/спиосок бронирований", "Запрос, данные пользователя в объекте запроса"
+bff_system <---> hotels_management_system : "Список отелей, доступность, наличие мест, топ отелей", "Запрос, данные пользователя в объекте запроса"
+bff_system <---> reviews_management_system : "Списки ревью"
+bff_system <---> promocode_management_system : "Объекты промокодов,\nвалидность промокодов"
+
+booking_management_system <-- hotels_management_system : "Данные об отеле"
+booking_management_system <-- reviews_management_system : "Доступность отеля, оценка пользователей"
+booking_management_system <-- promocode_management_system : "Валидность промокода"
+
+
+
+user <--> user_interfase : "Reads/Writes"
+user_interfase <--> bff_system : "Reads/Writes"
+
+@enduml
