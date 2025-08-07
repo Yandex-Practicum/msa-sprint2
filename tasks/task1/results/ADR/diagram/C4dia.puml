@@ -1,0 +1,36 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+
+System_Boundary(hotelio, "Hotelio Monolith") {
+
+  Container(GraphQLGateway, "GraphQL-шлюз", "", "Aggregates microservices")
+
+  Container(ServiceMesh, "Service Mesh", "Istio", "")
+  Container(Analitic, "Analytical tools", "", "Processes metrics")
+
+  Container(bookingService, "BookingService", "Java Service", "Validates and creates bookings")
+  Container(hotelService, "HotelService", "Java Service", "Retrieves hotel details")
+  Container(userService, "UserService", "Java Service", "Validates user status and blacklist")
+  Container(promoService, "PromoCodeService", "Java Service", "Applies discounts and rules")
+  Container(reviewService, "ReviewService", "Java Service", "Manages hotel reviews")
+  Container(kafka, "Message broker", "Apache Kafka", "Support service interacting ") 
+
+
+}
+Person(user, "User", "Interacts with frontend,")
+user --> GraphQLGateway
+GraphQLGateway --> ServiceMesh
+ServiceMesh --> bookingService
+ServiceMesh --> hotelService
+ServiceMesh --> userService
+ServiceMesh --> promoService
+ServiceMesh --> reviewService
+bookingService --> kafka
+kafka --> hotelService
+kafka --> userService
+kafka --> promoService
+kafka --> reviewService
+ServiceMesh --> Analitic
+@enduml

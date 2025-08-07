@@ -49,7 +49,7 @@
 ```bash
 cd test/
 docker build -t hotelio-tester .
-docker run --rm \                                                                                                                                                                   ok | 4s | 01:49:56
+docker run --rm \
   -e DB_HOST=host.docker.internal \
   -e DB_PORT=5432 \
   -e DB_NAME=hotelio \
@@ -57,5 +57,7 @@ docker run --rm \                                                               
   -e DB_PASSWORD=hotelio \
   -e API_URL=http://host.docker.internal:8084 \
   hotelio-tester
-```
 
+docker run --rm -e DB_HOST=host.docker.internal -e DB_PORT=5432 -e DB_NAME=hotelio -e DB_USER=hotelio -e DB_PASSWORD=hotelio -e API_URL=http://host.docker.internal:8084 hotelio-tester
+
+```
