@@ -1,4 +1,3 @@
-version: "3.8"
 
 services:
   monolith:
@@ -29,33 +28,27 @@ services:
     volumes:
       - monolith-db-data:/var/lib/postgresql/data
     networks:
-      - hotelio-net
-  
-  booking-db:
-    image: postgres:15
-    container_name: booking-db
-    environment:
-      POSTGRES_USER: hotelio
-      POSTGRES_PASSWORD: hotelio
-      POSTGRES_DB: hotelio_booking
-    ports:
-      - "5433:5432"
-    volumes:
-      - booking-db-data:/var/lib/postgresql/data
-    networks:
-      - hotelio-net    
+      - hotelio-net   
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "hotelio", "-d", "hotelio"]
+      interval: 5s
+      timeout: 5s
+      retries: 5 
   
   booking-service:
-    build: .
+    build: ./BookingService
     ports:
       - "5001:5001"
+    networks:
+      - hotelio-net 
     environment:
-      POSTGRES_HOST: booking-db
+      POSTGRES_HOST: monolith-db
       POSTGRES_USER: hotelio
       POSTGRES_PASSWORD: hotelio
-      POSTGRES_DB: hotelio_booking
+      POSTGRES_DB: hotelio
     depends_on:
-      - booking-db
+        monolith-db:
+          condition: service_healthy
 
   kafka:
     image: confluentinc/cp-kafka:7.2.1
