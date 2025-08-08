@@ -1,0 +1,48 @@
+﻿version: '3.8'
+
+services:
+  booking-db-dev:
+    image: postgres:15
+    container_name: booking-db-dev
+    environment:
+      POSTGRES_USER: hotelio
+      POSTGRES_PASSWORD: hotelio
+      POSTGRES_DB: dev_hotelio_booking
+    ports:
+      - "5432:5432"
+    volumes:
+      - booking-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "hotelio", "-d", "dev_hotelio_booking"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  
+  booking-service-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+      - "5000:5000"
+    networks:
+      - hotelio-net
+    environment:
+      POSTGRES_HOST: booking-db-dev
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: hotelio
+      POSTGRES_PASSWORD: hotelio
+      POSTGRES_DB: dev_hotelio_booking
+    depends_on:
+      booking-db-dev:
+        condition: service_healthy
+
+
+volumes:
+  monolith-db-data:
+  booking-db-data:
+networks:
+  hotelio-net:
+    external: true  
