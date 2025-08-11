@@ -1,8 +1,8 @@
 import grpc
-from app.files.proto import booking_pb2, booking_pb2_grpc
-from app.files.services import BookingServices, booking_services
+from proto import booking_pb2, booking_pb2_grpc
+from files.services import BookingServices, booking_services
 
-from tasks.booking.app.files.proto import booking_pb2, booking_pb2_grpc
+from proto import booking_pb2, booking_pb2_grpc
 
 
 class BookingConntroller(booking_pb2_grpc.BookingServiceServicer):

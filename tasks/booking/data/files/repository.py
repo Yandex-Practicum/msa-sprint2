@@ -4,10 +4,10 @@ from sqlalchemy import select, insert
 from sqlalchemy.orm import load_only
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
-from app.files.config.db_settings.session import async_session
+from settings.db_settings.session import async_session
 
-from app.files.models import Booking
-from app.files.schemas import CreateBookingSchema, BookingSchema
+from files.models import Booking
+from files.schemas import CreateBookingSchema, BookingSchema
 
 
 class BookingRepository:
