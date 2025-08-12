@@ -34,11 +34,11 @@ namespace BookingService
             double basePrice = 0, discount = 0;
             //try
             //{
-                ValidateUser(userId);
-                ValidateHotel(hotelId);
+            ValidateUser(userId);
+            ValidateHotel(hotelId);
 
-                basePrice = ResolveBasePrice(userId);
-                discount = ResolvePromoDiscount(promoCode, userId);
+            basePrice = ResolveBasePrice(userId);
+            discount = ResolvePromoDiscount(promoCode, userId);
             //}
             //catch (Exception ex)
             //{
@@ -68,14 +68,24 @@ namespace BookingService
             BookingListRequest request,
             ServerCallContext context)
         {
-            var bookings = await _dbContext.Booking
+            List<Booking>? bookings;
+            if (request.UserId != "")
+            {
+                bookings = await _dbContext.Booking
                 .Where(b => b.UserId == request.UserId)
                 .OrderByDescending(b => b.CreatedAt)
                 .ToListAsync();
-
+            }
+            else
+            {
+                bookings = await _dbContext.Booking
+                .OrderByDescending(b => b.CreatedAt)
+                .ToListAsync();
+            }
             var response = new BookingListResponse();
             response.Bookings.AddRange(bookings.Select(MapToResponse));
             return response;
+
         }
 
         private static BookingResponse MapToResponse(Booking booking)
@@ -85,7 +95,7 @@ namespace BookingService
                 Id = booking.Id.ToString(),
                 UserId = booking.UserId,
                 HotelId = booking.HotelId,
-                PromoCode = booking.PromoCode,
+                PromoCode = booking.PromoCode ?? "",
                 DiscountPercent = booking.DiscountPercent,
                 Price = booking.Price,
                 CreatedAt = booking.CreatedAt.ToString("o")
@@ -137,7 +147,7 @@ namespace BookingService
         }
         private double ResolvePromoDiscount(string? promoCode, string? userId)
         {
-            if (promoCode=="" || promoCode == null)
+            if (promoCode == "" || promoCode == null)
                 return 0.0;
 
             PromoCodeDTO promo = _monolit.ValidatePromoCode(promoCode, userId);

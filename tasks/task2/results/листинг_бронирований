@@ -1,4 +1,50 @@
 листинг бронирований, вызванный через REST из монолита и GRPC из микросервиса
 
-Как можно в данной задаче получить два листинга? Тут поставнока вопроса странная. 
-REST запрос  к api\booking  возвращает 500 ошибку, так как booking.proto не описывает вызов всех бронирований из нового сервиса и следовательно не реализован.
+REST запрос  к api\booking  возвращает 500 ошибку( не может вызвать ListBookings без аргумента 
+
+gRPC запрос  ListBookings новому сервису
+{ 
+    
+}
+
+ответ сервиса 
+{
+    "bookings": [
+        {
+            "id": "4",
+            "user_id": "test-user-2",
+            "hotel_id": "test-hotel-1",
+            "promo_code": "TESTCODE1",
+            "discount_percent": 10,
+            "price": 90,
+            "created_at": "2025-08-12T21:04:21.4913830Z"
+        },
+        {
+            "id": "3",
+            "user_id": "test-user-3",
+            "hotel_id": "test-hotel-1",
+            "promo_code": "",
+            "discount_percent": 0,
+            "price": 80,
+            "created_at": "2025-08-12T21:04:13.0543900Z"
+        },
+        {
+            "id": "1",
+            "user_id": "test-user-2",
+            "hotel_id": "test-hotel-1",
+            "promo_code": "TESTCODE1",
+            "discount_percent": 10,
+            "price": 90,
+            "created_at": "2025-08-12T21:04:09.7669430Z"
+        },
+        {
+            "id": "2",
+            "user_id": "test-user-3",
+            "hotel_id": "test-hotel-1",
+            "promo_code": "",
+            "discount_percent": 0,
+            "price": 80,
+            "created_at": "2025-08-12T21:04:09.7669430Z"
+        }
+    ]
+}

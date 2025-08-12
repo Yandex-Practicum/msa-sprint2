@@ -16,10 +16,10 @@ namespace BookingService.Models
 
         [Column("hotel_id")]
         [Required]
-        public string HotelId { get; set; }
+        public string? HotelId { get; set; }
         
         [Column("promo_code")]
-        public string PromoCode { get; set; }
+        public string? PromoCode { get; set; }
 
         [Column("discount_percent")]
         public double DiscountPercent { get; set; }
