@@ -100,9 +100,10 @@ curl -sSf -X POST "${BASE}/api/promos/validate?code=TESTCODE1&userId=test-user-2
 echo ""
 echo "Тесты бронирования..."
 
-# 1. Получение всех бронирований ОТКЛЮЧЕН ТЕСТ! 
-# так gRPC сервис не реализует такой вызов. В файле task2/booking.proto описан вызов ListBookings с аргументом (я так понял он обязателен)
-# curl -sSf "${BASE}/api/bookings" | grep -q 'test-user-2' && pass "Все бронирования получены" || fail "Бронирования не получены"
+echo "# 1. Получение всех бронирований ОТКЛЮЧЕН ТЕСТ"
+echo "# так gRPC сервис не реализует такой вызов. В файле task2/booking.proto описан вызов ListBookings с аргументом (я так понял он обязателен)"
+# echo curl -sSf "${BASE}/api/bookings" | grep -q 'test-user-2' && pass "Все бронирования получены" || fail "Бронирования не получены"
+
 
 # 2. Получение бронирований пользователя
 curl -sSf "${BASE}/api/bookings?userId=test-user-2" | grep -q 'test-user-2' && pass "Бронирования test-user-2 найдены" || fail "Нет бронирований test-user-2"
