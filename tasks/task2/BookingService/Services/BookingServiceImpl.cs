@@ -27,24 +27,24 @@ namespace BookingService
         {
             //var discount = CalculateDiscount(request.PromoCode);
             //var basePrice = await GetBasePrice(request.HotelId);
-            string userId = request.UserId;
-            string hotelId = request.HotelId;
-            string promoCode = request.PromoCode;
+            string? userId = request.UserId;
+            string? hotelId = request.HotelId;
+            string? promoCode = request.PromoCode;
             logger.LogInformation(@"Creating booking: userId={0}, hotelId={1}, promoCode={2}", userId, hotelId, promoCode);
             double basePrice = 0, discount = 0;
-            try
-            {
+            //try
+            //{
                 ValidateUser(userId);
                 ValidateHotel(hotelId);
 
                 basePrice = ResolveBasePrice(userId);
                 discount = ResolvePromoDiscount(promoCode, userId);
-            }
-            catch (Exception ex)
-            {
-                logger.LogInformation(ex.ToString());
-                logger.LogInformation("errors in requests");
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    logger.LogInformation(ex.ToString());
+            //    logger.LogInformation("errors in requests");
+            //}
 
             double finalPrice = basePrice - discount;
             logger.LogInformation(@"Final price calculated: base={0}, discount={1}, final={2}", basePrice, discount, finalPrice);
@@ -105,6 +105,7 @@ namespace BookingService
                 logger.LogInformation($"User {userId} is blacklisted", userId);
                 throw new IllegalArgumentException("User is blacklisted");
             }
+            logger.LogInformation($"User {userId} is active", userId);
 
         }
         private void ValidateHotel(String hotelId)
@@ -126,7 +127,7 @@ namespace BookingService
             }
         }
 
-        private double ResolveBasePrice(String userId)
+        private double ResolveBasePrice(string userId)
         {
             string statusOpt = _monolit.GetUserStatus(userId);
             if (statusOpt.Contains("VIP", StringComparison.OrdinalIgnoreCase))
@@ -134,9 +135,10 @@ namespace BookingService
             else
                 return 100.0;
         }
-        private double ResolvePromoDiscount(String promoCode, String userId)
+        private double ResolvePromoDiscount(string? promoCode, string? userId)
         {
-            if (promoCode == null) return 0.0;
+            if (promoCode=="" || promoCode == null)
+                return 0.0;
 
             PromoCodeDTO promo = _monolit.ValidatePromoCode(promoCode, userId);
             if (promo == null)

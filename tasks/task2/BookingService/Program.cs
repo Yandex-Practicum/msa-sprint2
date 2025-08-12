@@ -46,21 +46,22 @@ using (var scope = app.Services.CreateScope())
     
     var dbContext = scope.ServiceProvider.GetRequiredService<BookingDbContext>();
     //dbContext.Database.Migrate();
-    if (dbContext.Database.CanConnect())
-    {
-        try
-        {
-            logger?.LogInformation("Creating database and tables...");
-            dbContext.Database.EnsureCreated();
-            logger?.LogInformation("Database created!");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-        }
-    }
-    else
-        logger?.LogInformation("Database not connected!");
+    //Бд создает монолит
+    //if (dbContext.Database.CanConnect())
+    //{
+    //    try
+    //    {
+    //        logger?.LogInformation("Creating database and tables...");
+    //        dbContext.Database.EnsureCreated();
+    //        logger?.LogInformation("Database created!");
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Console.WriteLine(ex);
+    //    }
+    //}
+    //else
+    //    logger?.LogInformation("Database not connected!");
 }
 
 

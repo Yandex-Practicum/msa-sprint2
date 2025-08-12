@@ -38,7 +38,14 @@ namespace BookingService.Services.Tests
         {
             var mono = new MonolitService();
             var r = mono.IsUserActive(UserId);
-            Xunit.Assert.True(true);
+            Xunit.Assert.True(r);
+        }
+        [Fact]
+        public void IsUserInactiveTest()
+        {
+            var mono = new MonolitService();
+            var r = mono.IsUserActive("test-user-0");
+            Xunit.Assert.True(!r);
         }
 
         [Fact]
