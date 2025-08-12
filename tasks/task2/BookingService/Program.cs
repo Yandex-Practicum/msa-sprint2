@@ -1,5 +1,6 @@
 ﻿using BookingService;
 using BookingService.Data;
+using BookingService.Services;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
@@ -8,11 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddGrpc();
+builder.Services.AddSingleton<BookingEventHandler>();
+builder.Services.AddSingleton<MonolitService>();
 
 // Настройка PostgreSQL с переменными окружения
 builder.Services.AddDbContext<BookingDbContext>(options =>
 {
-    var dbHost = Environment.GetEnvironmentVariable("POSTGRES_HOST") ?? "192.168.0.127";
+    var dbHost = Environment.GetEnvironmentVariable("POSTGRES_HOST") ?? "127.0.0.1";
     var dbPort = Environment.GetEnvironmentVariable("POSTGRES_PORT") ?? "5432";
     var dbUser = Environment.GetEnvironmentVariable("POSTGRES_USER") ?? "hotelio";
     var dbPassword = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ?? "hotelio";
@@ -39,15 +42,17 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
+    var logger = app.Services.GetService<ILogger<BookingServiceImpl>>();
+    
     var dbContext = scope.ServiceProvider.GetRequiredService<BookingDbContext>();
     //dbContext.Database.Migrate();
     if (dbContext.Database.CanConnect())
     {
         try
         {
-            Console.WriteLine("Creating database and tables...");
+            logger?.LogInformation("Creating database and tables...");
             dbContext.Database.EnsureCreated();
-            Console.WriteLine("Database created!");
+            logger?.LogInformation("Database created!");
         }
         catch (Exception ex)
         {
@@ -55,7 +60,7 @@ using (var scope = app.Services.CreateScope())
         }
     }
     else
-        Console.WriteLine("Database not connected!");
+        logger?.LogInformation("Database not connected!");
 }
 
 

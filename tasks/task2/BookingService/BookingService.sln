@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36327.8 d17.14
+VisualStudioVersion = 17.14.36327.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingService", "BookingService.csproj", "{2583F04C-B69F-F867-F5B6-2AE844B7AE88}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTestApp", "..\ConsoleTestApp\ConsoleTestApp.csproj", "{77D1C3D2-08CF-4983-85E9-231BC56A225B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingHistoryService", "..\BookingHistoryService\BookingHistoryService.csproj", "{E63383BE-766D-42F8-B992-F6D888D36297}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTestAppTests1", "..\ConsoleTestAppTests1\ConsoleTestAppTests1.csproj", "{BF835C83-8F05-48F5-8681-FA69CD16A2AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{77D1C3D2-08CF-4983-85E9-231BC56A225B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77D1C3D2-08CF-4983-85E9-231BC56A225B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77D1C3D2-08CF-4983-85E9-231BC56A225B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E63383BE-766D-42F8-B992-F6D888D36297}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E63383BE-766D-42F8-B992-F6D888D36297}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E63383BE-766D-42F8-B992-F6D888D36297}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E63383BE-766D-42F8-B992-F6D888D36297}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF835C83-8F05-48F5-8681-FA69CD16A2AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF835C83-8F05-48F5-8681-FA69CD16A2AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF835C83-8F05-48F5-8681-FA69CD16A2AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF835C83-8F05-48F5-8681-FA69CD16A2AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

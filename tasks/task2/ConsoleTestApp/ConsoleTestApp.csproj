@@ -16,6 +16,8 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    
     <Protobuf Include="Protos\booking.proto" GrpcServices="Client" />
      <Protobuf Include="Protos\booking.proto" GrpcServices="Client" />    
     <PackageReference Include="Grpc.Net.Client" Version="2.71.0" />

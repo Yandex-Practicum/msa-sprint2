@@ -35,6 +35,20 @@ services:
       timeout: 5s
       retries: 5 
   
+  # booking-db:
+  #   image: postgres:15
+  #   container_name: booking-db
+  #   environment:
+  #     POSTGRES_USER: hotelio
+  #     POSTGRES_PASSWORD: hotelio
+  #     POSTGRES_DB: hotelio_booking
+  #   ports:
+  #     - "5433:5432"
+  #   volumes:
+  #     - booking-db-data:/var/lib/postgresql/data
+  #   networks:
+  #     - hotelio-net
+  
   booking-service:
     build: ./BookingService
     ports:
@@ -42,10 +56,14 @@ services:
     networks:
       - hotelio-net 
     environment:
+      MONOLIT_HOST: http://hotelio-monolith:8080
       POSTGRES_HOST: monolith-db
       POSTGRES_USER: hotelio
       POSTGRES_PASSWORD: hotelio
       POSTGRES_DB: hotelio
+      KAFKA_HOST: kafka:9092
+      KAFKA_GROUP: booking-history-group
+      KAFKA_TOPIC: booking-events
     depends_on:
         monolith-db:
           condition: service_healthy
@@ -71,9 +89,45 @@ services:
     networks:
       - hotelio-net
 
+  #booking-history-db:
+  #  image: postgres:15
+  #  container_name: booking-history-db 
+  #  environment:
+  #    POSTGRES_USER: hotelio
+  #    POSTGRES_PASSWORD: hotelio
+  #    POSTGRES_DB: booking-history-db
+  #  ports:
+  #    - "5434:5432"
+  #  volumes:
+  #    - booking-history-db-data:/var/lib/postgresql/data
+  #  networks:
+  #    - hotelio-net
+  #  healthcheck:
+  #    test: ["CMD", "pg_isready", "-U", "hotelio", "-d", "booking-history-db"]
+  #    interval: 5s
+  #    timeout: 5s
+  #    retries: 5
+#
+  #booking-history-service:
+  #  build: ./BookingHistoryService
+  #  networks:
+  #    - hotelio-net 
+  #  environment:
+  #    POSTGRES_HOST: booking-history-db
+  #    POSTGRES_USER: hotelio
+  #    POSTGRES_PASSWORD: hotelio
+  #    POSTGRES_DB: booking-history-db           
+  #    KAFKA_HOST: kafka:9092
+  #    KAFKA_GROUP: booking-history-group
+  #    KAFKA_TOPIC: booking-events
+  #  depends_on:      
+  #    booking-history-db:
+  #      condition: service_healthy
+
 volumes:
   monolith-db-data:
   booking-db-data:
+  booking-history-db-data:
 
 networks:
   hotelio-net:
