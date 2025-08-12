@@ -8,6 +8,10 @@ echo "🧪 Проверка подключения к БД..."
 timeout 2 bash -c "</dev/tcp/${DB_HOST}/${DB_PORT}" \
   || { echo "❌ Не удалось подключиться к ${DB_HOST}:${DB_PORT}"; exit 1; }
 
+# Очистка БД booking-history-service
+echo "🧪 Очистка БД booking-history-service..."
+PGPASSWORD="booking-history-db" psql -h "booking-history-db" -p "5444" -U "booking-history-db" "booking-history-db" < drop-booking-history-db.sql
+
 # Загрузка фикстур
 echo "🧪 Загрузка фикстур..."
 PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" "${DB_NAME}" < init-fixtures.sql
