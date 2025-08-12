@@ -52,7 +52,7 @@ services:
     depends_on:
       - kafka
       - booking-db
-      - booking-history
+      # - booking-history
 
   booking-db:
     image: postgres:15
@@ -63,8 +63,8 @@ services:
       POSTGRES_DB: booking
     ports:
       - "5433:5432"
-    volumes:
-      - booking-db-data:/var/lib/postgresql/data
+    # volumes:
+    #   - booking-db-data:/var/lib/postgresql/data
     networks:
       - hotelio-net
 
