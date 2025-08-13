@@ -27,7 +27,7 @@ console.log('   Hotel service' + process.env.SERVICE_URL)
 if (!serviceUrl) {
   throw new Error('serviceUrl is not defined in environment variables');
 }
-const client = new HotelService(serviceUrl);
+const hotelService = new HotelService(serviceUrl);
 
 
 
@@ -35,15 +35,15 @@ const resolvers = {
   Hotel: {
     __resolveReference: async ({ id }) => {
       // TODO: Реальный вызов к hotel-сервису или заглушка
-	console.log('resolveRef ' + id);
-        return client.getHotelById(id);
+	    console.log('resolveRef ' + id);
+      return hotelService.getHotelById(id);
     },
   },
   Query: {
     hotelsByIds: async (_, { ids }) => {
       // TODO: Заглушка или REST-запрос	
-      	var hotels = await client.getHotelsByIds(ids);
-	return hotels;
+      var hotels = await hotelService.getHotelsByIds(ids);
+	    return hotels;
     },
   },
 };

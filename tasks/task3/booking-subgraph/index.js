@@ -17,15 +17,33 @@ const typeDefs = gql`
   }
 
 `;
+import BookingService from './bookingService.js';
+/**
+   * 
+   * @param {string} serviceUrl - URL к Hotel-сервису
+   */
+
+const serviceUrl = process.env.SERVICE_URL;
+console.log('   Hotel service' + process.env.SERVICE_URL)
+if (!serviceUrl) {
+  throw new Error('serviceUrl is not defined in environment variables');
+}
+const bookingService = new BookingService(serviceUrl);
 
 const resolvers = {
   Query: {
     bookingsByUser: async (_, { userId }, { req }) => {
-		// TODO: Реальный вызов к grpc booking-сервису или заглушка + ACL
-    },
+      console.log(userId);
+      console.log(req);
+      return bookingService.listBookings(userId);
+    }
   },
-  Booking: {
+  Booking:{
+    bookings: async (_, { bookingRequest}, { req }) => {
 	  // TODO: Реальный вызов к grpc booking-сервису или заглушка + ACL
+      console.log(bookingRequest);
+      return bookingService.createBooking(bookingRequest);
+   },
   },
 };
 

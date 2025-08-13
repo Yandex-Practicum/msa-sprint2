@@ -15,12 +15,6 @@ class HotelService {
     } catch (error) {
       console.error(' Hotel Service   Error fetching hotel:', error);      
     }
-    /**return {
-      id: 'b1',
-      city: 'NN',
-      name: '4seasons',
-      stars: 3
-    };**/
   }
   async getHotelsByIds(ids)
   {
