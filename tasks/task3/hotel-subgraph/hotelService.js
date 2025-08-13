@@ -21,7 +21,7 @@ class HotelClient {
   {
     const hotels = [];
     ids.forEach(async id => {
-      var hotel = await getHotelById(id);
+      var hotel = await this.getHotelById(id);
       hotels.push(hotel);
     });
   }
