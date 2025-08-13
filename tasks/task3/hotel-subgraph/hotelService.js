@@ -10,28 +10,23 @@ class HotelService {
   }
   async getHotelById(id)
   {
-    /**try {
-
-      return await restClient.get(`${this.serviceUrl}/api/hotels/${id}`);
+    try {
+	return await restClient.get(`${this.serviceUrl}/api/hotels/${id}`);
     } catch (error) {
-      console.error(' Hotel Service   Error fetching hotel:', error);
-      throw error;
-    }**/
-    return {
+      console.error(' Hotel Service   Error fetching hotel:', error);      
+    }
+    /**return {
       id: 'b1',
-      userId,
-      hotelId: 'h1',
-      discountPercent: 20,
-      promoCode: 'SUMMER',
-      };
+      city: 'NN',
+      name: '4seasons',
+      stars: 3
+    };**/
   }
   async getHotelsByIds(ids)
   {
-    const hotels = [];
-    ids.forEach(async id => {
-      var hotel = await this.getHotelById(id);
-      hotels.push(hotel);
-    });
+    const promises = ids.map(id => this.getHotelById(id));
+    const hotels = await Promise.all(promises);
+    return hotels
   }
 }
 

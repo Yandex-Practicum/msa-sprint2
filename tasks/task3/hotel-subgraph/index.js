@@ -35,13 +35,15 @@ const resolvers = {
   Hotel: {
     __resolveReference: async ({ id }) => {
       // TODO: Реальный вызов к hotel-сервису или заглушка
-      return await client.getHotelById(id)
+	console.log('resolveRef ' + id);
+        return client.getHotelById(id);
     },
   },
   Query: {
     hotelsByIds: async (_, { ids }) => {
-      // TODO: Заглушка или REST-запрос
-      return await client.getHotelsByIds(ids)
+      // TODO: Заглушка или REST-запрос	
+      	var hotels = await client.getHotelsByIds(ids);
+	return hotels;
     },
   },
 };
