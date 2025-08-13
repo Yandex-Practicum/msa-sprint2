@@ -22,8 +22,8 @@ import HotelClient from './hotelService.js';
    * @param {string} serviceUrl - URL к Hotel-сервису
    */
 
-const serviceUrl = process.env.SEVICE_URL;
-console.log('Graph service' + process.env.SEVICE_URL)
+const serviceUrl = process.env.SERVICE_URL;
+console.log('Graph service' + process.env.SERVICE_URL)
 if (!serviceUrl) {
   throw new Error('serviceUrl is not defined in environment variables');
 }

@@ -14,14 +14,14 @@ services:
     ports:
       - "4001:4001"
     environment:
-      #SEVICE_URL: http://booking-service:5001
-      SEVICE_URL: http://192.168.0.106:5001
+      #SERVICE_URL: http://booking-service:5001
+      SERVICE_URL: http://192.168.0.106:5001
 
   hotel-subgraph:
     build: ./hotel-subgraph
     ports:
       - "4002:4002"
     environment:
-      SEVICE_URL: http://192.168.0.106:8084
-      #SEVICE_URL: http://hotelio-monolith:8080
+      SERVICE_URL: http://192.168.0.106:8084
+      #SERVICE_URL: http://hotelio-monolith:8080
 
