@@ -1,7 +1,7 @@
 import logging
 
 from settings.kafka_settings.publisher import kafka_event_publisher
-from settings.kafka_settings.schemas import MessageSchema, PublishCallbackType
+from settings.kafka_settings.schemas import MessageType, PublishCallbackType
 
 logging.basicConfig(level=logging.INFO)
 
@@ -15,7 +15,7 @@ class AsyncEventManager:
     async def publish(
         self,
         event_type: str,
-        message: MessageSchema,
+        message: MessageType,
     ) -> None:
         await self._publish_callback(event_type, message)
 

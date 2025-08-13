@@ -2,6 +2,8 @@ import json
 import logging
 from datetime import datetime, timezone
 
+from settings.settings import settings
+
 
 from aiokafka import AIOKafkaProducer
 
@@ -13,33 +15,41 @@ logger = logging.getLogger("kafka-producer")
 
 
 class KafkaEventPublisher:
-    def __init__(self, bootstrap_servers: str = "localhost:9092"):
-        self.producer = AIOKafkaProducer(
-            bootstrap_servers=bootstrap_servers,
-            value_serializer=lambda v: json.dumps(v).encode("utf-8"),
-        )
-        self.topic = "booking-history"
+    def __init__(
+        self,
+        bootstrap_servers: str = settings.kafka_url,
+        producer_class: AIOKafkaProducer = AIOKafkaProducer,
+    ):
+        self._bootstrap_servers = bootstrap_servers
+        self._topic = "booking-history"
+        self._producer_class = producer_class
+        self._producer: AIOKafkaProducer = None
 
     async def start(self):
-        await self.producer.start()
+
+        self._producer = self._producer_class(
+            bootstrap_servers=self._bootstrap_servers,
+            value_serializer=lambda v: json.dumps(v).encode("utf-8"),
+        )
+        await self._producer.start()
         logger.info("Kafka event publisher started")
 
     async def stop(self):
-        await self.producer.stop()
+        await self._producer.stop()
         logger.info("Kafka event publisher stopped")
 
-    async def publish(self, event: str, message: dict):
+    async def publish(self, event: str, message: dict[str, any]):
         try:
-            await self.producer.send(
-                
-                topic=self.topic,
+            data = json.dumps(message)
+            await self._producer.send(
+                topic=self._topic,
                 value={
                     "type": event,
-                    "data": message,
+                    "data": data,
                     "timestamp": str(datetime.now(timezone.utc)),
                 },
             )
-            await self.producer.flush()
+            await self._producer.flush()
             logger.debug(f"Sent event {event} to Kafka")
         except Exception as e:
             logger.error(f"Failed to send event to Kafka: {e}")

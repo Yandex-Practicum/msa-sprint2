@@ -3,10 +3,8 @@ from typing import Optional
 
 from sqlalchemy import Integer, String, Float, DateTime, text
 from sqlalchemy.orm import mapped_column, Mapped
-from sqlalchemy.ext.declarative import declarative_base
 
-
-Base = declarative_base()
+from data.settings.db_settings.base import Base
 
 
 class Booking(Base):
