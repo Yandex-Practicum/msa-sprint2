@@ -16,15 +16,32 @@ const typeDefs = gql`
   }
 `;
 
+import HotelClient from './hotelService.js';
+/**
+   * 
+   * @param {string} serviceUrl - URL к Hotel-сервису
+   */
+
+const serviceUrl = process.env.SEVICE_URL;
+console.log('Graph service' + process.env.SEVICE_URL)
+if (!serviceUrl) {
+  throw new Error('serviceUrl is not defined in environment variables');
+}
+const client = new HotelClient(serviceUrl);
+
+
+
 const resolvers = {
   Hotel: {
     __resolveReference: async ({ id }) => {
       // TODO: Реальный вызов к hotel-сервису или заглушка
+      return await client.getHotelById(id)
     },
   },
   Query: {
     hotelsByIds: async (_, { ids }) => {
       // TODO: Заглушка или REST-запрос
+      return await client.getHotelsByIds(ids)
     },
   },
 };
