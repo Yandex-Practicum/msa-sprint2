@@ -16,18 +16,18 @@ const typeDefs = gql`
   }
 `;
 
-import HotelClient from './hotelService.js';
+import HotelService from './hotelService.js';
 /**
    * 
    * @param {string} serviceUrl - URL к Hotel-сервису
    */
 
 const serviceUrl = process.env.SERVICE_URL;
-console.log('Graph service' + process.env.SERVICE_URL)
+console.log('   Hotel service' + process.env.SERVICE_URL)
 if (!serviceUrl) {
   throw new Error('serviceUrl is not defined in environment variables');
 }
-const client = new HotelClient(serviceUrl);
+const client = new HotelService(serviceUrl);
 
 
 

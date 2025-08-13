@@ -10,6 +10,7 @@ class RestClient {
    */
   async get(url, headers = {}) {
     try {
+      console.log(`   RestClient.GET(url-${url}, headers-${headers})`);
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -19,12 +20,12 @@ class RestClient {
       });
       
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error('   RestClient - HTTP error! status: ${response.status}');
       }
       
       return await response.json();
     } catch (error) {
-      return console.error('GET request failed:', error);
+      return console.error('    RestClientGET request failed:', error);
       
     }
   }

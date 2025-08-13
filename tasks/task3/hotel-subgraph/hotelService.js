@@ -3,7 +3,7 @@ import { restClient } from './restClient.js';
 /**
  * Hotel Service
  */
-class HotelClient {
+class HotelService {
   
   constructor(constructorArg) {   
     this.serviceUrl = constructorArg;
@@ -11,9 +11,10 @@ class HotelClient {
   async getHotelById(id)
   {
     try {
-      return await restClient.get(`${this.serviceUrl}/hotels/${id}`);
+
+      return await restClient.get(`${this.serviceUrl}/api/hotels/${id}`);
     } catch (error) {
-      console.error('Error fetching hotel:', error);
+      console.error(' Hotel Service   Error fetching hotel:', error);
       throw error;
     }
   }
@@ -27,4 +28,4 @@ class HotelClient {
   }
 }
 
-export default HotelClient;
+export default HotelService;
