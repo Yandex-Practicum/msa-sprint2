@@ -59,5 +59,4 @@ class RestClient {
   }
 }
 
-// Экспортируем экземпляр клиента для удобства
 export const restClient = new RestClient();

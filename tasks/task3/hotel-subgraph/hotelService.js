@@ -27,5 +27,4 @@ class HotelClient {
   }
 }
 
-// Экспортируем экземпляр клиента для удобства
 export default HotelClient;
