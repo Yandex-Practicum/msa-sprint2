@@ -10,13 +10,20 @@ class HotelService {
   }
   async getHotelById(id)
   {
-    try {
+    /**try {
 
       return await restClient.get(`${this.serviceUrl}/api/hotels/${id}`);
     } catch (error) {
       console.error(' Hotel Service   Error fetching hotel:', error);
       throw error;
-    }
+    }**/
+    return {
+      id: 'b1',
+      userId,
+      hotelId: 'h1',
+      discountPercent: 20,
+      promoCode: 'SUMMER',
+      };
   }
   async getHotelsByIds(ids)
   {
