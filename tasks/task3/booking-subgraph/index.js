@@ -34,8 +34,9 @@ const resolvers = {
   Query: {
     bookingsByUser: async (_, { userId }, { req }) => {
       console.log(userId);
-      console.log(req);
-      return await bookingService.listBookings(userId);
+      var r = await bookingService.listBookings(userId);
+      console.log(r);
+      return r;
     }
   },
   Booking:{
