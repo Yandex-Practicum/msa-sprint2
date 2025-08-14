@@ -1,18 +1,13 @@
-
-
+import grpc from '@grpc/grpc-js';
+import pkg from '@grpc/proto-loader';
+const {loadPackageDefinition} = pkg;
 /**
  * BookingService
 */
-class BookingService { 
-  
-  constructor(serviceHostAndPort) {       
-    const grpc = require('@grpc/grpc-js');
-    const protoLoader = require('@grpc/proto-loader');
-    
-    // Загрузка proto-файла
+// Загрузка proto-файла
     const PROTO_PATH = './booking.proto';
     
-    const packageDefinition = protoLoader.loadSync(
+    const packageDefinition = loadPackageDefinition(
       PROTO_PATH,
       {
         keepCase: true,
@@ -23,6 +18,10 @@ class BookingService {
       }
     );
     const bookingProto = grpc.loadPackageDefinition(packageDefinition).booking;
+
+class BookingService {
+
+  constructor(serviceHostAndPort) {
     // Создание клиента
     this.client = new bookingProto.BookingService(
     serviceHostAndPort,

@@ -16,8 +16,8 @@ services:
     ports:
       - "4001:4001"
     environment:
-      #SERVICE_URL: http://booking-service:5001
-      SERVICE_URL: http://192.168.0.106:5001
+      #SERVICE_URL: booking-service:5001
+      SERVICE_URL: 192.168.0.106:5001
     networks:
       - hotelio-net
 
