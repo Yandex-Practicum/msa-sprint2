@@ -26,7 +26,7 @@ class BookingService {
   }
   listBookings(userId) {
     console.log('BookingService ListBooking');  
-    client.ListBookings({ user_id: userId }, (err, response) => {
+    client.listBookings({ user_id: userId }, (err, response) => {
       if (err) {
       console.error('BookingService Error:', err);
       return;
@@ -39,7 +39,7 @@ class BookingService {
   
   createBooking(bookingRequest) {
     console.log('BookingService CreateBooking');  
-    client.CreateBooking(bookingRequest, (err, response) => {
+    client.createBooking(bookingRequest, (err, response) => {
       if (err) {
       console.error('BookingService Error:', err);
       return;
