@@ -10,6 +10,11 @@ const typeDefs = gql`
     hotelId: String!
     promoCode: String
     discountPercent: Int
+    hotel: Hotel
+  }
+  # Расширяем типы из других сервисов
+  extend type Hotel @key(fields: "id") {
+  id: ID! @external
   }
 
   type Query {
@@ -46,6 +51,9 @@ const resolvers = {
 	    console.log('resolveRef ' + id);
       return {id: id};
    },
+   hotel(booking) {
+      return { __typename: 'Hotel', id: booking.hotelId };
+    },
   },
 };
 
