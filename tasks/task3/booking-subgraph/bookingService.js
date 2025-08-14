@@ -38,7 +38,13 @@ class BookingServiceClient{
         console.error("Received empty response");
         resolve(response)
       }; 
-      resolve(response)
+      resolve(response.bookings.map(b => ({
+        id: b.id,
+        userId: b.user_id,
+        hotelId: b.hotel_id,
+        promoCode: b.promo_code,
+        discountPercent: b.discount_percent
+        })));
       }); 
     });
   }
@@ -47,16 +53,22 @@ class BookingServiceClient{
   listBookings(request) {
     return new Promise((resolve, reject) => {
       this.client.listBookings(request, (err, response) => {
-      if (err) {
-        console.error("RPC Error:", err.message); // Обработка ошибки
-        reject(err);
-      }
+        if (err) {
+          console.error("RPC Error:", err.message); // Обработка ошибки
+          reject(err);
+        }
 
-      if (!response) {
-        console.error("Received empty response");
-        resolve(response)
-      }; 
-      resolve(response)
+        if (!response) {
+          console.error("Received empty response");
+          resolve([])
+        }; 
+        resolve(response.bookings.map(b => ({
+        id: b.id,
+        userId: b.user_id,
+        hotelId: b.hotel_id,
+        promoCode: b.promo_code,
+        discountPercent: b.discount_percent
+        }))); 
       }); 
     });
   }

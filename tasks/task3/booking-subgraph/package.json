@@ -5,7 +5,7 @@
   "dependencies": {
     "@apollo/server": "^4.8.1",
     "@apollo/subgraph": "^2.4.0",
-    "@grpc/grpc-js": "^1.8.0",
+    "@grpc/grpc-js": "^1.13.4",
     "@grpc/proto-loader": "^0.7.15",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6"

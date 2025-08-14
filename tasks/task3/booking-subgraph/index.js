@@ -35,13 +35,7 @@ const resolvers = {
     bookingsByUser: async (_, { userId }, { req }) => {
       console.log(userId);
       var req = { user_id: userId };
-      var bookings = await bookingService.listBookings(req).bookings.map(b => {
-        id: id;
-        userId: b.user_id;
-        hotelId: b.hotel_id;
-        promoCode: b.promo_code;
-        discountPercent: b.discount_percent
-      }); 
+      var bookings = await bookingService.listBookings(req)
       console.log(bookings);
       return r.bookings
     }
@@ -50,7 +44,7 @@ const resolvers = {
     __resolveReference: async ({ id }) => {
       // TODO: Реальный вызов к hotel-сервису или заглушка
 	    console.log('resolveRef ' + id);
-      return {booking_id: id};
+      return {id: id};
    },
   },
 };
