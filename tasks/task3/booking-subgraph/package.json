@@ -9,8 +9,5 @@
     "@grpc/proto-loader": "^0.7.15",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6"
-  },
-  "devDependencies": {
-    "grpc-tools": "^1.13.0"
   }
 }
