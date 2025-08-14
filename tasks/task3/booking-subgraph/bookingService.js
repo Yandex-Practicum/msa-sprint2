@@ -24,29 +24,31 @@ class BookingService {
     grpc.credentials.createInsecure()
     );
   }
-  listBookings(userId) {
+  async listBookings(userId) {
     console.log('BookingService ListBooking');  
-    client.listBookings({ user_id: userId }, (err, response) => {
-      if (err) {
+    try {
+      const response = await this.client.listBookings({ user_id: userId });
+      console.log('BookingService Response:', response.message);
+      return response; 
+    } catch (error)
+    {
       console.error('BookingService Error:', err);
       return;
-      }
-      console.log('BookingService Response:', response.message);
-      return response;      
-    });    
+    }  
 
   }
   
-  createBooking(bookingRequest) {
-    console.log('BookingService CreateBooking');  
-    client.createBooking(bookingRequest, (err, response) => {
-      if (err) {
+  async createBooking(bookingRequest) {
+    console.log('BookingService CreateBooking');
+    try {
+      const response = await this.client.createBooking(bookingRequest);
+      console.log('BookingService Response:', response.message);
+      return response; 
+    } catch (error)
+    {
       console.error('BookingService Error:', err);
       return;
-      }
-      console.log('BookingService Response:', response.message);
-      return response;      
-    });    
+    }    
 
   }
 

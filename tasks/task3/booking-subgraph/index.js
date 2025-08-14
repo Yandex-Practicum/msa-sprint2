@@ -35,14 +35,14 @@ const resolvers = {
     bookingsByUser: async (_, { userId }, { req }) => {
       console.log(userId);
       console.log(req);
-      return bookingService.listBookings(userId);
+      return await bookingService.listBookings(userId);
     }
   },
   Booking:{
     bookings: async (_, { bookingRequest}, { req }) => {
 	  // TODO: Реальный вызов к grpc booking-сервису или заглушка + ACL
       console.log(bookingRequest);
-      return bookingService.createBooking(bookingRequest);
+      return await bookingService.createBooking(bookingRequest);
    },
   },
 };
