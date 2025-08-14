@@ -36,14 +36,15 @@ const resolvers = {
       console.log(userId);
       var req = { user_id: userId };
       var r = await bookingService.listBookings(req); 
+      console.log(r);
       return r
     }
   },
   Booking:{
-    bookings: async (_, { bookingRequest}, { req }) => {
-	  // TODO: Реальный вызов к grpc booking-сервису или заглушка + ACL
-      console.log(bookingRequest);
-      return await bookingService.createBooking(bookingRequest);
+    __resolveReference: async ({ id }) => {
+      // TODO: Реальный вызов к hotel-сервису или заглушка
+	    console.log('resolveRef ' + id);
+      return {booking_id: id};
    },
   },
 };
