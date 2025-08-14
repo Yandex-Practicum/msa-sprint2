@@ -35,8 +35,14 @@ const resolvers = {
     bookingsByUser: async (_, { userId }, { req }) => {
       console.log(userId);
       var req = { user_id: userId };
-      var r = await bookingService.listBookings(req); 
-      console.log(r.bookings);
+      var bookings = await bookingService.listBookings(req).bookings.map(b => {
+        id: id;
+        userId: b.user_id;
+        hotelId: b.hotel_id;
+        promoCode: b.promo_code;
+        discountPercent: b.discount_percent
+      }); 
+      console.log(bookings);
       return r.bookings
     }
   },
