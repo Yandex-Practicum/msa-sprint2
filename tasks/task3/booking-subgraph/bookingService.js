@@ -1,23 +1,19 @@
-import grpc from '@grpc/grpc-js';
-import pkg from '@grpc/proto-loader';
-const {loadPackageDefinition} = pkg;
-/**
- * BookingService
-*/
+const grpc = require('@grpc/grpc-js');
+const protoLoader = require('@grpc/proto-loader');
+
 // Загрузка proto-файла
-    const PROTO_PATH = './booking.proto';
-    
-    const packageDefinition = loadPackageDefinition(
-      PROTO_PATH,
-      {
-        keepCase: true,
-        longs: String,
-        enums: String,
-        defaults: true,
-        oneofs: true
-      }
-    );
-    const bookingProto = grpc.loadPackageDefinition(packageDefinition).booking;
+const packageDefinition = protoLoader.loadSync(
+  './booking.proto',
+  {
+    keepCase: true,
+    longs: String,
+    enums: String,
+    defaults: true,
+    oneofs: true
+  }
+);
+
+const bookingProto = grpc.loadPackageDefinition(packageDefinition).booking;
 
 class BookingService {
 
