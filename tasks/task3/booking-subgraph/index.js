@@ -37,7 +37,7 @@ const resolvers = {
       var req = { user_id: userId };
       var bookings = await bookingService.listBookings(req)
       console.log(bookings);
-      return r.bookings
+      return bookings
     }
   },
   Booking:{
