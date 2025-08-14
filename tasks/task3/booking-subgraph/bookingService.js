@@ -1,5 +1,5 @@
-const grpc = require('@grpc/grpc-js');
-const protoLoader = require('@grpc/proto-loader');
+import { grpc } from '@grpc/grpc-js';
+import { protoLoader } from ('@grpc/proto-loader');
 
 // Загрузка proto-файла
 const packageDefinition = protoLoader.loadSync(
