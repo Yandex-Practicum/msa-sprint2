@@ -23,9 +23,9 @@ import HotelService from './hotelService.js';
    */
 
 const serviceUrl = process.env.SERVICE_URL;
-console.log('   Hotel service' + process.env.SERVICE_URL)
+console.log('✅ Hotel service' + process.env.SERVICE_URL)
 if (!serviceUrl) {
-  throw new Error('serviceUrl is not defined in environment variables');
+  throw new Error('!ERROR _ serviceUrl is not defined in environment variables');
 }
 const hotelService = new HotelService(serviceUrl);
 

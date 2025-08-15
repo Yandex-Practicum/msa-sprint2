@@ -30,12 +30,12 @@ class BookingServiceClient{
     return new Promise((resolve, reject) => {
       this.client.listBookings({ user_id: UserId }, (err, response) => {
       if (err) {
-        console.error("RPC Error:", err.message); // Обработка ошибки
+        console.error("Booking Service -> RPC Error:", err.message); 
         reject(err);
       }
 
       if (!response) {
-        console.error("Received empty response");
+        console.error("Booking Service -> Received empty response");
         resolve(response)
       }; 
       resolve(response.bookings.map(b => ({
@@ -54,12 +54,12 @@ class BookingServiceClient{
     return new Promise((resolve, reject) => {
       this.client.listBookings(request, (err, response) => {
         if (err) {
-          console.error("RPC Error:", err.message); // Обработка ошибки
+          console.error("Booking Service -> RPC Error:", err.message); // Обработка ошибки
           reject(err);
         }
 
         if (!response) {
-          console.error("Received empty response");
+          console.error("Booking Service -> Received empty response");
           resolve([])
         }; 
         resolve(response.bookings.map(b => ({

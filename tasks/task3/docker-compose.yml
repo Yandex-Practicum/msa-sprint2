@@ -16,8 +16,8 @@ services:
     ports:
       - "4001:4001"
     environment:
-      #SERVICE_URL: booking-service:5001
-      SERVICE_URL: 192.168.0.106:5001
+      SERVICE_URL: booking-service:5001
+      #SERVICE_URL: 192.168.0.106:5001
     networks:
       - hotelio-net
 
@@ -26,8 +26,8 @@ services:
     ports:
       - "4002:4002"
     environment:
-      SERVICE_URL: http://192.168.0.106:8084
-      #SERVICE_URL: http://hotelio-monolith:8080
+      #SERVICE_URL: http://192.168.0.106:8084
+      SERVICE_URL: http://hotelio-monolith:8080
     networks:
       - hotelio-net
 
