@@ -35,7 +35,7 @@ const resolvers = {
   Hotel: {
     __resolveReference: async ({ id }) => {
       // TODO: Реальный вызов к hotel-сервису или заглушка
-	    console.log('resolveRef ' + id);
+	    //console.log('resolveRef ' + id);
       return hotelService.getHotelById(id);
     },
   },

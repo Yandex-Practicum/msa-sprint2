@@ -1,0 +1,11 @@
+CONTAINER ID   IMAGE                             COMMAND                  CREATED              STATUS                PORTS                                        NAMES
+46d7cc704a0b   task3-apollo-gateway              "docker-entrypoint.s…"   About a minute ago   Up About a minute     0.0.0.0:4000->4000/tcp                       task3-apollo-gateway-1
+ba778e0acf80   task3-hotel-subgraph              "docker-entrypoint.s…"   About a minute ago   Up About a minute     0.0.0.0:4002->4002/tcp                       task3-hotel-subgraph-1
+bbc57b42496a   task3-booking-subgraph            "docker-entrypoint.s…"   About a minute ago   Up About a minute     0.0.0.0:4001->4001/tcp                       task3-booking-subgraph-1
+a4fbc621855c   task2-booking-service             "dotnet BookingServi…"   2 days ago           Up 2 days             5000/tcp, 0.0.0.0:5001->5001/tcp             task2-booking-service-1
+ab2ee06ce2d6   task2-booking-history-service     "dotnet BookingHisto…"   2 days ago           Up 2 days                                                          task2-booking-history-service-1
+beaedbecab3e   task2-monolith                    "java -jar app.jar"      2 days ago           Up 2 days             0.0.0.0:8084->8080/tcp                       hotelio-monolith
+e13182ff6668   postgres:15                       "docker-entrypoint.s…"   2 days ago           Up 2 days (healthy)   0.0.0.0:5444->5432/tcp                       booking-history-db
+9dc7b96ea8e6   postgres:15                       "docker-entrypoint.s…"   2 days ago           Up 2 days (healthy)   0.0.0.0:5432->5432/tcp                       hotelio-db
+9e20516a09d3   confluentinc/cp-kafka:7.2.1       "/etc/confluent/dock…"   2 days ago           Up 2 days             0.0.0.0:9092->9092/tcp                       task2-kafka-1
+51a3a0bb26d1   confluentinc/cp-zookeeper:7.2.1   "/etc/confluent/dock…"   2 days ago           Up 2 days             2888/tcp, 0.0.0.0:2181->2181/tcp, 3888/tcp   task2-zookeeper-1
