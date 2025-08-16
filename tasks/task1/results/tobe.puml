@@ -1,0 +1,105 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+' разбиение по DDD
+System_Boundary(hotelio-microservices, "**TO BE**\n Hotelio Microservices (через DDD)") {
+' кешит инфу по пользователям, обогащает входящий запрос этими данными и отправляет в BFF
+  Component(api_gateway, "API-Gateway", "авторизация пользователей через users service/кеш пользователейёт/защита от ддос/мониторинг и логирование/балансировка")
+'  bff - используем для сокрытия сложности работы с системой для клиентов
+  Component(bff, "BFF Rest API", "для запросов не нуждающихся в гибком селекции данных")
+  Component(bff_graphql, "BFF GraphQL", "GraphQL: Apollo Federation для комплексных запросов где требуется гибкость выбора данных", "")
+  Component(users, "Users service", "GraphQL+REST API (между сервисами)", "**пользователи**\n Информация: id, active, blacklist, vip")
+  ComponentDb(users_db, "Users DB", "PostgreSQL", "Stores users")
+  Component(bookings, "Booking service", "GraphQL+REST API (между сервисами)", "**Бронирования** \nВыполняет все проверки: пользователя, отеля, промокода, отзывов. Вычисляет финальную цену, скидку, и сохраняет результат")
+  ComponentDb(bookings_db, "bookings DB", "PostgreSQL", "Stores bookings")
+  Component(hotels, "Hotel service", "GraphQL+REST API (между сервисами)", "**Отели**.\n валидация бронирования и отображения информации в интерфейсе.")
+  ComponentDb(hotels_db, "hotels DB", "PostgreSQL", "Stores hotels")
+  Component(promos, "PromoCode service", "GraphQL+REST API (между сервисами)", "**Промокоды**\n действительность, применимость к конкретному пользователю.")
+  ComponentDb(promos_db, "promos DB", "PostgreSQL", "Stores promos")
+  Component(reviews, "Review service", "GraphQL+REST API (между сервисами)", "**Отзывы и рейтинг отеля**\n Влияет на возможность бронирования, если у отеля плохая репутация.")
+  ComponentDb(reviews_db, "reviews DB", "PostgreSQL", "Stores reviews")
+  SystemQueue(kafka, "Kafka Cluster", "")
+
+
+  Person(user_web, "User-Web", "Interacts with frontend")
+  Person(user_mobile, "User-Mobile", "Interacts with mobile app")
+
+  Rel(user_web, api_gateway, "use")
+  Rel(user_mobile, api_gateway, "use")
+  Rel(api_gateway, users, "запрос инфы по пользователям: id/статус/vip")
+  Rel(api_gateway, bff, "обогащение и проксирование запросов от клиентов")
+  Rel(api_gateway, bff_graphql, "обогащение и проксирование запросов от клиентов")
+  Rel(bff_graphql, users, "отображение информации пользователям")
+  Rel(bff_graphql, bookings, "отображение информации по заказам")
+  Rel(bff_graphql, hotels, "отображение информации по отелям")
+  Rel(bff_graphql, promos, "отображение информации по промо")
+  Rel(bff_graphql, reviews, "отображение информации по отзывам/рейтингам")
+  Rel(bff, users, "регистрация/авторизация")
+  Rel(bff, bookings, "бронирование")
+  Rel(bff, reviews, "создание отзыва, оценка рейтинга клиентами")
+
+  Rel(bookings, hotels, "use")
+  Rel(bookings, promos, "use")
+  Rel(bookings, reviews, "use")
+
+
+  Rel(users, users_db, "use")
+  Rel(bookings, bookings_db, "use")
+  Rel(hotels, hotels_db, "use")
+  Rel(promos, promos_db, "use")
+  Rel(reviews, reviews_db, "use")
+
+Rel(bookings, kafka, "создание и обработка заказа")
+Rel(reviews, kafka, "создание и обработка отзывов и рейтингов")
+
+}
+
+System_Boundary(hotelio, "**AS IS**\nHotelio Monolith") {
+  Person(user, "User", "Interacts with frontend")
+
+  Container(monolith, "Monolith Application", "Spring Boot", "Legacy app exposing REST endpoints for hotel booking") {
+    ' Controllers
+    Component(bookingController, "BookingController", "Spring MVC", "/api/bookings")
+    Component(hotelController, "HotelController", "Spring MVC", "/api/hotels")
+    Component(promoController, "PromoCodeController", "Spring MVC", "/api/promos")
+    Component(reviewController, "ReviewController", "Spring MVC", "/api/reviews")
+    Component(userController, "UserController", "Spring MVC", "/api/users")
+
+    ' Services
+    Component(bookingService, "BookingService", "Java Service", "Validates and creates bookings")
+    Component(hotelService, "HotelService", "Java Service", "Retrieves hotel details")
+    Component(userService, "UserService", "Java Service", "Validates user status and blacklist")
+    Component(promoService, "PromoCodeService", "Java Service", "Applies discounts and rules")
+    Component(reviewService, "ReviewService", "Java Service", "Manages hotel reviews")
+
+    ' DB
+    ComponentDb(postgres, "Monolith DB", "PostgreSQL", "Stores users, hotels, bookings, reviews, promos")
+
+    ' Controller-Service relations
+    Rel(bookingController, bookingService, "Uses")
+    Rel(hotelController, hotelService, "Uses")
+    Rel(promoController, promoService, "Uses")
+    Rel(reviewController, reviewService, "Uses")
+    Rel(userController, userService, "Uses")
+
+    ' Service-Service and Service-DB
+    Rel(bookingService, hotelService, "Calls")
+    Rel(bookingService, userService, "Calls")
+    Rel(bookingService, promoService, "Calls")
+    Rel(bookingService, reviewService, "Calls")
+
+    Rel(bookingService, postgres, "Reads/Writes")
+    Rel(userService, postgres, "Reads")
+    Rel(hotelService, postgres, "Reads")
+    Rel(promoService, postgres, "Reads")
+    Rel(reviewService, postgres, "Reads/Writes")
+  }
+
+}
+
+Rel(user, bookingController, "Uses")
+Rel(user, hotelController, "Uses")
+Rel(user, promoController, "Uses")
+Rel(user, reviewController, "Uses")
+Rel(user, userController, "Uses")
+@enduml
