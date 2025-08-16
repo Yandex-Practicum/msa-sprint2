@@ -1,12 +1,10 @@
 from datetime import datetime, timezone
 from typing import Optional
 
+from data.settings.db_settings.base import Base
+
 from sqlalchemy import Integer, String, Float, DateTime, text
 from sqlalchemy.orm import mapped_column, Mapped
-from sqlalchemy.ext.declarative import declarative_base
-
-
-Base = declarative_base()
 
 
 class BookingHistoryRecord(Base):
@@ -33,3 +31,5 @@ class BookingHistoryRecord(Base):
         server_default=text("TIMEZONE('utc', now())"),
         nullable=False,
     )
+    reason: Mapped[str] = mapped_column(String(512), nullable=False)
+    created: Mapped[bool]

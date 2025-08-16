@@ -9,7 +9,7 @@ from settings.kafka_settings.publisher import kafka_event_publisher
 basicConfig(level=INFO)
 
 
-logger = getLogger("main")
+logger = getLogger("[BOOKING: MAIN]")
 
 
 async def initialize_kafka_producer():

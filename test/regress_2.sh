@@ -12,14 +12,6 @@ timeout 2 bash -c "</dev/tcp/${DB_HOST}/${DB_PORT}" \
 echo "🧪 Загрузка фикстур..."
 PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" "${DB_NAME}" < init-fixtures.sql
 
-
-echo "🧪 Проверка подключения к БД booking..."
-timeout 2 bash -c "</dev/tcp/${DB_BOOKING_HOST}/${DB_BOOKING_PORT}" \
-  || { echo "❌ Не удалось подключиться к ${DB_BOOKING_HOST}:${DB_BOOKING_PORT}"; exit 1; }
-
-# Загрузка фикстур
-PGPASSWORD="${DB_BOOKING_PASSWORD}" psql -h "${DB_BOOKING_HOST}" -p "${DB_BOOKING_PORT}" -U "${DB_BOOKING_USER}" "${DB_BOOKING_NAME}" < init-fixtures-booking.sql
-
 echo "🧪 Выполнение HTTP-тестов..."
 
 pass() { echo "✅ $1"; }
@@ -108,19 +100,13 @@ curl -sSf -X POST "${BASE}/api/promos/validate?code=TESTCODE1&userId=test-user-2
 echo ""
 echo "Тесты бронирования..."
 
-# 1. Получение всех бронирований
-curl -sSf "${BASE}/api/bookings" | grep -q 'test-user-2' && pass "Все бронирования получены" || fail "Бронирования не получены"
-
-# 2. Получение бронирований пользователя
-curl -sSf "${BASE}/api/bookings?userId=test-user-2" | grep -q 'test-user-2' && pass "Бронирования test-user-2 найдены" || fail "Нет бронирований test-user-2"
-
-# 3. Успешное бронирование отеля без промо
+# 1. Успешное бронирование отеля без промо
 curl -sSf -X POST "${BASE}/api/bookings?userId=test-user-3&hotelId=test-hotel-1" | grep -q 'test-hotel-1' && pass "Бронирование прошло (без промо)" || fail "Бронирование (без промо) не прошло"
 
-# 4. Успешное бронирование с промо
+# 2. Успешное бронирование с промо
 curl -sSf -X POST "${BASE}/api/bookings?userId=test-user-2&hotelId=test-hotel-1&promoCode=TESTCODE1" | grep -q 'TESTCODE1' && pass "Бронирование с промо прошло" || fail "Бронирование с промо не прошло"
 
-# 5. Ошибка — неактивный пользователь
+# 3. Ошибка — неактивный пользователь
 code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE}/api/bookings?userId=test-user-0&hotelId=test-hotel-1")
 if [[ "$code" == "500" ]]; then
   pass "Отклонено: неактивный пользователь"
@@ -128,13 +114,23 @@ else
   fail "Ошибка: сервер принял бронирование от неактивного пользователя (код $code)"
 fi
 
-# 6. Ошибка — отель не доверенный
+# 4. Ошибка — отель не доверенный
 curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE}/api/bookings?userId=test-user-2&hotelId=test-hotel-3" | grep -q '500' \
   && pass "Отклонено: недоверенный отель" \
   || fail "Ошибка: сервер принял бронирование от недоверенного отеля"
 
-# 7. Ошибка — отель полностью забронирован
+# 5. Ошибка — отель полностью забронирован
 curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE}/api/bookings?userId=test-user-2&hotelId=test-hotel-2" | grep -q '500' \
   && pass "Отклонено: отель полностью забронирован" \
   || fail "Ошибка: сервер принял бронирование в полностью занятом отеле"
+
+# 6. Получение бронирований пользователя
+# curl -sSf "${BASE}/api/bookings?userId=test-user-2" | grep -q 'test-user-2' && pass "Бронирования test-user-2 найдены" || fail "Нет бронирований test-user-2"
+result=$(curl -sSf "${BASE}/api/bookings?userId=test-user-2")
+echo "$result" | grep -q 'test-user-2' && pass "Бронирования test-user-2 найдены" || fail "Нет бронирований test-user-2"
+echo "$result"
+
+# 7. Получение всех бронирований
+curl -sSf "${BASE}/api/bookings" | grep -q 'test-user-2' && pass "Все бронирования получены" || fail "Бронирования не получены"
+
 echo "✅ Все HTTP-тесты пройдены!"

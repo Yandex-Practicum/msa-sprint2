@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package hotel;
+
+option java_multiple_files = true;
+option java_package = "com.hotelio.proto.booking";
+option java_outer_classname = "BookingProto";
+
+// Create hotel request
+message CreateHotelRequest {
+  bool operational = 1;
+  bool fullyBooked = 2;
+  string city = 3;
+  double rating = 4;
+  string description = 5;
+}
+
+// Create hotel response
+message HotelResponse {
+  int64 id = 1;
+  bool operational = 2;
+  bool fullyBooked = 3;
+  string city = 4;
+  double rating = 5;
+  string description = 6;
+}
+
+// Get hotels list request
+message HotelsListRequest {
+  int64 hotel_id = 1;
+}
+
+// Hotels list response
+message HotelsListResponse {
+  repeated HotelResponse hotels = 1;
+}
+
+// gRPC-hotel srvice
+service HotelService {
+  rpc CreateHotel(CreateHotelRequest) returns (HotelResponse);
+  rpc ListBookings(HotelsListRequest) returns (HotelsListResponse);
+}

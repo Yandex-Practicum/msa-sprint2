@@ -1,8 +1,5 @@
-import grpc
 from proto import booking_pb2, booking_pb2_grpc
 from files.services import BookingServices, booking_services
-
-from proto import booking_pb2, booking_pb2_grpc
 
 from datetime import datetime
 from google.protobuf.timestamp_pb2 import Timestamp

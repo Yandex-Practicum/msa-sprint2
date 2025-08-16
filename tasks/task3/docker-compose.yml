@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   apollo-gateway:
@@ -18,3 +18,83 @@ services:
     build: ./hotel-subgraph
     ports:
       - "4002:4002"
+
+  booking:
+    build:
+      context: ./booking
+      dockerfile: Dockerfile
+    container_name: booking-service
+    ports:
+      - "9090:9090"
+    environment:
+      DB_HOST: booking-db
+      DB_PORT: 5433
+      DB_USER: booking
+      DB_PASS: booking
+      DB_NAME: booking
+    volumes:
+      - ./booking/data:/app/data
+    networks:
+      - hotelio-net
+    depends_on:
+      - kafka
+      - booking-db
+      - booking-history
+
+  booking-db:
+    image: postgres:15
+    container_name: booking-db
+    environment:
+      POSTGRES_USER: booking
+      POSTGRES_PASSWORD: booking
+      POSTGRES_DB: booking
+    ports:
+      - "5432:5432"
+    volumes:
+      - booking-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+
+  hotel:
+    build:
+      context: ./hotel
+      dockerfile: Dockerfile
+    container_name: hotel-service
+    ports:
+      - "9091:9090"
+    environment:
+      DB_HOST: booking-db
+      DB_PORT: 5433
+      DB_USER: booking
+      DB_PASS: booking
+      DB_NAME: booking
+    volumes:
+      - ./hotel/data:/app/data
+    networks:
+      - hotelio-net
+    depends_on:
+      - kafka
+      - booking-db
+      - booking-history
+
+  hotel-db:
+    image: postgres:15
+    container_name: hotel-db
+    environment:
+      POSTGRES_USER: hotel
+      POSTGRES_PASSWORD: hotel
+      POSTGRES_DB: hotel
+    ports:
+      - "5433:5432"
+    volumes:
+      - hotel-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+
+  volumes:
+    booking-db-data:
+    hotel-db-data:
+
+  networks:
+    hotelio-net:
+      external: true

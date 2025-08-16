@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package booking_subgraph;
+
+message BookingResponse {
+  string id = 1;
+  string user_id = 2;
+  string hotel_id = 3;
+  string promo_code = 4;
+  double discount_percent = 5;
+  double price = 6;
+  string created_at = 7; // ISO-8601
+}
+
+message BookingListRequest {
+  string user_id = 1;
+}
+
+// Ответ со списком бронирований
+message BookingListResponse {
+  repeated BookingResponse bookings = 1;
+}
+
+// gRPC-сервис бронирования
+service BookingService {
+  rpc ListBookings(BookingListRequest) returns (BookingListResponse);
+}

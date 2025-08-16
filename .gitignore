@@ -1,1 +1,4 @@
 .env/
+booking-history-db-data/
+__pycache__/
+node_modules/
