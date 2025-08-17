@@ -12,3 +12,6 @@ run_booking_service:
 
 run:
 	docker compose up -d --build
+
+network_create:
+ 	docker network create hotelio-net
