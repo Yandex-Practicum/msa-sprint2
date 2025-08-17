@@ -31,6 +31,37 @@ services:
     networks:
       - hotelio-net
 
+  booking-service:
+    build:
+      context: ./booking-service
+      dockerfile: Dockerfile
+    container_name: booking-service
+    ports:
+      - "9090:9090"
+    networks:
+      - hotelio-net
+    environment:
+      MONOLITH_HOST: monolith:8080
+      DB_HOST: booking-service-db
+      DB_PORT: 5432
+      DB_USERNAME: hotelio
+      DB_PASSWORD: hotelio
+
+  booking-service-db:
+    image: postgres:15
+    container_name: booking-service-db
+    environment:
+      POSTGRES_USER: hotelio
+      POSTGRES_PASSWORD: hotelio
+      POSTGRES_DB: hotelio
+    ports:
+      - "5433:5432"
+    volumes:
+      - booking-service-db-data:/var/lib/postgresql/data
+      - ./booking-service/migrations:/docker-entrypoint-initdb.d
+    networks:
+      - hotelio-net
+
   kafka:
     image: confluentinc/cp-kafka:7.2.1
     ports:
@@ -40,6 +71,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
     networks:
       - hotelio-net
   zookeeper:
@@ -54,6 +86,7 @@ services:
 
 volumes:
   monolith-db-data:
+  booking-service-db-data:
 
 networks:
   hotelio-net:
