@@ -42,6 +42,7 @@ services:
       - hotelio-net
     environment:
       MONOLITH_HOST: monolith:8080
+      KAFKA_BROKER: kafka:9092
       DB_HOST: booking-service-db
       DB_PORT: 5432
       DB_USERNAME: hotelio

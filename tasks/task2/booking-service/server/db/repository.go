@@ -3,26 +3,21 @@ package db
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/jmoiron/sqlx"
+
+	"booking-service/server/models"
 )
 
 type Repo struct {
-	db *sqlx.DB
+	Db *sqlx.DB
 }
 
-type Booking struct {
-	ID              int64     `db:"id"`
-	UserID          string    `db:"user_id"`
-	HotelID         string    `db:"hotel_id"`
-	PromoCode       *string   `db:"promo_code"`
-	DiscountPercent *float64  `db:"discount_percent"`
-	Price           float64   `db:"price"`
-	CreatedAt       time.Time `db:"created_at"`
+func NewRepo(db *sqlx.DB) Repo {
+	return Repo{Db: db}
 }
 
-func (r Repo) Save(ctx context.Context, booking Booking) (Booking, error) {
+func (r Repo) Save(ctx context.Context, booking models.Booking) (models.Booking, error) {
 	const query = `
         INSERT INTO booking (
             user_id,
@@ -42,22 +37,22 @@ func (r Repo) Save(ctx context.Context, booking Booking) (Booking, error) {
         RETURNING id
     `
 
-	rows, err := r.db.NamedQueryContext(ctx, query, booking)
+	rows, err := r.Db.NamedQueryContext(ctx, query, booking)
 	if err != nil {
-		return Booking{}, fmt.Errorf("failed to save booking: %w", err)
+		return models.Booking{}, fmt.Errorf("failed to save booking: %w", err)
 	}
 	defer rows.Close()
 
 	if rows.Next() {
 		if err = rows.Scan(&booking.ID); err != nil {
-			return Booking{}, fmt.Errorf("failed to scan returned id: %w", err)
+			return models.Booking{}, fmt.Errorf("failed to scan returned id: %w", err)
 		}
 	}
 
 	return booking, rows.Err()
 }
 
-func (r Repo) ListAll(ctx context.Context, userID string) ([]Booking, error) {
+func (r Repo) ListAll(ctx context.Context, userID string) ([]models.Booking, error) {
 	var query = `
         SELECT 
             id,
@@ -70,13 +65,13 @@ func (r Repo) ListAll(ctx context.Context, userID string) ([]Booking, error) {
         FROM booking
         `
 
-	var bookings []Booking
+	var bookings []models.Booking
 	var args []interface{}
 	if userID != "" {
 		query = query + " WHERE user_id = $1"
 		args = append(args, userID)
 	}
-	err := r.db.SelectContext(ctx, &bookings, query, args...)
+	err := r.Db.SelectContext(ctx, &bookings, query, args...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to list bookings: %w", err)
 	}

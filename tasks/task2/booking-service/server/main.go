@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net"
+	"os"
 	"strconv"
 	"time"
 
@@ -18,6 +19,7 @@ import (
 	pb "booking-service/generated/proto"
 	db2 "booking-service/server/db"
 	"booking-service/server/monolit"
+	kafka "booking-service/server/producer"
 )
 
 type bookingServer struct {
@@ -83,8 +85,10 @@ func main() {
 	defer db.Close()
 	monolithHost := "http://" + db2.GetEnv("MONOLITH_HOST", "localhost:8084")
 
-	repo := db2.Repo{db: db}
-	service := NewService(monolit.NewService(monolithHost), repo)
+	repo := db2.NewRepo(db)
+	producer := kafka.NewProducer(os.Getenv("KAFKA_BROKER"))
+	service := NewService(monolit.NewService(monolithHost), repo, producer)
+
 	lis, err := net.Listen("tcp", ":9090")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)

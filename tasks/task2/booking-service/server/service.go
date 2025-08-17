@@ -10,35 +10,38 @@ import (
 	"github.com/samber/lo"
 
 	"booking-service/server/db"
+	models2 "booking-service/server/models"
 	"booking-service/server/monolit"
 	"booking-service/server/monolit/models"
+	kafka "booking-service/server/producer"
 )
 
 type Service struct {
-	monolit monolit.Service
-	repo    db.Repo
+	monolit  monolit.Service
+	repo     db.Repo
+	producer kafka.Producer
 }
 
-func NewService(monolit monolit.Service, repo db.Repo) Service {
-	return Service{monolit: monolit, repo: repo}
+func NewService(monolit monolit.Service, repo db.Repo, producer kafka.Producer) Service {
+	return Service{monolit: monolit, repo: repo, producer: producer}
 }
 
-func (s Service) CreateBooking(ctx context.Context, userID string, hotelID string, promoCode string) (db.Booking, error) {
+func (s Service) CreateBooking(ctx context.Context, userID string, hotelID string, promoCode string) (models2.Booking, error) {
 	user, err := s.monolit.GetUser(ctx, userID)
 	if err != nil {
-		return db.Booking{}, fmt.Errorf("failed to get user: %w", err)
+		return models2.Booking{}, fmt.Errorf("failed to get user: %w", err)
 	}
 	if err = s.validateUser(ctx, user); err != nil {
-		return db.Booking{}, fmt.Errorf("failed to validate user: %w", err)
+		return models2.Booking{}, fmt.Errorf("failed to validate user: %w", err)
 	}
 	if err = s.validateHotel(ctx, hotelID); err != nil {
-		return db.Booking{}, fmt.Errorf("failed to validate hotel: %w", err)
+		return models2.Booking{}, fmt.Errorf("failed to validate hotel: %w", err)
 	}
 	basePrice := resolveBasePrice(user)
 	discount := s.resolvePromoDiscount(ctx, promoCode, user.ID)
 	finalPrice := basePrice - discount
 
-	return s.repo.Save(ctx, db.Booking{
+	b, err := s.repo.Save(ctx, models2.Booking{
 		UserID:          userID,
 		HotelID:         hotelID,
 		PromoCode:       lo.EmptyableToPtr(promoCode),
@@ -46,6 +49,10 @@ func (s Service) CreateBooking(ctx context.Context, userID string, hotelID strin
 		Price:           finalPrice,
 		CreatedAt:       time.Time{},
 	})
+	if err != nil {
+		return models2.Booking{}, fmt.Errorf("failed to save booking: %w", err)
+	}
+	return b, s.producer.SendBookingCreated(ctx, b)
 }
 
 func (s Service) resolvePromoDiscount(ctx context.Context, promoCode string, userID string) float64 {
