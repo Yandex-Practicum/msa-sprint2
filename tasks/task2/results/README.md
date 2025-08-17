@@ -20,8 +20,8 @@ task2/results/
     - фоном копируем бронирования из старой бд в новую, после чего список бронирований отдает только из новой бд.
 
 - листинг бронирований, вызванный через REST из монолита и GRPC из микросервиса
-    - monolith ![monolith_list.png](monolith_list.png)
-    - booking_service_list ![booking_service_list.png](booking_service_list.png)
+    - REST из монолита  ![monolith_list.png](monolith_list.png)
+    - GRPC из микросервиса ![booking_service_list.png](booking_service_list.png)
 
 
 - select * из таблицы с историческими данными о бронированиях
