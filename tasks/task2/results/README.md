@@ -9,8 +9,8 @@ task2/results/
   - в файле [test-log.txt](test-log.txt)
 
 - select * from bookings из новой системы и старой в текстовом виде после выполнения тестов
-  - booking_service_select ![booking_service_select.png](booking_service_select.png)
-  - monolith_db_select ![monolith_db_select.png](monolith_db_select.png)
+  - из новой системы ![booking_service_select.png](booking_service_select.png)
+  - из старой системы ![monolith_db_select.png](monolith_db_select.png)
 
 - README.md с объяснением стратегии миграции данных при запуске нового сервиса и стратегии To Be
   - из описания в adr.md этап 2:
