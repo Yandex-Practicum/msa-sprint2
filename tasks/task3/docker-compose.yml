@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   apollo-gateway:
     build: ./gateway
@@ -8,18 +6,22 @@ services:
     depends_on:
       - booking-subgraph
       - hotel-subgraph
+    networks:
+      - hotelio-net
 
   booking-subgraph:
     build: ./booking-subgraph
     ports:
       - "4001:4001"
+    environment:
+      BOOKING_SERVICE_HOST: booking-service
+      BOOKING_SERVICE_PORT: 9090
+    networks:
+      - hotelio-net
+    depends_on:
+      - booking-service
 
-  hotel-subgraph:
-    build: ./hotel-subgraph
-    ports:
-      - "4002:4002"
-
-  booking:
+  booking-service:
     build:
       context: ./booking
       dockerfile: Dockerfile
@@ -32,14 +34,13 @@ services:
       DB_USER: booking
       DB_PASS: booking
       DB_NAME: booking
+      G_RPC_PORT: 9090
     volumes:
       - ./booking/data:/app/data
     networks:
       - hotelio-net
     depends_on:
-      - kafka
       - booking-db
-      - booking-history
 
   booking-db:
     image: postgres:15
@@ -51,11 +52,23 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - booking-db-data:/var/lib/postgresql/data
+      - booking-database:/var/lib/postgresql/data
     networks:
       - hotelio-net
 
-  hotel:
+  hotel-subgraph:
+    build: ./hotel-subgraph
+    ports:
+      - "4002:4002"
+    environment:
+      BOOKING_SERVICE_HOST: hotel-service
+      BOOKING_SERVICE_PORT: 9091
+    networks:
+      - hotelio-net
+    depends_on:
+      - hotel-service
+
+  hotel-service:
     build:
       context: ./hotel
       dockerfile: Dockerfile
@@ -63,19 +76,18 @@ services:
     ports:
       - "9091:9090"
     environment:
-      DB_HOST: booking-db
+      DB_HOST: hotel-db
       DB_PORT: 5433
-      DB_USER: booking
-      DB_PASS: booking
-      DB_NAME: booking
+      DB_USER: hotel
+      DB_PASS: hotel
+      DB_NAME: hotel
+      G_RPC_PORT: 9091
     volumes:
       - ./hotel/data:/app/data
     networks:
       - hotelio-net
     depends_on:
-      - kafka
-      - booking-db
-      - booking-history
+      - hotel-db
 
   hotel-db:
     image: postgres:15
@@ -87,14 +99,14 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - hotel-db-data:/var/lib/postgresql/data
+      - hotel-database:/var/lib/postgresql/data
     networks:
       - hotelio-net
 
-  volumes:
-    booking-db-data:
-    hotel-db-data:
+volumes:
+  booking-database:
+  hotel-database:
 
-  networks:
-    hotelio-net:
-      external: true
+networks:
+  hotelio-net:
+    external: true

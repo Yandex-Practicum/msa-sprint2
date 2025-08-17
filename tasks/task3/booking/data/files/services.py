@@ -9,10 +9,6 @@ from files.repository import (
 )
 
 from files.schemas import CreateBookingSchema, BookingSchema
-from settings.kafka_settings.event_manager import (
-    AsyncEventManager,
-    async_event_manager,
-)
 
 basicConfig(level=INFO)
 
@@ -38,7 +34,6 @@ class BookingServices:
     def __init__(
         self,
         repository: BookingRepository,
-        event_manager: AsyncEventManager,
         promo_code_connector=None,
         review_connector=None,
         user_connector=None,
@@ -50,8 +45,6 @@ class BookingServices:
         self.review_connector = review_connector
         self.user_connector = user_connector
         self.hotel_connector = hotel_connector
-
-        self.event_manager = event_manager
 
     async def list_bookings(self, user_id: str | None = None) -> List[BookingSchema]:
         if user_id is not None:
@@ -66,41 +59,6 @@ class BookingServices:
     async def create_booking(
         self, user_id: str, hotel_id: str, promo_code: str
     ) -> BookingSchema:
-        reasons_list = []
-
-        user_not_valid_reason = self._validate_user(user_id=user_id)
-        if user_not_valid_reason is not None:
-            reasons_list.append(user_not_valid_reason)
-
-        hotel_not_valid_reason = self._validate_hotel(hotel_id=hotel_id)
-        if hotel_not_valid_reason is not None:
-            reasons_list.append(hotel_not_valid_reason)
-
-        if len(reasons_list) > 0:
-            message = {
-                "user_id": "",
-                "hotel_id": "",
-                "promo_code": "",
-                "discount_percent": 0.0,
-                "price": 0.0,
-                "created_at": datetime.now(timezone.utc).isoformat(),
-                "reason": " | ".join(reasons_list),
-                "created": False,
-            }
-
-            await self.event_manager.publish(
-                event_type="booking_denied", message=message
-            )
-
-            return BookingSchema(
-                id="-1",
-                user_id=message["user_id"],
-                hotel_id=message["hotel_id"],
-                promo_code=message["promo_code"],
-                discount_percent=message["discount_percent"],
-                price=message["price"],
-                created_at=str(datetime.now()),
-            )
 
         base_price = self._resolve_base_price(user_id=user_id)
         discount = self._resolve_promo_discount(promo_code=promo_code, user_id=user_id)
@@ -116,19 +74,6 @@ class BookingServices:
         )
 
         booking_dto = await self.repository.create_booking(data=create_booking_dto)
-
-        message = {
-            "user_id": booking_dto.user_id,
-            "hotel_id": booking_dto.hotel_id,
-            "promo_code": booking_dto.promo_code,
-            "discount_percent": booking_dto.discount_percent,
-            "price": booking_dto.price,
-            "reason": "",
-            "created": True,
-            "created_at": booking_dto.created_at.isoformat(),
-        }
-
-        await self.event_manager.publish(event_type="booking_created", message=message)
 
         return booking_dto
 
@@ -154,6 +99,4 @@ class BookingServices:
         return 0.0
 
 
-booking_services = BookingServices(
-    repository=booking_repository, event_manager=async_event_manager
-)
+booking_services = BookingServices(repository=booking_repository)

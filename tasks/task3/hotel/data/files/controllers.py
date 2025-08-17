@@ -2,10 +2,7 @@ from proto import hotel_pb2, hotel_pb2_grpc
 
 from files.services import HotelServices, hotel_services
 
-from datetime import datetime
-from google.protobuf.timestamp_pb2 import Timestamp
-
-from tasks.task3.hotel.data.files.schemas import HotelSchema
+from data.files.schemas import HotelSchema
 
 
 class HotelConntroller(hotel_pb2_grpc.HotelServiceServicer):
@@ -16,7 +13,7 @@ class HotelConntroller(hotel_pb2_grpc.HotelServiceServicer):
 
     async def ListHotels(self, request, context):
         """Handles ListBookings RPC call."""
-        hotels_list_dto = await self.hotel_services.list_hotels()
+        hotels_list_dto = await self.hotel_services.list_hotels(request.ids)
 
         response = hotel_pb2.BookingListResponse()
 

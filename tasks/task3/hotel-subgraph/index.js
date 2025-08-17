@@ -1,7 +1,38 @@
-import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
-import { buildSubgraphSchema } from '@apollo/subgraph';
-import gql from 'graphql-tag';
+import gql from "graphql-tag";
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
+import { buildSubgraphSchema } from "@apollo/subgraph";
+
+import * as grpc from "@grpc/grpc-js";
+import * as protoLoader from "@grpc/proto-loader";
+
+export const PROTO_PATH = "./proto/hotel.proto";
+
+export const fetchHotels = async (hotelClient, ids) => {
+  const response = await new Promise((resolve, reject) => {
+    hotelClient.ListHotels({ ids: ids }, (error, response) => {
+      if (error) {
+        console.error("Error calling ListHotels:", error);
+        reject(new Error("Failed to fetch hotel"));
+      } else {
+        return resolve(response.hotels[0]); // Assuming the hotel is returned in an array
+      }
+    });
+  });
+
+  return response.hotels;
+};
+
+const packageDefinition = protoLoader.loadSync(PROTO_PATH, {});
+const HotelProto = grpc.loadPackageDefinition(packageDefinition).hotel;
+
+const host = process.env.BOOKING_SERVICE_HOST || "hotel-service";
+const port = process.env.BOOKING_SERVICE_PORT || "9091";
+
+const hotelClient = new HotelProto.HotelService(
+  `${host}:${port}`,
+  grpc.credentials.createInsecure()
+);
 
 const typeDefs = gql`
   type Hotel @key(fields: "id") {
@@ -19,12 +50,15 @@ const typeDefs = gql`
 const resolvers = {
   Hotel: {
     __resolveReference: async ({ id }) => {
-      // TODO: Реальный вызов к hotel-сервису или заглушка
+      const hotels = fetchHotels(hotelClient, [id]);
+      return hotels;
     },
   },
+
   Query: {
     hotelsByIds: async (_, { ids }) => {
-      // TODO: Заглушка или REST-запрос
+      const hotels = fetchHotels(hotelClient, ids);
+      return hotels;
     },
   },
 };
@@ -36,5 +70,5 @@ const server = new ApolloServer({
 startStandaloneServer(server, {
   listen: { port: 4002 },
 }).then(() => {
-  console.log('✅ Hotel subgraph ready at http://localhost:4002/');
+  console.log("✅ Hotel subgraph ready at http://localhost:4002/");
 });

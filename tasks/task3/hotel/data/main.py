@@ -1,10 +1,10 @@
 import grpc
-from asyncio import run, sleep
+from asyncio import run
 from logging import INFO, getLogger, basicConfig
 
 from proto import hotel_pb2_grpc
 from files.controllers import hotel_controller
-from settings.kafka_settings.publisher import kafka_event_publisher
+from settings.settings import settings
 
 basicConfig(level=INFO)
 
@@ -14,11 +14,11 @@ logger = getLogger("[BOOKING: MAIN]")
 
 async def serve():
     server = grpc.aio.server()
-    hotel_pb2_grpc.add_BookingServiceServicer_to_server(hotel_controller, server)
-    server.add_insecure_port("[::]:9090")
+    hotel_pb2_grpc.add_HotelServiceServicer_to_server(hotel_controller, server)
+    server.add_insecure_port(f"[::]:{settings.G_RPC_PORT}")
     await server.start()
 
-    logger.info("gRPC server started on port 9090.")
+    logger.info(f"gRPC server started on port {settings.G_RPC_PORT}.")
     await server.wait_for_termination()
 
 

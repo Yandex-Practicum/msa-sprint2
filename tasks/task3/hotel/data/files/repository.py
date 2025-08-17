@@ -45,6 +45,41 @@ class HotelRepository:
 
             return bookings_list_dto
 
+    async def list_hotels_by_ids(self, ids: List[str]) -> List[HotelSchema]:
+        async with self.async_session() as session:
+            query = (
+                select(Hotel)
+                .options(
+                    load_only(
+                        Hotel.id,
+                        Hotel.operational,
+                        Hotel.fullyBooked,
+                        Hotel.city,
+                        Hotel.rating,
+                        Hotel.description,
+                        raiseload=True,
+                    )
+                )
+                .where(Hotel.id.in_(ids))
+            )
+            query_result = await session.execute(statement=query)
+
+            rows = query_result.scalars().all()
+
+            bookings_list_dto = [
+                HotelSchema(
+                    id=_row.id,
+                    operational=_row.operational,
+                    fullyBooked=_row.fullyBooked,
+                    city=_row.city,
+                    rating=_row.rating,
+                    description=_row.description,
+                )
+                for _row in rows
+            ]
+
+            return bookings_list_dto
+
     async def create_hotel(self, data: HotelSchema) -> HotelSchema:
         async with self.async_session() as session:
             statement = (

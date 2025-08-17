@@ -40,8 +40,8 @@ class HotelServiceStub(object):
                 request_serializer=hotel__pb2.CreateHotelRequest.SerializeToString,
                 response_deserializer=hotel__pb2.HotelResponse.FromString,
                 _registered_method=True)
-        self.ListBookings = channel.unary_unary(
-                '/hotel.HotelService/ListBookings',
+        self.ListHotels = channel.unary_unary(
+                '/hotel.HotelService/ListHotels',
                 request_serializer=hotel__pb2.HotelsListRequest.SerializeToString,
                 response_deserializer=hotel__pb2.HotelsListResponse.FromString,
                 _registered_method=True)
@@ -57,7 +57,7 @@ class HotelServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def ListBookings(self, request, context):
+    def ListHotels(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -71,8 +71,8 @@ def add_HotelServiceServicer_to_server(servicer, server):
                     request_deserializer=hotel__pb2.CreateHotelRequest.FromString,
                     response_serializer=hotel__pb2.HotelResponse.SerializeToString,
             ),
-            'ListBookings': grpc.unary_unary_rpc_method_handler(
-                    servicer.ListBookings,
+            'ListHotels': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListHotels,
                     request_deserializer=hotel__pb2.HotelsListRequest.FromString,
                     response_serializer=hotel__pb2.HotelsListResponse.SerializeToString,
             ),
@@ -116,7 +116,7 @@ class HotelService(object):
             _registered_method=True)
 
     @staticmethod
-    def ListBookings(request,
+    def ListHotels(request,
             target,
             options=(),
             channel_credentials=None,
@@ -129,7 +129,7 @@ class HotelService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/hotel.HotelService/ListBookings',
+            '/hotel.HotelService/ListHotels',
             hotel__pb2.HotelsListRequest.SerializeToString,
             hotel__pb2.HotelsListResponse.FromString,
             options,

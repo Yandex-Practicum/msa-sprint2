@@ -1,7 +1,19 @@
 syntax = "proto3";
 
-package booking_subgraph;
+package booking;
 
+option java_multiple_files = true;
+option java_package = "com.hotelio.proto.booking";
+option java_outer_classname = "BookingProto";
+
+// Запрос на создание бронирования
+message BookingRequest {
+  string user_id = 1;
+  string hotel_id = 2;
+  string promo_code = 3; //optional
+}
+
+// Ответ при создании бронирования
 message BookingResponse {
   string id = 1;
   string user_id = 2;
@@ -12,6 +24,7 @@ message BookingResponse {
   string created_at = 7; // ISO-8601
 }
 
+// Запрос на получение списка бронирований по userId
 message BookingListRequest {
   string user_id = 1;
 }
@@ -23,5 +36,6 @@ message BookingListResponse {
 
 // gRPC-сервис бронирования
 service BookingService {
+  rpc CreateBooking(BookingRequest) returns (BookingResponse);
   rpc ListBookings(BookingListRequest) returns (BookingListResponse);
 }

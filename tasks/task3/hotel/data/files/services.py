@@ -9,10 +9,6 @@ from files.repository import (
 )
 
 from files.schemas import HotelSchema
-from settings.kafka_settings.event_manager import (
-    AsyncEventManager,
-    async_event_manager,
-)
 
 basicConfig(level=INFO)
 
@@ -38,7 +34,6 @@ class HotelServices:
     def __init__(
         self,
         repository: HotelRepository,
-        event_manager: AsyncEventManager,
         promo_code_connector=None,
         review_connector=None,
         user_connector=None,
@@ -51,10 +46,11 @@ class HotelServices:
         self.user_connector = user_connector
         self.hotel_connector = hotel_connector
 
-        self.event_manager = event_manager
-
-    async def list_hotels(self) -> List[HotelSchema]:
-        hotels_list_dto = await self.repository.list_hotels()
+    async def list_hotels(self, ids: List[str] | None = None) -> List[HotelSchema]:
+        if ids is None:
+            hotels_list_dto = await self.repository.list_hotels()
+        else:
+            hotels_list_dto = await self.repository.list_hotels_by_ids(ids)
 
         return hotels_list_dto
 
@@ -65,7 +61,4 @@ class HotelServices:
         return hotel_dto
 
 
-hotel_services = HotelServices(
-    repository=hotel_repository,
-    event_manager=async_event_manager,
-)
+hotel_services = HotelServices(repository=hotel_repository)

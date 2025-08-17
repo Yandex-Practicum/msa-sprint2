@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bhotel.proto\x12\x05hotel\"q\n\x12\x43reateHotelRequest\x12\x13\n\x0boperational\x18\x01 \x01(\x08\x12\x13\n\x0b\x66ullyBooked\x18\x02 \x01(\x08\x12\x0c\n\x04\x63ity\x18\x03 \x01(\t\x12\x0e\n\x06rating\x18\x04 \x01(\x01\x12\x13\n\x0b\x64\x65scription\x18\x05 \x01(\t\"x\n\rHotelResponse\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x13\n\x0boperational\x18\x02 \x01(\x08\x12\x13\n\x0b\x66ullyBooked\x18\x03 \x01(\x08\x12\x0c\n\x04\x63ity\x18\x04 \x01(\t\x12\x0e\n\x06rating\x18\x05 \x01(\x01\x12\x13\n\x0b\x64\x65scription\x18\x06 \x01(\t\"%\n\x11HotelsListRequest\x12\x10\n\x08hotel_id\x18\x01 \x01(\x03\":\n\x12HotelsListResponse\x12$\n\x06hotels\x18\x01 \x03(\x0b\x32\x14.hotel.HotelResponse2\x93\x01\n\x0cHotelService\x12>\n\x0b\x43reateHotel\x12\x19.hotel.CreateHotelRequest\x1a\x14.hotel.HotelResponse\x12\x43\n\x0cListBookings\x12\x18.hotel.HotelsListRequest\x1a\x19.hotel.HotelsListResponseB+\n\x19\x63om.hotelio.proto.bookingB\x0c\x42ookingProtoP\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bhotel.proto\x12\x05hotel\"q\n\x12\x43reateHotelRequest\x12\x13\n\x0boperational\x18\x01 \x01(\x08\x12\x13\n\x0b\x66ullyBooked\x18\x02 \x01(\x08\x12\x0c\n\x04\x63ity\x18\x03 \x01(\t\x12\x0e\n\x06rating\x18\x04 \x01(\x01\x12\x13\n\x0b\x64\x65scription\x18\x05 \x01(\t\"x\n\rHotelResponse\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x13\n\x0boperational\x18\x02 \x01(\x08\x12\x13\n\x0b\x66ullyBooked\x18\x03 \x01(\x08\x12\x0c\n\x04\x63ity\x18\x04 \x01(\t\x12\x0e\n\x06rating\x18\x05 \x01(\x01\x12\x13\n\x0b\x64\x65scription\x18\x06 \x01(\t\" \n\x11HotelsListRequest\x12\x0b\n\x03ids\x18\x01 \x03(\t\":\n\x12HotelsListResponse\x12$\n\x06hotels\x18\x01 \x03(\x0b\x32\x14.hotel.HotelResponse2\x91\x01\n\x0cHotelService\x12>\n\x0b\x43reateHotel\x12\x19.hotel.CreateHotelRequest\x1a\x14.hotel.HotelResponse\x12\x41\n\nListHotels\x12\x18.hotel.HotelsListRequest\x1a\x19.hotel.HotelsListResponseB+\n\x19\x63om.hotelio.proto.bookingB\x0c\x42ookingProtoP\x01\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -37,9 +37,9 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_HOTELRESPONSE']._serialized_start=137
   _globals['_HOTELRESPONSE']._serialized_end=257
   _globals['_HOTELSLISTREQUEST']._serialized_start=259
-  _globals['_HOTELSLISTREQUEST']._serialized_end=296
-  _globals['_HOTELSLISTRESPONSE']._serialized_start=298
-  _globals['_HOTELSLISTRESPONSE']._serialized_end=356
-  _globals['_HOTELSERVICE']._serialized_start=359
-  _globals['_HOTELSERVICE']._serialized_end=506
+  _globals['_HOTELSLISTREQUEST']._serialized_end=291
+  _globals['_HOTELSLISTRESPONSE']._serialized_start=293
+  _globals['_HOTELSLISTRESPONSE']._serialized_end=351
+  _globals['_HOTELSERVICE']._serialized_start=354
+  _globals['_HOTELSERVICE']._serialized_end=499
 # @@protoc_insertion_point(module_scope)

@@ -5,26 +5,35 @@ import { buildSubgraphSchema } from "@apollo/subgraph";
 
 import * as grpc from "@grpc/grpc-js";
 import * as protoLoader from "@grpc/proto-loader";
-import { PROTO_PATH } from "./const";
+
+export const PROTO_PATH = "./proto/booking.proto";
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {});
-const bookingProto = grpc.loadPackageDefinition(packageDefinition).booking;
+const BookingProto = grpc.loadPackageDefinition(packageDefinition).booking;
 
-const host = process.env.BOOKING_SERVICE_HOST || "localhost"; // Fallback to localhost if not set
-const port = process.env.BOOKING_SERVICE_PORT || "9090"; // Fallback to 9090 if not set
+const host = process.env.BOOKING_SERVICE_HOST || "booking-service";
+const port = process.env.BOOKING_SERVICE_PORT || "9090";
 
-const bookingClient = new (bookingProto as any).BookingService(
+const bookingClient = new BookingProto.BookingService(
   `${host}:${port}`,
   grpc.credentials.createInsecure()
 );
 
 const typeDefs = gql`
+  type Hotel @key(fields: "id") {
+    id: ID!
+    name: String
+    city: String
+    stars: Int
+  }
+
   type Booking @key(fields: "id") {
     id: ID!
     userId: String!
     hotelId: String!
     promoCode: String
     discountPercent: Int
+    hotel: Hotel @provides(fields: "id")
   }
 
   type Query {
@@ -35,26 +44,37 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     bookingsByUser: async (_, { userId }, { req }) => {
-      if (!req.headers["userId"]) {
+      if (!req.headers["userId"] && !userId) {
         throw new Error("User is not Authorized");
       }
+
       const response = await new Promise((resolve, reject) => {
-        bookingClient.ListBookings({ user_id: userId }, (error, response) => {
+        const bookingRequestData = { userId: userId };
+
+        bookingClient.ListBookings(bookingRequestData, (error, response) => {
           if (error) {
             console.error("Error calling ListBookings:", error);
             reject(new Error("Failed to fetch bookings"));
           } else {
-            resolve(response);
+            return resolve(response);
           }
         });
       });
 
-      return (response as any).bookings;
+      console.log(response);
+
+      return response.bookings;
     },
   },
 
   Booking: {
-    // TODO: Реальный вызов к grpc booking-сервису или заглушка + ACL
+    // // TODO: Реальный вызов к grpc booking-сервису или заглушка + ACL
+    hotel: async (booking) => {
+      return {
+        __typename: "Hotel",
+        id: booking.hotelId,
+      };
+    },
   },
 };
 

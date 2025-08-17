@@ -6,6 +6,7 @@ export PYTHONPATH="/app"
 
 echo "🧪 Migrate..."
 /app/.venv/bin/python -m alembic upgrade head
+/app/.venv/bin/python ./data/create_data.py
 
 # Start the application
 echo "🧪 Starting app..."
