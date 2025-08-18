@@ -5,9 +5,9 @@ services:
     image: postgres:15
     container_name: booking-db-dev
     environment:
-      POSTGRES_USER: hotelio
-      POSTGRES_PASSWORD: hotelio
-      POSTGRES_DB: dev_hotelio_booking
+      POSTGRES_USER: booking-db
+      POSTGRES_PASSWORD: booking-db
+      POSTGRES_DB: booking-db
     ports:
       - "5432:5432"
     volumes:
@@ -33,9 +33,9 @@ services:
       MONOLIT_HOST: http://monolith:8084
       POSTGRES_HOST: booking-db-dev
       POSTGRES_PORT: 5432
-      POSTGRES_USER: hotelio
-      POSTGRES_PASSWORD: hotelio
-      POSTGRES_DB: dev_hotelio_booking
+      POSTGRES_USER: booking-db
+      POSTGRES_PASSWORD: booking-db
+      POSTGRES_DB: booking-db
       KAFKA_HOST: kafka:9092
       KAFKA_GROUP: booking-history-group
       KAFKA_TOPIC: booking-events
