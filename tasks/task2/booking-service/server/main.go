@@ -46,6 +46,7 @@ func (s *bookingServer) CreateBooking(ctx context.Context, req *pb.BookingReques
 }
 
 func (s *bookingServer) ListBookings(ctx context.Context, req *pb.BookingListRequest) (*pb.BookingListResponse, error) {
+	log.Printf("income: ListBookings. user-id: %s", req.UserId)
 	// Получаем бронирования из репозитория
 	bookings, err := s.repo.ListAll(ctx, req.GetUserId())
 	if err != nil {
