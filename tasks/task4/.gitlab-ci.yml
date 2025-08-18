@@ -2,22 +2,58 @@ stages:
   - build
   - test
   - deploy
+  - tag
 
 variables:
-  IMAGE_TAG: latest
   IMAGE_NAME: booking-service
 
 build:
+  image: docker:28.0
+  services:
+    - docker:28.0-dind
   stage: build
   script:
-
+    - docker build -t $IMAGE_NAME:latest ./booking-service
+    - docker tag $IMAGE_NAME:latest $IMAGE_NAME:$CI_COMMIT_SHORT_SHA
+  artifacts:
+    paths:
+      - booking-service/
+    expire_in: 1 week
 
 test:
+  image: docker:28.0
+  services:
+    - docker:28.0-dind
   stage: test
   script:
-
+    - docker run -d --name booking-test -p 8080:8080 $IMAGE_NAME:latest
+    - apk add --no-cache curl
+    - curl -s http://localhost:8080/ping | grep "pong" || exit 1
+    - docker rm -f booking-test
+  dependencies:
+    - build
 
 deploy:
+  image: docker:28.0
+  services:
+    - docker:28.0-dind
   stage: deploy
+  before_script:
+    - apk add --no-cache kubectl helm
+    - minikube start --driver=docker
+    - minikube image load $IMAGE_NAME:latest
   script:
- 
+    - helm upgrade --install booking-service ./helm/booking-service/ -f ./helm/booking-service/values.yaml  -f ./helm/booking-service/values.prod.yaml
+  dependencies:
+    - build
+
+tag:
+  stage: tag
+  image: alpine:latest
+  script:
+    - apk add --no-cache git
+    - git tag "build-$(date +%Y%m%d-%H%M%S)"
+    - git push origin --tags
+  only:
+    - main
+  when: manual
