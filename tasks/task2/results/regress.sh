@@ -8,9 +8,23 @@ echo "🧪 Проверка подключения к БД..."
 timeout 2 bash -c "</dev/tcp/${DB_HOST}/${DB_PORT}" \
   || { echo "❌ Не удалось подключиться к ${DB_HOST}:${DB_PORT}"; exit 1; }
 
+echo "🧪 Проверка подключения к БД booking-history-service..."
+timeout 2 bash -c "</dev/tcp/${DB_HOST}/5444" \
+  || { echo "❌ Не удалось подключиться к ${DB_HOST}:5444"; exit 1; }
+
+echo "🧪 Проверка подключения к БД booking-service..."
+timeout 2 bash -c "</dev/tcp/${DB_HOST}/5433" \
+  || { echo "❌ Не удалось подключиться к ${DB_HOST}:5433"; exit 1; }
+
+
 # Очистка БД booking-history-service
 echo "🧪 Очистка БД booking-history-service..."
 PGPASSWORD="booking-history-db" psql -h "${DB_HOST}" -p "5444" -U "booking-history-db" "booking-history-db" < drop-booking-history-db.sql
+
+# Очистка БД booking-service
+echo "🧪 Очистка БД booking-service..."
+PGPASSWORD="booking-db" psql -h "${DB_HOST}" -p "5433" -U "booking-db" "booking-db" < drop-booking-db.sql
+
 
 # Загрузка фикстур
 echo "🧪 Загрузка фикстур..."
@@ -109,9 +123,6 @@ echo "# так gRPC сервис не реализует такой вызов. 
 # echo curl -sSf "${BASE}/api/bookings" | grep -q 'test-user-2' && pass "Все бронирования получены" || fail "Бронирования не получены"
 
 
-# 2. Получение бронирований пользователя
-curl -sSf "${BASE}/api/bookings?userId=test-user-2" | grep -q 'test-user-2' && pass "Бронирования test-user-2 найдены" || fail "Нет бронирований test-user-2"
-
 # 3. Успешное бронирование отеля без промо
 curl -sSf -X POST "${BASE}/api/bookings?userId=test-user-3&hotelId=test-hotel-1" | grep -q 'test-hotel-1' && pass "Бронирование прошло (без промо)" || fail "Бронирование (без промо) не прошло"
 
@@ -135,4 +146,10 @@ curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE}/api/bookings?userId=test
 curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE}/api/bookings?userId=test-user-2&hotelId=test-hotel-2" | grep -q '500' \
   && pass "Отклонено: отель полностью забронирован" \
   || fail "Ошибка: сервер принял бронирование в полностью занятом отеле"
+
+# 2. Получение бронирований пользователя
+curl -sSf "${BASE}/api/bookings?userId=test-user-2" | grep -q 'test-user-2' && pass "Бронирования test-user-2 найдены" || fail "Нет бронирований test-user-2"
+
 echo "✅ Все HTTP-тесты пройдены!"
+
+
