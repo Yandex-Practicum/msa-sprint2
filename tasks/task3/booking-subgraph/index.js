@@ -12,10 +12,13 @@ const typeDefs = gql`
     id: ID!
     userId: String!
     hotelId: String!
+    hotel: Hotel
     promoCode: String
     discountPercent: Int
   }
-
+  extend type Hotel @key(fields: "id") {
+    id: ID! @external
+  }
   type Query {
     bookingsByUser(userId: String!): [Booking]
   }
@@ -38,6 +41,10 @@ const resolvers = {
     },
   },
   Booking: {
+    hotel: (parent) => {
+      // Возвращаем ссылку на отель для Federation
+      return { __typename: "Hotel", id: parent.hotelId };
+    },
     __resolveReference: async (booking, { req }) => {
       // Проверка ACL
       if (!req.headers['user-id'] || req.headers['user-id'] !== booking.userId) {
