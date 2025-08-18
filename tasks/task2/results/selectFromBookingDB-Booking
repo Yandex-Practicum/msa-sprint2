@@ -1,0 +1,3 @@
+"id"	"user_id"	"hotel_id"	"promo_code"	"discount_percent"	"price"	"created_at"
+3	"test-user-3"	"test-hotel-1"		0	80	"2025-08-18 10:19:50.350747+00"
+4	"test-user-2"	"test-hotel-1"	"TESTCODE1"	10	90	"2025-08-18 10:19:50.546172+00"
