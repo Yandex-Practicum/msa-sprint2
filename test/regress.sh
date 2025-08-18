@@ -8,13 +8,22 @@ echo "🧪 Проверка подключения к БД..."
 timeout 2 bash -c "</dev/tcp/${DB_HOST}/${DB_PORT}" \
   || { echo "❌ Не удалось подключиться к ${DB_HOST}:${DB_PORT}"; exit 1; }
 
+echo "🧪 Проверка подключения к БД booking-history-service..."
+timeout 2 bash -c "</dev/tcp/${DB_HOST}/5444" \
+  || { echo "❌ Не удалось подключиться к ${DB_HOST}:5444"; exit 1; }
+
+echo "🧪 Проверка подключения к БД booking-service..."
+timeout 2 bash -c "</dev/tcp/${DB_HOST}/5433" \
+  || { echo "❌ Не удалось подключиться к ${DB_HOST}:5433"; exit 1; }
+
+
 # Очистка БД booking-history-service
 echo "🧪 Очистка БД booking-history-service..."
-PGPASSWORD="booking-history-db" psql -h "booking-history-db" -p "5444" -U "booking-history-db" "booking-history-db" < drop-booking-history-db.sql
+PGPASSWORD="booking-history-db" psql -h "${DB_HOST}" -p "5444" -U "booking-history-db" "booking-history-db" < drop-booking-history-db.sql
 
 # Очистка БД booking-service
 echo "🧪 Очистка БД booking-service..."
-PGPASSWORD="booking-db" psql -h "booking-db" -p "5433" -U "booking-db" "booking-db" < drop-booking-db.sql
+PGPASSWORD="booking-db" psql -h "${DB_HOST}" -p "5433" -U "booking-db" "booking-db" < drop-booking-db.sql
 
 
 # Загрузка фикстур
