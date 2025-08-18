@@ -82,7 +82,7 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     bookingsByUser: async (_, { userId }, { req }) => {
-      if (!req.headers["userId"] && !userId) {
+      if (!req.headers["userId"] || !userId) {
         throw new Error("User is not Authorized");
       }
 
