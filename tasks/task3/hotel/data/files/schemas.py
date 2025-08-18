@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class HotelSchema(BaseModel):
-    id: int
+    id: str
 
     operational: bool
     fullyBooked: bool

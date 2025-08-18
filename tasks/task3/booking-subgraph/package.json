@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
+    "@apollo/datasource-rest": "^6.4.1",
     "@apollo/server": "^4.8.1",
     "@apollo/subgraph": "^2.4.0",
     "@grpc/grpc-js": "^1.13.4",

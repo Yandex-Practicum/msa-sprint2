@@ -4,6 +4,13 @@ from files.services import HotelServices, hotel_services
 
 from data.files.schemas import HotelSchema
 
+from logging import INFO, getLogger, basicConfig
+
+
+basicConfig(level=INFO)
+
+logger = getLogger("[HOTEL: MAIN]")
+
 
 class HotelConntroller(hotel_pb2_grpc.HotelServiceServicer):
     def __init__(self, hotel_services: HotelServices):
@@ -12,11 +19,11 @@ class HotelConntroller(hotel_pb2_grpc.HotelServiceServicer):
         self.hotel_services = hotel_services
 
     async def ListHotels(self, request, context):
-        """Handles ListBookings RPC call."""
+        """Handles ListHotelss RPC call."""
         hotels_list_dto = await self.hotel_services.list_hotels(request.ids)
+        logger.info(hotels_list_dto)
 
-        response = hotel_pb2.BookingListResponse()
-
+        response = hotel_pb2.HotelsListResponse()
         for hotel_dto in hotels_list_dto:
             response.hotels.append(
                 hotel_pb2.HotelResponse(

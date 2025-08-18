@@ -10,14 +10,19 @@ services:
       - hotelio-net
 
   booking-subgraph:
+    container_name: booking-subgraph
     build: ./booking-subgraph
     ports:
       - "4001:4001"
     environment:
       BOOKING_SERVICE_HOST: booking-service
       BOOKING_SERVICE_PORT: 9090
+      HOTEL_SUBGRAPH_HOST: hotel-subgraph
+      HOTEL_SUBGRAPH_PORT: 4002
     networks:
       - hotelio-net
+    volumes:
+      - ./booking-subgraph:/app
     depends_on:
       - booking-service
 
@@ -57,6 +62,7 @@ services:
       - hotelio-net
 
   hotel-subgraph:
+    container_name: hotel-subgraph
     build: ./hotel-subgraph
     ports:
       - "4002:4002"

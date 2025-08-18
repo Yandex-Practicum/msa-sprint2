@@ -13,7 +13,7 @@ from files.schemas import HotelSchema
 basicConfig(level=INFO)
 
 
-logger = getLogger("[BOOKING: SERVICES]")
+logger = getLogger("[HOTEL: SERVICES]")
 
 
 class ValidationFailedError(Exception):

@@ -9,6 +9,13 @@ from settings.db_settings.session import async_session
 from files.models import Hotel
 from files.schemas import HotelSchema
 
+from logging import getLogger, INFO, basicConfig
+
+basicConfig(level=INFO)
+
+
+logger = getLogger("[HOTEL: REPOSITORY]")
+
 
 class HotelRepository:
     def __init__(self, async_session: async_sessionmaker[AsyncSession]):
@@ -31,7 +38,9 @@ class HotelRepository:
 
             rows = query_result.scalars().all()
 
-            bookings_list_dto = [
+            logger.info(rows)
+
+            hotels_list_dto = [
                 HotelSchema(
                     id=_row.id,
                     operational=_row.operational,
@@ -43,7 +52,9 @@ class HotelRepository:
                 for _row in rows
             ]
 
-            return bookings_list_dto
+            logger.info(hotels_list_dto)
+
+            return hotels_list_dto
 
     async def list_hotels_by_ids(self, ids: List[str]) -> List[HotelSchema]:
         async with self.async_session() as session:
@@ -66,7 +77,7 @@ class HotelRepository:
 
             rows = query_result.scalars().all()
 
-            bookings_list_dto = [
+            hotels_list_dto = [
                 HotelSchema(
                     id=_row.id,
                     operational=_row.operational,
@@ -78,7 +89,7 @@ class HotelRepository:
                 for _row in rows
             ]
 
-            return bookings_list_dto
+            return hotels_list_dto
 
     async def create_hotel(self, data: HotelSchema) -> HotelSchema:
         async with self.async_session() as session:

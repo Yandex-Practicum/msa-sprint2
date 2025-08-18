@@ -15,12 +15,12 @@ export const fetchHotels = async (hotelClient, ids) => {
         console.error("Error calling ListHotels:", error);
         reject(new Error("Failed to fetch hotel"));
       } else {
-        return resolve(response.hotels[0]); // Assuming the hotel is returned in an array
+        return resolve(response.hotels);
       }
     });
   });
 
-  return response.hotels;
+  return response;
 };
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {});

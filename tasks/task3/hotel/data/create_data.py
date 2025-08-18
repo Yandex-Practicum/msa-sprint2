@@ -42,8 +42,8 @@ async def create_hotel_data():
 
             for hotel in hotels_list:
                 insert_stmt = insert(Hotel).values(hotel)
+                await session.execute(insert_stmt)
 
-            await session.execute(insert_stmt)
             await session.commit()
 
             logger.info("Hotels have been created successfully")

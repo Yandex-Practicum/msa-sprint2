@@ -7,8 +7,8 @@ from proto import booking_pb2, booking_pb2_grpc
 
 from logging import INFO, getLogger, basicConfig
 
-basicConfig(level=INFO)
 
+basicConfig(level=INFO)
 
 logger = getLogger("[BOOKING: MAIN]")
 
