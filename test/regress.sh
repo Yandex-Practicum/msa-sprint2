@@ -123,9 +123,6 @@ echo "# так gRPC сервис не реализует такой вызов. 
 # echo curl -sSf "${BASE}/api/bookings" | grep -q 'test-user-2' && pass "Все бронирования получены" || fail "Бронирования не получены"
 
 
-# 2. Получение бронирований пользователя
-curl -sSf "${BASE}/api/bookings?userId=test-user-2" | grep -q 'test-user-2' && pass "Бронирования test-user-2 найдены" || fail "Нет бронирований test-user-2"
-
 # 3. Успешное бронирование отеля без промо
 curl -sSf -X POST "${BASE}/api/bookings?userId=test-user-3&hotelId=test-hotel-1" | grep -q 'test-hotel-1' && pass "Бронирование прошло (без промо)" || fail "Бронирование (без промо) не прошло"
 
@@ -149,4 +146,10 @@ curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE}/api/bookings?userId=test
 curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE}/api/bookings?userId=test-user-2&hotelId=test-hotel-2" | grep -q '500' \
   && pass "Отклонено: отель полностью забронирован" \
   || fail "Ошибка: сервер принял бронирование в полностью занятом отеле"
+
+# 2. Получение бронирований пользователя
+curl -sSf "${BASE}/api/bookings?userId=test-user-2" | grep -q 'test-user-2' && pass "Бронирования test-user-2 найдены" || fail "Нет бронирований test-user-2"
+
 echo "✅ Все HTTP-тесты пройдены!"
+
+
