@@ -12,6 +12,11 @@ timeout 2 bash -c "</dev/tcp/${DB_HOST}/${DB_PORT}" \
 echo "🧪 Очистка БД booking-history-service..."
 PGPASSWORD="booking-history-db" psql -h "booking-history-db" -p "5444" -U "booking-history-db" "booking-history-db" < drop-booking-history-db.sql
 
+# Очистка БД booking-service
+echo "🧪 Очистка БД booking-service..."
+PGPASSWORD="booking-db" psql -h "booking-db" -p "5433" -U "booking-db" "booking-db" < drop-booking-db.sql
+
+
 # Загрузка фикстур
 echo "🧪 Загрузка фикстур..."
 PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" "${DB_NAME}" < init-fixtures.sql

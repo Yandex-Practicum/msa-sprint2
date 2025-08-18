@@ -38,6 +38,25 @@ services:
       timeout: 5s
       retries: 5
 
+  booking-db:
+    image: postgres:15
+    container_name: booking-db
+    environment:
+      POSTGRES_USER: booking-db
+      POSTGRES_PASSWORD: booking-db
+      POSTGRES_DB: booking-db      
+    ports:
+      - "5433:5432"
+    volumes:
+      - booking-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net   
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "booking-db", "-d", "booking-db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   booking-history-db:
     image: postgres:15
     container_name: booking-history-db 
@@ -56,20 +75,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-  
-  #booking-db:
-  #  image: postgres:15
-  #  container_name: booking-db
-  #  environment:
-  #    POSTGRES_USER: hotelio
-  #    POSTGRES_PASSWORD: hotelio
-  #    POSTGRES_DB: hotelio_booking
-  #  ports:
-  #    - "5433:5432"
-  #  volumes:
-  #    - booking-db-data:/var/lib/postgresql/data
-  #  networks:
-  #    - hotelio-net
+   
   
   booking-service:
     build: ./BookingService
@@ -79,10 +85,10 @@ services:
       - hotelio-net 
     environment:
       MONOLIT_HOST: http://hotelio-monolith:8080
-      POSTGRES_HOST: monolith-db
-      POSTGRES_USER: hotelio
-      POSTGRES_PASSWORD: hotelio
-      POSTGRES_DB: hotelio
+      POSTGRES_HOST: booking-db
+      POSTGRES_USER: booking-db
+      POSTGRES_PASSWORD: booking-db
+      POSTGRES_DB: booking-db
       KAFKA_HOST: kafka:9092
       KAFKA_GROUP: booking-history-group
       KAFKA_TOPIC: booking-events
@@ -130,6 +136,7 @@ services:
 volumes:
   monolith-db-data:
   booking-history-db-data:
+  booking-db-data:
 
 networks:
   hotelio-net:
