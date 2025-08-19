@@ -17,7 +17,25 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          env:
+          - name: ENABLE_FEATURE_X
+            value: "{{ .Values.feautures.featX }}"
           imagePullPolicy: Never
-
           ports:
             - containerPort: {{ .Values.service.targetPort }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.livenessProbe.endPoint }} 
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: 15    # Даем контейнеру 15 секунд на запуск перед первой проверкой
+            periodSeconds: 10          # Проверяем каждые 10 секунд
+            failureThreshold: 3        # После 3 неудачных попыток подряд — убить контейнер
+            timeoutSeconds: 1          # Ждем ответа не более 1 секунды
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.readinessProbe.endPoint }}  # Эндпоинт, который возвращает 200 OK, когда приложение готово
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 1
+            timeoutSeconds: 1          

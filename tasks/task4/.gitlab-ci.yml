@@ -1,23 +1,68 @@
 stages:
   - build
   - test
-  - deploy
+  - deploy-staging
+  - deploy-prod
+  - tag
 
 variables:
   IMAGE_TAG: latest
+  IMAGE_PROD_TAG: 1.0.0
   IMAGE_NAME: booking-service
+  CONTAINER_NAME: b-service
 
 build:
   stage: build
   script:
-
+  - echo "build stage $IMAGE_NAME:$IMAGE_TAG"
+  - docker build -t $IMAGE_NAME:$IMAGE_TAG ./booking-service
 
 test:
   stage: test
-  script:
+  script: 
+  - echo "test stage $IMAGE_NAME:$IMAGE_TAG"
+  - docker run -d -p 8080:8080 --name $CONTAINER_NAME $IMAGE_NAME:$IMAGE_TAG  
+  - echo "Deleting container" $CONTAINER_NAME
+  - docker stop $CONTAINER_NAME  
+  - docker rm $CONTAINER_NAME
+  
 
+deploy-staging: 
+  stage: deploy-staging
+  script:  
+  - echo "deploy stage $IMAGE_NAME:$IMAGE_TAG"
+#  - minikube image load booking-service:latest
+#  - helm install booking-service ./helm/booking-service/
+  - helm install booking-service-staging ./helm/booking-service/ -f ./helm/booking-service/values-staging.yaml --timeout 5m
+#  - helm upgrade booking-service ./helm/booking-service/  
+  - sleep 5
+  - bash ./check-dns-ci.sh
+  - bash ./check-feature-ci.sh
+  - helm uninstall booking-service-staging
+  
 
-deploy:
-  stage: deploy
-  script:
- 
+tag: 
+  stage: tag
+  script: 
+  - git tag "$(date +'%Y%m%d-%H%M%S')"
+  
+
+deploy-prod: 
+  stage: deploy-prod
+  script:  
+  - echo "deploy prod $IMAGE_NAME:$IMAGE_PROD_TAG"
+  - docker build -t $IMAGE_NAME:$IMAGE_PROD_TAG ./booking-service
+  - minikube image load $IMAGE_NAME:$IMAGE_PROD_TAG
+  #- helm uninstall booking-service 
+  - helm upgrade booking-service ./helm/booking-service/ -f ./helm/booking-service/values-prod.yaml    
+  #- helm install booking-service ./helm/booking-service/ -f ./helm/booking-service/values-prod.yaml
+
+#deploy-prod-upgrade: 
+#  stage: deploy
+#  script:  
+#  - echo "deploy prod $IMAGE_NAME:$IMAGE_PROD_TAG"
+#  - docker build -t $IMAGE_NAME:$IMAGE_PROD_TAG ./booking-service
+#  - minikube image load $IMAGE_NAME:$IMAGE_PROD_TAG
+#  - helm upgrade booking-service ./helm/booking-service/ -f ./helm/booking-service/values-prod.yaml
+#  #- helm upgrade booking-service ./helm/booking-service/
+
