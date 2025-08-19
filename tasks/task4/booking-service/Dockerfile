@@ -1,25 +1,32 @@
-# Используем официальный минимальный образ Go
-FROM golang:1.21-alpine
+# Stage 1: Build Environment
+FROM python:3.12-alpine3.19 AS base
 
-# TODO: Добавить необходимые пакеты (например, curl)
-# Ожидаемый код:
-RUN apk add --no-cache curl
-
-# Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем Go-файл и скрипт проверки DNS
-COPY main.go .
-COPY check-dns.sh .
+COPY ./requirements.txt .
 
-# TODO: Сделать скрипт исполняемым
-# Ожидаемый код:
-RUN chmod +x check-dns.sh
+RUN python -m venv .venv && \
+    ./.venv/bin/pip install --no-cache-dir -r requirements.txt
 
-# TODO: Собрать бинарник из main.go
-# Ожидаемый код:
-RUN go build -o booking-service main.go
+COPY . .
 
-# TODO: Задать команду запуска
-# Ожидаемый код:
-CMD ["./booking-service"]
+
+# Stage 2: Runtime Environment
+FROM python:3.12-alpine3.19
+
+WORKDIR /app
+
+# Copy the virtual environment from the build stage
+COPY --from=base /app/.venv .venv
+
+# Set the PATH to include the virtual environment
+ENV PATH="/app/.venv/bin:$PATH"
+
+COPY --from=base /app/main.py .
+COPY --from=base /app/settings.py .
+
+RUN chmod +x /app/main.py
+
+EXPOSE 8080
+
+ENTRYPOINT ["python3", "main.py"]
