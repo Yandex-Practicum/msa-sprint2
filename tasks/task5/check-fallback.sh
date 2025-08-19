@@ -3,4 +3,4 @@
 set -e
 
 echo "▶️ Testing fallback route..."
-curl -s http://localhost:9090/ping || echo "Fallback route working"
+curl -s http://127.0.0.1:58296/ping || echo "Fallback route working"
