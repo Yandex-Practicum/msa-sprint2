@@ -1,0 +1,2 @@
+- добавлен istio конфиг [booking-traffic_90_10.yaml](../helm/traffic/booking-traffic_90_10.yaml)
+- добавлены envs v1 v2 в values файлы для каждого варианта 
