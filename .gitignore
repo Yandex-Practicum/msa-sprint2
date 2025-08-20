@@ -2,3 +2,5 @@
 booking-history-db-data/
 __pycache__/
 node_modules/
+.gitlab-ci-local/
+istio-1.27.0/

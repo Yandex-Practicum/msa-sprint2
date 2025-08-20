@@ -3,7 +3,7 @@ from logging import getLogger, DEBUG
 from asyncio.exceptions import CancelledError
 
 from uvicorn import run
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 
 from settings import settings
@@ -24,8 +24,11 @@ async def healthcheck():
     return jsonable_encoder("health")
 
 
-async def enable_feature():
-    return jsonable_encoder("Feature X is enabled!")
+async def enable_feature(request: Request):
+    if request.headers.get("X-Feature-Enabled") == "true":
+        return jsonable_encoder("Feature X is enabled!")
+
+    return jsonable_encoder("Feature not available")
 
 
 app = FastAPI(title="booking-service")
@@ -35,16 +38,19 @@ app.add_api_route(
     endpoint=get_pong,
     methods=["GET"],
 )
+
 app.add_api_route(
     path="/ping",
     endpoint=get_pong,
     methods=["GET"],
 )
+
 app.add_api_route(
     path="/ready",
     endpoint=get_ready,
     methods=["GET"],
 )
+
 app.add_api_route(
     path="/healthcheck",
     endpoint=healthcheck,

@@ -1,0 +1,106 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: feature-flag-routing
+  namespace: default
+spec:
+  workloadSelector:
+    labels:
+      app: booking-service
+  configPatches:
+    - applyTo: NETWORK_FILTER
+      match:
+        context: SIDECAR_INBOUND
+        proxy:
+          proxyVersion: ^1.10.0 # Adjust as necessary
+        listener:
+          portNumber: 80 # Adjust as necessary
+          filterChain:
+            filter:
+              name: "envoy.filters.network.http_connection_manager"
+      patch:
+        operation: MERGE
+        value:
+          codecType: AUTO
+          statPrefix: inbound
+          httpFilters:
+            - name: envoy.filters.http.header_to_metadata
+              config:
+                requestHeadersToAdd:
+                  - header:
+                      name: "X-Feature-Enabled"
+                      value: "true"
+                responseHeadersToAdd:
+                  - header:
+                      name: "X-Feature-Enabled"
+                      value: "true"
+
+# apiVersion: networking.istio.io/v1alpha3
+# kind: EnvoyFilter
+# metadata:
+#   name: feature-flag-routing
+#   namespace: default
+# spec:
+#   workloadSelector:
+#     labels:
+#       app: booking-service
+#   configPatches:
+#     - applyTo: NETWORK_FILTER
+#       match:
+#         context: SIDECAR_INBOUND
+#         proxy:
+#           proxyVersion: ^1.10.0 # Adjust the version as necessary
+#         listener:
+#           portNumber: 80 # Adjust the port as necessary
+#           filterChain:
+#             filter:
+#               name: "envoy.filters.network.http_connection_manager"
+#       patch:
+#         operation: MERGE
+#         value:
+#           codecType: AUTO
+#           statPrefix: inbound
+#           routeConfig:
+#             name: inbound
+#             virtualHosts:
+#               - name: inbound
+#                 domains:
+#                   - "*"
+#                 routes:
+#                   - match:
+#                       prefix: /
+#                     route:
+#                       cluster: inbound
+#           httpFilters:
+#             - name: envoy.filters.http.header_to_metadata
+#               config:
+#                 requestHeadersToAdd:
+#                   - header:
+#                       name: "X-Feature-Enabled"
+#                       value: "true"
+#                 responseHeadersToAdd:
+#                   - header:
+#                       name: "X-Feature-Enabled"
+#                       value: "true"
+
+# apiVersion: networking.istio.io/v1alpha3
+# kind: EnvoyFilter
+# metadata:
+#   name: feature-flag-routing
+#   namespace: default
+# spec:
+#   workloadSelector:
+#     labels:
+#       app: booking-service
+#   filters:
+#     - filterType: HTTP
+#       filterName: envoy.filters.http.header_to_metadata
+#       filterConfig:
+#         requestHeadersToAdd:
+#           - header:
+#               name: "X-Feature-Enabled"
+#               value: "true"
+#         responseHeadersToAdd:
+#           - header:
+#               name: "X-Feature-Enabled"
+#               value: "true"

@@ -3,7 +3,7 @@ replicaCount: 4
 image:
   repository: arveremeev/booking-service
   name: booking-service
-  tag: latest
+  tag: 1.0.0
   pullPolicy: IfNotPresent
 
 service:

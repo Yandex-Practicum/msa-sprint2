@@ -1,0 +1,52 @@
+stages:
+  - build
+  - test
+  - deploy
+  - tag
+
+variables:
+  IMAGE_TAG: latest
+  IMAGE_NAME: arveremeev/booking-service
+  DOCKER_REGISTRY: arveremeev
+  MINIKUBE_REGISTRY: minikube
+
+# Build stage
+build:
+  stage: build
+  script:
+    - echo "▶️ Building Docker image..."
+    - docker build -t $DOCKER_REGISTRY/$IMAGE_NAME:$CI_COMMIT_SHA ./booking-service
+    - docker images
+    - docker tag $DOCKER_REGISTRY/$IMAGE_NAME:$CI_COMMIT_SHA $DOCKER_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+
+test:
+  stage: test
+  script:
+    - echo "▶️ Running tests..."
+    - docker ps -q -f "ancestor=$DOCKER_REGISTRY/$IMAGE_NAME" | xargs -r docker stop
+    - docker run --rm -d --name booking-service-test -e ENABLE_FEATURE_X=true -p 8080:8080 $DOCKER_REGISTRY/$IMAGE_NAME:$CI_COMMIT_SHA
+    - sleep 5
+    - curl -s http://localhost:8080/ping && echo '✅ Ping successful' || echo '❌ Ping failed'
+    - docker stop booking-service-test
+
+
+
+# Deploy stage
+deploy:
+  stage: deploy
+  script:
+    - echo "▶️ Loading Docker image into Minikube..."
+    - minikube image load $DOCKER_REGISTRY/$IMAGE_NAME:$CI_COMMIT_SHA
+    - echo "▶️ Deploying Helm chart..."
+    - helm upgrade --install booking-service ./helm/booking-service --set image.tag=$CI_COMMIT_SHA --namespace default -f ./helm/booking-service/values-prod.yaml
+
+
+# Tag stage (create Git tag with timestamp)
+tag:
+  stage: tag
+  script:
+    - echo "▶️ Creating Git tag with timestamp..."
+    - export GIT_TAG=$(date +%Y%m%d%H%M%S)
+    - git tag $GIT_TAG
+    - git push origin $GIT_TAG
+

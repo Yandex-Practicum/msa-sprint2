@@ -1,4 +1,6 @@
-replicaCount: 2
+version: v2
+
+replicaCount: 1
 
 image:
   repository: arveremeev/booking-service
