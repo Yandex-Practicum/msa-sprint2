@@ -1,3 +1,4 @@
 .gitlab-ci-local/
 minikube-linux-amd64
 kubectl
+istio-1.27.0

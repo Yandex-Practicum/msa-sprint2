@@ -1,0 +1,28 @@
+▶️ Проверка установки Istio...
+NAME                                    READY   STATUS    RESTARTS        AGE
+istio-egressgateway-559bd55945-tfsj8    1/1     Running   2 (3h27m ago)   26h
+istio-ingressgateway-7d865464db-q7lsb   1/1     Running   1 (3h27m ago)   21h
+istiod-85798b5866-55s9d                 1/1     Running   2 (3h27m ago)   26h
+▶️ Проверка Istio инъекции в default namespace...
+{
+    "apiVersion": "v1",
+    "kind": "Namespace",
+    "metadata": {
+        "creationTimestamp": "2025-08-18T19:45:21Z",
+        "labels": {
+            "istio-injection": "enabled",
+            "kubernetes.io/metadata.name": "default"
+        },
+        "name": "default",
+        "resourceVersion": "49404",
+        "uid": "d31ffe55-c0f9-4926-a835-aa8eab083012"
+    },
+    "spec": {
+        "finalizers": [
+            "kubernetes"
+        ]
+    },
+    "status": {
+        "phase": "Active"
+    }
+}

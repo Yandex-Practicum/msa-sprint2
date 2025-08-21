@@ -1,0 +1,64 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: booking-service-gateway
+  namespace: default
+spec:
+  selector:
+    istio: ingressgateway # Используем стандартный gateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*" # Разрешаем все хосты
+---
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: booking-service
+  namespace: default
+spec:
+  hosts:
+  - "*" # Имя сервиса, к которому применяем правила
+  gateways:
+  - booking-service-gateway
+  http:
+  #- match:
+  #  - uri:
+  #      prefix: / # Обрабатываем все URL пути
+  # route:
+  # - destination:
+  #     host: booking-service # Полное имя сервиса
+  #     port:
+  #       number: 80
+  # Правило для заголовка X-Feature-Enabled: true  
+  - match:
+    - headers:
+        x-feature-enabled:
+          exact: "true"
+    route:
+    - destination:
+        host: booking-service
+        subset: v2
+        port:
+          number: 80
+  - route:
+    - destination:
+        host: booking-service # Целевой Kubernetes-сервис
+        subset: v1           # Версия (определяется в другом файле - DestinationRule)
+      weight: 90             # 90% трафика
+    - destination:
+        host: booking-service
+        subset: v2
+        port:
+          number: 80
+      weight: 10            # 10% трафика
+    
+    retries:
+      attempts: 3              # Количество попыток
+      perTryTimeout: 2s        # Таймаут для каждой попытки
+      retryOn: 5xx,gateway-error,connect-failure  # При каких ошибках повторять  
+   
+  
