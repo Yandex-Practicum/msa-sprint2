@@ -10,7 +10,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY wait-for-it.sh /usr/local/bin/wait-for-it
-COPY init-fixtures.sql regress.sh ./
+COPY init-fixtures.sql ./
+COPY drop-booking-history-db.sql ./
+COPY drop-booking-db.sql ./
+COPY regress.sh ./
 RUN chmod +x /usr/local/bin/wait-for-it regress.sh
 
 ENTRYPOINT ["./regress.sh"]

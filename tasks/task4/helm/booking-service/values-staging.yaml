@@ -1,0 +1,23 @@
+replicaCount: 1
+
+image:
+  name: booking-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+feautures:
+  featX: true
+
+resources:
+
+livenessProbe:
+  endPoint: /ping
+
+readinessProbe:
+  endPoint: /ping
+

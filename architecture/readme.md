@@ -1,5 +1,5 @@
 ---
-cssClass: wide-page
+cssClass: wide-pageusers
 ---
 # 🏛️ Архитектура Hotelio: текущее состояние (монолит)
 

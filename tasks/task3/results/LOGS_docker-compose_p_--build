@@ -1,0 +1,19 @@
+ ✔ Container task3-booking-subgraph-1  Created                                                                                               0.2s
+ ✔ Container task3-hotel-subgraph-1    Created                                                                                               0.2s
+ ✔ Container task3-apollo-gateway-1    Created                                                                                               0.1s
+Attaching to apollo-gateway-1, booking-subgraph-1, hotel-subgraph-1
+hotel-subgraph-1    | ✅ Hotel servicehttp://hotelio-monolith:8080
+hotel-subgraph-1    | Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+hotel-subgraph-1    | ✅ Hotel subgraph ready at http://localhost:4002/
+booking-subgraph-1  | ✅ Booking servicebooking-service:5001
+booking-subgraph-1  | Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+booking-subgraph-1  | ✅ Booking subgraph ready at http://localhost:4001/
+apollo-gateway-1    | The `serviceList` option is deprecated and will be removed in a future version of `@apollo/gateway`. Please migrate to its replacement `IntrospectAndCompose`. More information on `IntrospectAndCompose` can be found in the documentation.
+apollo-gateway-1    | 🚀 Gateway ready at http://localhost:4000/
+hotel-subgraph-1    | resolveRef test-hotel-1
+hotel-subgraph-1    |    RestClient.GET(url-http://hotelio-monolith:8080/api/hotels/test-hotel-1, headers-[object Object])
+hotel-subgraph-1    | resolveRef test-hotel-1
+hotel-subgraph-1    |    RestClient.GET(url-http://hotelio-monolith:8080/api/hotels/test-hotel-1, headers-[object Object])
+hotel-subgraph-1    |    RestClient.GET(url-http://hotelio-monolith:8080/api/hotels/test-hotel-1, headers-[object Object])
+hotel-subgraph-1    |    RestClient.GET(url-http://hotelio-monolith:8080/api/hotels/test-hotel-3, headers-[object Object])
+hotel-subgraph-1    |    RestClient.GET(url-http://hotelio-monolith:8080/api/hotels/test-hotel-2, headers-[object Object])

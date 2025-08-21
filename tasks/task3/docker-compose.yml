@@ -8,13 +8,29 @@ services:
     depends_on:
       - booking-subgraph
       - hotel-subgraph
+    networks:
+      - hotelio-net
 
   booking-subgraph:
     build: ./booking-subgraph
     ports:
       - "4001:4001"
+    environment:
+      SERVICE_URL: booking-service:5001
+      #SERVICE_URL: 192.168.0.106:5001
+    networks:
+      - hotelio-net
 
   hotel-subgraph:
     build: ./hotel-subgraph
     ports:
       - "4002:4002"
+    environment:
+      #SERVICE_URL: http://192.168.0.106:8084
+      SERVICE_URL: http://hotelio-monolith:8080
+    networks:
+      - hotelio-net
+
+networks:
+  hotelio-net:
+    external: true

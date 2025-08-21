@@ -10,9 +10,14 @@ service:
   port: 80
   targetPort: 8080
 
+feautures:
+  featX: true
+
 resources:
 
 livenessProbe:
+  endPoint: /ping
 
 readinessProbe:
+  endPoint: /ping
 

@@ -13,6 +13,7 @@ func main() {
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "pong")
 	})
+   
 
 	// TODO: Feature flag route
 	// if ENABLE_FEATURE_X=true, expose /feature
@@ -21,7 +22,6 @@ func main() {
 			fmt.Fprintf(w, "Feature X is enabled!")
 		})
 	}
-
 	log.Println("Server running on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

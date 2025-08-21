@@ -1,0 +1,27 @@
+replicaCount: 1
+
+metadata:  
+  name: booking-service-v2
+  version: v2
+
+image:
+  name: booking-service
+  tag: 1.0.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+feautures:
+  featX: true
+
+resources:
+
+livenessProbe:
+  endPoint: /ping
+
+readinessProbe:
+  endPoint: /ping
+

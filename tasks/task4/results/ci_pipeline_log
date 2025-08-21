@@ -1,0 +1,72 @@
+gitlab-ci-local --job test --variable IMAGE_NAME=booking-service --variable IMAGE_TAG=latest
+test starting shell (test)
+test $ echo "test stage $IMAGE_NAME:$IMAGE_TAG"
+test > test stage booking-service:latest
+test $ docker run -d -p 8080:8080 --name $CONTAINER_NAME $IMAGE_NAME:$IMAGE_TAG
+test > 2ac075cd97097538d07aa3115e83e17fb4bf1cf1ff3bfc68bece51afa41508be
+test $ echo "Deleting container" $CONTAINER_NAME
+test > Deleting container b-service
+test $ docker stop $CONTAINER_NAME
+test > b-service
+test $ docker rm $CONTAINER_NAME
+test > b-service
+test finished in 1.02 s
+
+ PASS  test
+gitlab-ci-local --job build --variable IMAGE_NAME=booking-service --variable IMAGE_TAG=latest
+build starting shell (build)
+build $ echo "build stage $IMAGE_NAME:$IMAGE_TAG"
+build > build stage booking-service:latest
+build $ docker build -t $IMAGE_NAME:$IMAGE_TAG ./booking-service
+build finished in 1.33 s
+
+ PASS  build
+gitlab-ci-local --job deploy-staging --variable IMAGE_NAME=booking-service --variable IMAGE_TAG=latest
+deploy-staging starting shell (deploy-staging)
+deploy-staging $ echo "deploy stage $IMAGE_NAME:$IMAGE_TAG"
+deploy-staging > deploy stage booking-service:latest
+deploy-staging $ helm install booking-service-staging ./helm/booking-service/ -f ./helm/booking-service/values-staging.yaml --timeout 5m
+deploy-staging > NAME: booking-service-staging
+deploy-staging > LAST DEPLOYED: Tue Aug 19 23:30:39 2025
+deploy-staging > NAMESPACE: default
+deploy-staging > STATUS: deployed
+deploy-staging > REVISION: 1
+deploy-staging > TEST SUITE: None
+deploy-staging $ sleep 5
+deploy-staging $ bash ./check-dns-ci.sh
+deploy-staging > ▶️ Running in-cluster DNS test...
+deploy-staging > pongpod "dns-test" deleted
+deploy-staging > ✅ Success
+deploy-staging $ bash ./check-feature-ci.sh
+deploy-staging > ▶️ Running in-cluster feature test...
+deploy-staging > Feature X is enabled!pod "featx-test" deleted
+deploy-staging > ✅ Success
+deploy-staging $ helm uninstall booking-service-staging
+deploy-staging > release "booking-service-staging" uninstalled
+deploy-staging finished in 14 s
+
+ PASS  deploy-staging
+gitlab-ci-local --job deploy-prod --variable IMAGE_NAME=booking-service --variable IMAGE_PROD_TAG=1.0.0
+deploy-prod starting shell (deploy-prod)
+deploy-prod $ echo "deploy prod $IMAGE_NAME:$IMAGE_PROD_TAG"
+deploy-prod > deploy prod booking-service:1.0.0
+deploy-prod $ docker build -t $IMAGE_NAME:$IMAGE_PROD_TAG ./booking-service
+deploy-prod $ minikube image load $IMAGE_NAME:$IMAGE_PROD_TAG
+deploy-prod > still running...
+deploy-prod $ helm upgrade booking-service ./helm/booking-service/ -f ./helm/booking-service/values-prod.yaml
+deploy-prod > Release "booking-service" has been upgraded. Happy Helming!
+deploy-prod > NAME: booking-service
+deploy-prod > LAST DEPLOYED: Tue Aug 19 23:31:11 2025
+deploy-prod > NAMESPACE: default
+deploy-prod > STATUS: deployed
+deploy-prod > REVISION: 4
+deploy-prod > TEST SUITE: None
+deploy-prod finished in 18 s
+
+ PASS  deploy-prod
+gitlab-ci-local --job tag --variable IMAGE_NAME=booking-service --variable IMAGE_TAG=latest
+tag starting shell (tag)
+tag $ git tag "$(date +'%Y%m%d-%H%M%S')"
+tag finished in 98 ms
+
+ PASS  tag

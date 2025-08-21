@@ -1,0 +1,5 @@
+apiVersion: v2
+name: booking-service-traffic
+description: Traffic Management for My Application
+version: 0.1.0
+appVersion: "1.0.0"

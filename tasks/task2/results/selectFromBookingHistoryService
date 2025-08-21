@@ -1,0 +1,3 @@
+"id"	"user_id"	"event_id"	"action"	"CreatedAt"
+11	"test-user-3"	23	"Booking cretion"	"2025-08-12 13:41:08.782761+00"
+12	"test-user-2"	24	"Booking cretion"	"2025-08-12 13:41:08.975002+00"

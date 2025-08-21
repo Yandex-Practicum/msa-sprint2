@@ -1,0 +1,28 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+
+System_Boundary(hotelio, "Hotelio Monolith & Microservices") {
+
+  Container(RESTapiGateway, "RESTapiGateway", "NGINX", "Aggregates microservices and monolith")
+  Container(bookingService, "BookingService", "Microservice", "Validates and creates bookings")
+  
+  Container_Boundary(mono, "Monolith"){  
+    Container(hotelService, "HotelService", "Java Service", "Retrieves hotel details")
+    Container(userService, "UserService", "Java Service", "Validates user status and blacklist")
+    Container(promoService, "PromoCodeService", "Java Service", "Applies discounts and rules")
+    Container(reviewService, "ReviewService", "Java Service", "Manages hotel reviews")
+    
+  }
+
+
+}
+Person(user, "User", "Interacts with frontend,")
+user --> RESTapiGateway
+RESTapiGateway --> bookingService
+bookingService --> RESTapiGateway
+RESTapiGateway --> mono
+
+
+@enduml
