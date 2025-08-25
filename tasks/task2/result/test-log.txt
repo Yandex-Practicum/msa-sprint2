@@ -1,0 +1,5 @@
+❯ curl --location 'http://localhost:8084/api/bookings'
+[{"id":1,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":10.0,"price":90.0,"createdAt":"2025-08-22T04:52:44.482169591Z"},{"id":2,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":"","discountPercent":0.0,"price":80.0,"createdAt":"2025-08-22T04:52:44.482542383Z"},{"id":3,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":"","discountPercent":0.0,"price":80.0,"createdAt":"2025-08-22T04:52:44.482553549Z"},{"id":4,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":10.0,"price":90.0,"createdAt":"2025-08-22T04:52:44.482559549Z"}]%
+
+❯ curl --location --request POST 'http://localhost:8084/api/bookings?userId=test-user-3&hotelId=test-hotel-1'
+{"id":6,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":"","discountPercent":0.0,"price":80.0,"createdAt":"2025-08-22T04:53:38.607204880Z"}%

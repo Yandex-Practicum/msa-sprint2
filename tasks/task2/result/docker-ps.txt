@@ -1,0 +1,10 @@
+❯ docker ps
+CONTAINER ID   IMAGE                                             COMMAND                  CREATED          STATUS          PORTS                                        NAMES
+3a8874b359fd   booking-history-service-booking-history-service   "java -jar app.jar"      2 minutes ago    Up 2 minutes    0.0.0.0:8086->8080/tcp                       booking-history-service
+b846bcb80db7   booking-service-booking-service                   "java -jar app.jar"      4 minutes ago    Up 4 minutes    0.0.0.0:8085->8080/tcp                       booking-service
+8dacf0172561   postgres:15                                       "docker-entrypoint.s…"   50 minutes ago   Up 50 minutes   0.0.0.0:5430->5432/tcp                       booking-history-service-db
+819ff30918af   postgres:15                                       "docker-entrypoint.s…"   10 hours ago     Up 10 hours     0.0.0.0:5431->5432/tcp                       booking-service-db
+f75ca81bab2e   hotelio-monolith-monolith                         "java -jar app.jar"      12 hours ago     Up 12 hours     0.0.0.0:8084->8080/tcp                       hotelio-monolith
+ecb5a2f11428   confluentinc/cp-zookeeper:7.2.1                   "/etc/confluent/dock…"   13 hours ago     Up 13 hours     2888/tcp, 0.0.0.0:2181->2181/tcp, 3888/tcp   hotelio-monolith-zookeeper-1
+66b83c28ba12   postgres:15                                       "docker-entrypoint.s…"   13 hours ago     Up 13 hours     0.0.0.0:5432->5432/tcp                       hotelio-db
+91628e11cde0   confluentinc/cp-kafka:7.2.1                       "/etc/confluent/dock…"   13 hours ago     Up 13 hours     0.0.0.0:9092->9092/tcp                       hotelio-monolith-kafka-1

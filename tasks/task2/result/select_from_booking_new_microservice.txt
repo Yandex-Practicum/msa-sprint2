@@ -1,0 +1,6 @@
+SELECT * FROM booking;
+
+10,90,2025-08-22 04:46:05.817419 +00:00,1,test-hotel-1,TESTCODE1,test-user-2
+0,80,2025-08-22 04:46:05.817419 +00:00,2,test-hotel-1,,test-user-3
+0,80,,3,test-hotel-1,"",test-user-3
+10,90,,4,test-hotel-1,TESTCODE1,test-user-2
