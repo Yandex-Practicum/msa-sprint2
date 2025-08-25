@@ -12,12 +12,15 @@ timeout 2 bash -c "</dev/tcp/${DB_HOST}/${DB_PORT}" \
 echo "🧪 Загрузка фикстур..."
 PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" "${DB_NAME}" < init-fixtures.sql
 
+echo "🧪 Загрузка фикстур(hotel-service)..."
+PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT_BOOKING_SERVICE}" -U "${DB_USER}" "${DB_NAME}" < init-fixtures-booking-service.sql
+
 echo "🧪 Выполнение HTTP-тестов..."
 
 pass() { echo "✅ $1"; }
 fail() { echo "❌ $1"; exit 1; }
 
-BASE="${API_URL:-http://localhost:8080}"
+BASE="${API_URL:-http://localhost:8084}"
 
 echo ""
 echo "Тесты пользователей..."
