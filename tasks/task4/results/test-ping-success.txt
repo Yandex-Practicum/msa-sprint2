@@ -1,0 +1,12 @@
+🧪 ТЕСТ HEALTH CHECK ENDPOINT
+=============================
+
+Команда:
+--------
+curl http://localhost:8080/ping
+
+Результат:
+----------
+pong
+
+✅ Health check успешно работает

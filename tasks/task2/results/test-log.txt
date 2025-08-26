@@ -1,0 +1,101 @@
+🏁 Регрессионный тест микросервисной архитектуры Hotelio
+🧪 Проверка подключения к БД...
+🧪 Загрузка фикстур...
+DELETE 0
+DELETE 0
+DELETE 0
+DELETE 0
+DELETE 0
+INSERT 0 4
+INSERT 0 3
+INSERT 0 12
+INSERT 0 3
+INSERT 0 2
+🧪 Выполнение HTTP-тестов...
+
+Тесты пользователей...
+✅ Получение test-user-1 по ID работает
+✅ Статус test-user-1: ACTIVE
+✅ test-user-1 в блэклисте
+✅ test-user-1 активен
+✅ test-user-1 не авторизован (в блэклисте)
+✅ test-user-3 — VIP-пользователь
+✅ test-user-2 авторизован
+
+Тесты отелей...
+✅ test-hotel-1 получен по ID
+✅ test-hotel-1 работает
+✅ test-hotel-3 не работает
+✅ test-hotel-2 полностью забронирован
+✅ Поиск отелей в Сеуле работает
+✅ Топ-отели в Сеуле загружены
+
+Тесты ревью...
+✅ Отзывы test-hotel-1 найдены
+✅ test-hotel-1 признан надёжным
+✅ test-hotel-3 НЕ признан надёжным (ожидаемо)
+
+Тесты промокодов...
+✅ Промокод TESTCODE1 найден
+✅ VIP-промо доступен VIP
+✅ VIP-промо недоступен обычному
+✅ Обычный промо доступен
+✅ Истекший промо недоступен
+✅ POST /validate промо прошёл
+
+Тесты бронирования (через gRPC микросервис)...
+✅ Список бронирований получен из монолита
+✅ Список бронирований пользователя получен из монолита
+
+Создание бронирования test-user-3 в test-hotel-1...
+✅ Бронирование успешно создано через gRPC микросервис
+   - Данные сохранены в BookingService DB
+   - Событие опубликовано в Kafka
+   - Событие обработано HistoryService
+
+Создание бронирования test-user-2 в test-hotel-1 с промо...
+✅ Бронирование с промо успешно создано через gRPC микросервис
+   - Промокод TESTCODE1 применен
+   - Данные сохранены в BookingService DB
+   - Событие опубликовано в Kafka
+   - Событие обработано HistoryService
+
+Проверка валидации неактивного пользователя...
+✅ Отклонено: неактивный пользователь (test-user-0)
+
+Проверка валидации недоверенного отеля...
+✅ Отклонено: недоверенный отель (test-hotel-3)
+
+Проверка валидации полностью забронированного отеля...
+✅ Отклонено: отель полностью забронирован (test-hotel-2)
+
+🔍 Проверка базы данных микросервисов...
+Проверка записей в BookingService DB...
+✅ BookingService DB содержит 2 записи:
+   - booking_1756138453341751929 | test-user-3 | test-hotel-1 | 100.00
+   - booking_1756138453375376512 | test-user-2 | test-hotel-1 | TESTCODE1 | 100.00
+
+Проверка истории в BookingHistoryService DB...
+✅ BookingHistoryService DB содержит 2 события:
+   - Event 1: BOOKING_CREATED для booking_1756138453341751929
+   - Event 2: BOOKING_CREATED для booking_1756138453375376512
+
+🔍 Проверка логов микросервисов...
+✅ BookingService gRPC логи:
+   - gRPC CreateBooking called: userID=test-user-3, hotelID=test-hotel-1
+   - Message sent to partition 0 at offset 0
+   - gRPC CreateBooking called: userID=test-user-2, hotelID=test-hotel-1, promoCode=TESTCODE1
+   - Message sent to partition 0 at offset 1
+
+✅ BookingHistoryService Kafka логи:
+   - Consumer group session setup
+   - Successfully processed booking event: booking_1756138453341751929
+   - Successfully processed booking event: booking_1756138453375376512
+
+🎉 РЕЗУЛЬТАТ:
+✅ Микросервисная архитектура ПОЛНОСТЬЮ РАБОТАЕТ!
+✅ 2 бронирования успешно созданы через gRPC
+✅ 2 события успешно обработаны через Kafka
+✅ Все валидации работают корректно
+✅ Event-driven архитектура функционирует
+✅ Strangler Fig паттерн успешно реализован!

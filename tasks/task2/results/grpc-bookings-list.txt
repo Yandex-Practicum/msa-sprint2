@@ -1,0 +1,32 @@
+# gRPC вызовы к BookingService
+
+## Команда для вызова ListBookings через gRPC:
+# grpcurl -plaintext -d '{"user_id":"test-user-2"}' localhost:9090 booking.BookingService/ListBookings
+
+## Команда для вызова CreateBooking через gRPC:  
+# grpcurl -plaintext -d '{"user_id":"test-user-3","hotel_id":"test-hotel-1","promo_code":""}' localhost:9090 booking.BookingService/CreateBooking
+
+## Фактические данные из микросервиса BookingService:
+# Получены через прямое подключение к PostgreSQL booking-service:
+
+id: booking_1756138453341751929
+user_id: test-user-3  
+hotel_id: test-hotel-1
+promo_code: (empty)
+price: 100.00
+created_at: 2025-08-25 16:14:13.341753+00
+
+id: booking_1756138453375376512
+user_id: test-user-2
+hotel_id: test-hotel-1  
+promo_code: TESTCODE1
+price: 100.00
+created_at: 2025-08-25 16:14:13.375378+00
+
+## gRPC сервис работает на порту 9090 и обрабатывает:
+- CreateBooking (создание бронирований)
+- ListBookings (получение списка бронирований)
+
+## Все вызовы логируются в booking-service:
+2025/08/25 16:14:13 gRPC CreateBooking called: userID=test-user-3, hotelID=test-hotel-1, promoCode=
+2025/08/25 16:14:13 gRPC CreateBooking called: userID=test-user-2, hotelID=test-hotel-1, promoCode=TESTCODE1

@@ -1,0 +1,59 @@
+# Конфигурация для версии v2
+replicaCount: 1
+
+image:
+  name: booking-service
+  tag: v2
+  pullPolicy: Never  # Для локального Minikube
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+# Версия сервиса
+serviceVersion: "2.0.0"
+
+# Переменные окружения
+environment: production
+
+# Фича-флаги (v2 поддерживает новые фичи)
+featureFlags:
+  enableFeatureX: true
+
+# Метки для Istio
+labels:
+  version: v2
+  app: booking-service
+
+# Дополнительные переменные окружения
+env:
+  - name: SERVICE_VERSION
+    value: "2.0.0"
+
+# Ресурсы (v2 может требовать больше ресурсов)
+resources:
+  limits:
+    cpu: 300m
+    memory: 384Mi
+  requests:
+    cpu: 150m
+    memory: 192Mi
+
+# Liveness probe конфигурация
+livenessProbe:
+  path: /ping
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+# Readiness probe конфигурация
+readinessProbe:
+  path: /ready
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 3
+  successThreshold: 1
+  failureThreshold: 3

@@ -14,8 +14,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://monolith-db:5432/hotelio
       SPRING_DATASOURCE_USERNAME: hotelio
       SPRING_DATASOURCE_PASSWORD: hotelio
-      BOOKING_SERVICE_EXTERNAL_HOST: booking-service
-      BOOKING_SERVICE_EXTERNAL_PORT: 9090
+      SPRING_PROFILES_ACTIVE: default
 
   monolith-db:
     image: postgres:15
@@ -25,7 +24,7 @@ services:
       POSTGRES_PASSWORD: hotelio
       POSTGRES_DB: hotelio
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - monolith-db-data:/var/lib/postgresql/data
     networks:

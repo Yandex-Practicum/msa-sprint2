@@ -1,0 +1,31 @@
+2025-08-25T16:11:49.503Z  INFO 1 --- [           main] com.hotelio.GrpcBookingService           : Using GRPC BookingService
+➡️  BookingService beans:
+    - bookingService: class com.hotelio.monolith.service.BookingService
+    - grpcBookingService: class com.hotelio.GrpcBookingService
+	at com.hotelio.GrpcBookingService.listAll(GrpcBookingService.java:26) ~[p-o-y-1.0.0.jar!/:na]
+	at com.hotelio.GrpcBookingService.toBooking(GrpcBookingService.java:48) ~[p-o-y-1.0.0.jar!/:na]
+	at com.hotelio.GrpcBookingService.createBooking(GrpcBookingService.java:40) ~[p-o-y-1.0.0.jar!/:na]
+	at com.hotelio.GrpcBookingService.toBooking(GrpcBookingService.java:48) ~[p-o-y-1.0.0.jar!/:na]
+	at com.hotelio.GrpcBookingService.createBooking(GrpcBookingService.java:40) ~[p-o-y-1.0.0.jar!/:na]
+2025-08-25T16:14:13.392Z ERROR 1 --- [nio-8080-exec-3] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: io.grpc.StatusRuntimeException: UNKNOWN: user validation failed: user test-user-0 is inactive] with root cause
+io.grpc.StatusRuntimeException: UNKNOWN: user validation failed: user test-user-0 is inactive
+	at io.grpc.stub.ClientCalls.toStatusRuntimeException(ClientCalls.java:268) ~[grpc-stub-1.64.0.jar!/:1.64.0]
+	at io.grpc.stub.ClientCalls.getUnchecked(ClientCalls.java:249) ~[grpc-stub-1.64.0.jar!/:1.64.0]
+	at io.grpc.stub.ClientCalls.blockingUnaryCall(ClientCalls.java:167) ~[grpc-stub-1.64.0.jar!/:1.64.0]
+	at com.hotelio.proto.booking.BookingServiceGrpc$BookingServiceBlockingStub.createBooking(BookingServiceGrpc.java:206) ~[p-o-y-1.0.0.jar!/:na]
+	at com.hotelio.GrpcBookingService.createBooking(GrpcBookingService.java:39) ~[p-o-y-1.0.0.jar!/:na]
+2025-08-25T16:14:13.407Z ERROR 1 --- [nio-8080-exec-5] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: io.grpc.StatusRuntimeException: UNKNOWN: hotel validation failed: hotel test-hotel-3 is not operational] with root cause
+io.grpc.StatusRuntimeException: UNKNOWN: hotel validation failed: hotel test-hotel-3 is not operational
+	at io.grpc.stub.ClientCalls.toStatusRuntimeException(ClientCalls.java:268) ~[grpc-stub-1.64.0.jar!/:1.64.0]
+	at io.grpc.stub.ClientCalls.getUnchecked(ClientCalls.java:249) ~[grpc-stub-1.64.0.jar!/:1.64.0]
+	at io.grpc.stub.ClientCalls.blockingUnaryCall(ClientCalls.java:167) ~[grpc-stub-1.64.0.jar!/:1.64.0]
+	at com.hotelio.proto.booking.BookingServiceGrpc$BookingServiceBlockingStub.createBooking(BookingServiceGrpc.java:206) ~[p-o-y-1.0.0.jar!/:na]
+	at com.hotelio.GrpcBookingService.createBooking(GrpcBookingService.java:39) ~[p-o-y-1.0.0.jar!/:na]
+2025-08-25T16:14:13.426Z ERROR 1 --- [io-8080-exec-10] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: io.grpc.StatusRuntimeException: UNKNOWN: hotel validation failed: hotel test-hotel-2 is not trusted] with root cause
+io.grpc.StatusRuntimeException: UNKNOWN: hotel validation failed: hotel test-hotel-2 is not trusted
+	at io.grpc.stub.ClientCalls.toStatusRuntimeException(ClientCalls.java:268) ~[grpc-stub-1.64.0.jar!/:1.64.0]
+	at io.grpc.stub.ClientCalls.getUnchecked(ClientCalls.java:249) ~[grpc-stub-1.64.0.jar!/:1.64.0]
+	at io.grpc.stub.ClientCalls.blockingUnaryCall(ClientCalls.java:167) ~[grpc-stub-1.64.0.jar!/:1.64.0]
+	at com.hotelio.proto.booking.BookingServiceGrpc$BookingServiceBlockingStub.createBooking(BookingServiceGrpc.java:206) ~[p-o-y-1.0.0.jar!/:na]
+	at com.hotelio.GrpcBookingService.createBooking(GrpcBookingService.java:39) ~[p-o-y-1.0.0.jar!/:na]
+	at com.hotelio.GrpcBookingService.listAll(GrpcBookingService.java:26) ~[p-o-y-1.0.0.jar!/:na]

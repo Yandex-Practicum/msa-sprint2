@@ -1,0 +1,54 @@
+# Конфигурация для Staging окружения
+
+replicaCount: 2  # Больше реплик для тестирования балансировки
+
+image:
+  name: booking-service
+  tag: staging
+  pullPolicy: Never  # Для локального Minikube
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+# Переменные окружения
+environment: staging
+
+# Фича-флаги
+featureFlags:
+  enableFeatureX: true  # Включаем для тестирования новых фич
+
+# Дополнительные переменные окружения
+env:
+  - name: LOG_LEVEL
+    value: debug
+  - name: DEBUG_MODE
+    value: "true"
+
+# Ресурсы - меньше для staging
+resources:
+  limits:
+    cpu: 150m
+    memory: 192Mi
+  requests:
+    cpu: 50m
+    memory: 96Mi
+
+# Liveness probe конфигурация - более агрессивная для staging
+livenessProbe:
+  path: /ping
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 3
+  successThreshold: 1
+  failureThreshold: 2
+
+# Readiness probe конфигурация - быстрее для staging
+readinessProbe:
+  path: /ready
+  initialDelaySeconds: 3
+  periodSeconds: 3
+  timeoutSeconds: 2
+  successThreshold: 1
+  failureThreshold: 2

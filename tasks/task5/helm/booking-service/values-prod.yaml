@@ -1,0 +1,56 @@
+# Конфигурация для Production окружения
+
+replicaCount: 3  # Больше реплик для надёжности
+
+image:
+  name: booking-service
+  tag: v1.0.0  # Фиксированная версия для prod
+  pullPolicy: IfNotPresent  # Для production из registry
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+# Переменные окружения
+environment: production
+
+# Фича-флаги
+featureFlags:
+  enableFeatureX: false  # Отключено в production до полного тестирования
+
+# Дополнительные переменные окружения
+env:
+  - name: LOG_LEVEL
+    value: info
+  - name: DEBUG_MODE
+    value: "false"
+  - name: MAX_CONNECTIONS
+    value: "100"
+
+# Ресурсы - больше для production
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+# Liveness probe конфигурация - консервативная для production
+livenessProbe:
+  path: /ping
+  initialDelaySeconds: 15
+  periodSeconds: 15
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+# Readiness probe конфигурация - стабильная для production
+readinessProbe:
+  path: /ready
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 2
+  failureThreshold: 3

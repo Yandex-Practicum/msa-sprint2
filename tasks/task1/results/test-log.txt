@@ -1,0 +1,62 @@
+HOTELIO MONOLITH TESTING LOG (ИСПРАВЛЕННЫЕ РЕЗУЛЬТАТЫ)
+=========================================================
+
+APPLICATION STARTUP:
+- PostgreSQL: Запущен на порту 5433 (host: 5432)
+- Hotelio Monolith: Запущен на порту 8084 (host: 8080)
+- Kafka & Zookeeper: Запущены успешно
+- Таблицы БД созданы: app_user, booking, hotel, promo_code, review
+
+ИССЛЕДОВАННЫЕ ПРОБЛЕМЫ:
+1. GRPC BookingService активирован вместо стандартного BookingService
+2. NullPointerException в BookingListRequest при userId = null
+3. BookingController первоначально падал с ошибкой 500
+
+РЕШЕНИЕ ПРОБЛЕМ:
+- Установлен SPRING_PROFILES_ACTIVE: default
+- Приложение успешно использует стандартный BookingService
+- Все API теперь работают корректно
+
+ИТОГОВЫЕ РЕЗУЛЬТАТЫ ТЕСТИРОВАНИЯ:
+✅ USERS API - Все эндпоинты работают
+  - GET /api/users/{id} - ОК
+  - GET /api/users/{id}/status - ОК  
+  - GET /api/users/{id}/blacklisted - ОК
+  - GET /api/users/{id}/active - ОК
+  - GET /api/users/{id}/authorized - ОК
+  - GET /api/users/{id}/vip - ОК
+
+✅ HOTELS API - Все эндпоинты работают
+  - GET /api/hotels/{id} - ОК
+  - GET /api/hotels/{id}/operational - ОК
+  - GET /api/hotels/{id}/fully-booked - ОК
+  - GET /api/hotels/by-city?city={city} - ОК
+  - GET /api/hotels/top-rated?city={city}&limit={n} - ОК
+
+✅ REVIEWS API - Все эндпоинты работают
+  - GET /api/reviews/hotel/{hotelId} - ОК
+  - GET /api/reviews/hotel/{hotelId}/trusted - ОК
+
+✅ PROMOCODES API - Все эндпоинты работают
+  - GET /api/promos/{code} - ОК
+  - GET /api/promos/{code}/valid?isVipUser={bool} - ОК
+  - POST /api/promos/validate - ОК
+
+✅ BOOKINGS API - ИСПРАВЛЕНО, РАБОТАЕТ
+  - GET /api/bookings - ОК
+  - GET /api/bookings?userId={id} - ОК
+  - POST /api/bookings - ОК
+  - Валидация неактивных пользователей - ОК
+  - Проверка доверенности отелей - ОК
+  - Проверка доступности отелей - ОК
+  - Применение промокодов - ОК
+
+АРХИТЕКТУРНЫЕ НАБЛЮДЕНИЯ:
+- Монолит имеет плотную связанность между всеми сервисами
+- Единая база данных со всеми бизнес-сущностями
+- BookingService зависит от: UserService, HotelService, PromoCodeService, ReviewService
+- Сложная цепочка валидации в процессе создания бронирования
+- Система полностью функциональна и готова к анализу миграции
+
+ВЫВОД: 
+Все компоненты монолита работают корректно. Система готова для поэтапной миграции к микросервисной архитектуре по паттерну Strangler Fig, начиная с UserService как наименее связанного компонента.
