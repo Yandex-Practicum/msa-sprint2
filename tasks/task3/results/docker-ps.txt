@@ -1,0 +1,12 @@
+NAMES                     IMAGE                             STATUS              PORTS
+hotel-subgraph            task3-hotel-subgraph              Up About a minute   0.0.0.0:4002->4002/tcp
+apollo-gateway            task3-apollo-gateway              Up 3 minutes        0.0.0.0:4000->4000/tcp
+booking-subgraph          task3-booking-subgraph            Up 3 minutes        0.0.0.0:4001->4001/tcp
+booking-service           task2-booking-service             Up 2 hours          0.0.0.0:9090->9090/tcp
+hotelio-monolith          task2-monolith                    Up 2 hours          0.0.0.0:8084->8080/tcp
+booking-history-service   task2-booking-history-service     Up 2 hours          
+kafka                     confluentinc/cp-kafka:7.2.1       Up 2 hours          0.0.0.0:9092->9092/tcp
+history-db                postgres:15                       Up 2 hours          0.0.0.0:5434->5432/tcp
+booking-db                postgres:15                       Up 2 hours          0.0.0.0:5433->5432/tcp
+hotelio-db                postgres:15                       Up 2 hours          0.0.0.0:5435->5432/tcp
+zookeeper                 confluentinc/cp-zookeeper:7.2.1   Up 2 hours          2888/tcp, 0.0.0.0:2181->2181/tcp, 3888/tcp

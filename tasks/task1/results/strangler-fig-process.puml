@@ -1,0 +1,77 @@
+@startuml Strangler_Fig_Migration_Process
+
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title "Паттерн Strangler Fig: Миграция UserService"
+
+Person(user, "Клиент", "Потребители API")
+
+rectangle "ФАЗА 1: Подготовка" as prep {
+  Container(monolith1, "Монолит", "Spring Boot", "Все сервисы")
+  ContainerDb(db1, "Основная БД", "PostgreSQL", "Все данные")
+  Container(new_user_svc, "Новый UserService", "Spring Boot", "Микросервис")
+  ContainerDb(user_db1, "БД пользователей", "PostgreSQL", "Копия данных пользователей")
+  
+  Rel(user, monolith1, "100% трафика")
+  Rel(monolith1, db1, "Все операции")
+  Rel_Hidden(new_user_svc, user_db1)
+}
+
+rectangle "ФАЗА 2: Введение прокси" as proxy {
+  Container(api_gw, "API Gateway", "Kong", "Маршрутизация трафика")
+  Container(monolith2, "Монолит", "Spring Boot", "Все сервисы")
+  Container(user_svc2, "UserService", "Spring Boot", "Готовый микросервис")
+  ContainerDb(db2, "Основная БД", "PostgreSQL", "Все данные")
+  ContainerDb(user_db2, "БД пользователей", "PostgreSQL", "Синхронизированные данные пользователей")
+  
+  Rel(user, api_gw, "Весь трафик")
+  Rel(api_gw, monolith2, "90% /api/users")
+  Rel(api_gw, user_svc2, "10% /api/users", "A/B тестирование")
+  Rel(monolith2, db2, "Все данные")
+  Rel(user_svc2, user_db2, "Только данные пользователей")
+}
+
+rectangle "ФАЗА 3: Переключение трафика" as shift {
+  Container(api_gw3, "API Gateway", "Kong", "Умная маршрутизация")
+  Container(monolith3, "Монолит", "Spring Boot", "Booking, Hotel, Promo, Review")
+  Container(user_svc3, "UserService", "Spring Boot", "Готов к продакшену")
+  Container(kafka3, "Kafka", "Шина событий", "События пользователей")
+  ContainerDb(db3, "Основная БД", "PostgreSQL", "Отели, бронирования и т.д.")
+  ContainerDb(user_db3, "БД пользователей", "PostgreSQL", "Авторитетные данные пользователей")
+  
+  Rel(user, api_gw3, "Весь трафик")
+  Rel(api_gw3, user_svc3, "100% /api/users", "Полная миграция")
+  Rel(api_gw3, monolith3, "/api/bookings, /api/hotels и т.д.")
+  Rel(user_svc3, kafka3, "События пользователей")
+  Rel(monolith3, kafka3, "Потребляет события")
+  Rel(monolith3, db3, "Данные, не связанные с пользователями")
+  Rel(user_svc3, user_db3, "Операции с пользователями")
+}
+
+rectangle "ФАЗА 4: Очистка" as cleanup {
+  Container(api_gw4, "API Gateway", "Kong", "Чистая маршрутизация")
+  Container(monolith4, "Сокращенный монолит", "Spring Boot", "UserService удален")
+  Container(user_svc4, "UserService", "Spring Boot", "Независимый сервис")
+  Container(kafka4, "Kafka", "Шина событий", "Слабосвязанное взаимодействие")
+  ContainerDb(db4, "Основная БД", "PostgreSQL", "Без данных пользователей")
+  ContainerDb(user_db4, "БД пользователей", "PostgreSQL", "Единственный источник истины")
+  
+  Rel(user, api_gw4, "Весь трафик")
+  Rel(api_gw4, user_svc4, "/api/users")
+  Rel(api_gw4, monolith4, "Другие API")
+  Rel(user_svc4, kafka4, "События жизненного цикла пользователей")
+  Rel(monolith4, kafka4, "Потребление событий")
+  Rel(monolith4, db4, "Данные, не связанные с пользователями")
+  Rel(user_svc4, user_db4, "Данные пользователей")
+}
+
+prep -Down-> proxy : "Развертывание и тестирование"
+proxy -Down-> shift : "Постепенная миграция" 
+shift -Down-> cleanup : "Удаление зависимостей"
+
+note top of prep : **2 недели**\n- Создать UserService\n- Настроить отдельную БД\n- Репликация данных
+note top of proxy : **1 неделя**\n- Развернуть API Gateway\n- A/B тестирование\n- Мониторинг производительности
+note top of shift : **1 неделя**\n- Перенаправить весь трафик\n- Событийные обновления\n- Мониторинг ошибок
+note top cleanup : **Постоянно**\n- Очистка монолита\n- Миграция следующего сервиса\n- Оптимизация производительности
+
+@enduml

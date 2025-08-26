@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: booking-gateway
+  namespace: default
+spec:
+  selector:
+    istio: ingressgateway # Использует Istio ingress gateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*" # Принимаем трафик от любого хоста

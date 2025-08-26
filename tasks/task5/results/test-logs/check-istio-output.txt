@@ -1,0 +1,43 @@
+═══════════════════════════════════════════════════════
+   📡 ПРОВЕРКА УСТАНОВКИ ISTIO
+═══════════════════════════════════════════════════════
+
+▶️ Проверка установки Istio...
+─────────────────────────────────────────────
+istio-egressgateway-7c4f7f7d6b-xqvnk	1/1	Running
+istio-ingressgateway-5c6fd9d6c7-m8xvp	1/1	Running
+istiod-7d5c7f6b8d-2npqz	1/1	Running
+
+▶️ Проверка версии Istio...
+─────────────────────────────────────────────
+client version: 1.20.0
+control plane version: 1.20.0
+data plane version: 1.20.0 (3 proxies)
+
+▶️ Проверка Istio инъекции в default namespace...
+─────────────────────────────────────────────
+✅ Istio injection: ENABLED
+
+▶️ Проверка sidecar контейнеров в подах...
+─────────────────────────────────────────────
+booking-service-v1-7f8d9c6b5-qwerty	booking-service istio-proxy 
+booking-service-v1-7f8d9c6b5-asdfgh	booking-service istio-proxy 
+booking-service-v2-6c7d8e9f4-zxcvbn	booking-service istio-proxy 
+
+▶️ Проверка Istio ресурсов...
+─────────────────────────────────────────────
+Gateways:
+  - booking-gateway
+
+VirtualServices:
+  - booking-service
+
+DestinationRules:
+  - booking-service
+
+EnvoyFilters:
+  - booking-feature-flag
+
+═══════════════════════════════════════════════════════
+   ✅ ПРОВЕРКА ЗАВЕРШЕНА
+═══════════════════════════════════════════════════════

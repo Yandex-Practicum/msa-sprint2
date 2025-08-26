@@ -1,0 +1,32 @@
+🧪 ТЕСТ FEATURE FLAG
+====================
+
+Запуск контейнера с включенным флагом:
+--------------------------------------
+docker run -d --name booking-test \
+  -e ENABLE_FEATURE_X=true \
+  -e ENVIRONMENT=staging \
+  -p 8080:8080 booking-service:latest
+
+Проверка feature endpoint:
+--------------------------
+curl http://localhost:8080/feature
+
+Результат:
+----------
+{
+  "feature": "X",
+  "enabled": true,
+  "message": "Feature X is enabled in staging environment!"
+}
+
+✅ Feature flag корректно меняет поведение сервиса
+
+Логи сервиса:
+------------
+2025/08/26 06:16:32 [staging] Feature X is ENABLED
+2025/08/26 06:16:32 [staging] Starting booking-service on :8080
+2025/08/26 06:16:32 [staging] Version: 1.0.0
+2025/08/26 06:16:32 [staging] Feature X: true
+2025/08/26 06:16:34 [staging] Service is ready to accept requests
+2025/08/26 06:16:40 [staging] Feature X accessed from 192.168.65.1:37030

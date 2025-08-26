@@ -1,0 +1,79 @@
+@startuml Hotelio_Migration_Architecture
+
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title План миграции архитектуры Hotelio
+
+Person(user, "Пользователь", "Клиент платформы Hotelio")
+
+System_Boundary(current, "ТЕКУЩЕЕ: Монолит") {
+  Container(monolith_current, "Монолит Hotelio", "Spring Boot", "Все сервисы в одном приложении")
+  ContainerDb(db_current, "БД Монолита", "PostgreSQL", "Единая база данных")
+  
+  Rel(monolith_current, db_current, "CRUD")
+}
+
+System_Boundary(phase1, "ФАЗА 1: Миграция User Service") {
+  Container(api_gateway, "API Gateway", "Kong/Spring Gateway", "Маршрутизация трафика, аутентификация")
+  Container(monolith_reduced, "Сокращенный Монолит", "Spring Boot", "Booking, Hotel, Promo, Review сервисы")
+  Container(user_service, "User Service", "Spring Boot", "Микросервис пользователей")
+  
+  ContainerDb(monolith_db, "БД Монолита", "PostgreSQL", "Данные отелей, бронирований, промо, отзывов")
+  ContainerDb(user_db, "БД Пользователей", "PostgreSQL", "Только пользовательские данные")
+  Container(kafka, "Kafka", "Поток событий", "События пользователей")
+  
+  Rel(api_gateway, monolith_reduced, "Маршруты /api/bookings, /api/hotels и др.")
+  Rel(api_gateway, user_service, "Маршруты /api/users/*")
+  Rel(monolith_reduced, monolith_db, "CRUD")
+  Rel(user_service, user_db, "CRUD")
+  Rel(user_service, kafka, "Публикует события пользователей")
+  Rel(monolith_reduced, kafka, "Потребляет события пользователей")
+}
+
+System_Boundary(target, "ЦЕЛЬ: Полная микросервисная архитектура") {
+  Container(api_gw_final, "API Gateway", "Kong + GraphQL BFF", "Умная маршрутизация, GraphQL")
+  Container(user_svc, "User Service", "Spring Boot", "Управление пользователями")
+  Container(hotel_svc, "Hotel Service", "Spring Boot", "Каталог отелей")
+  Container(promo_svc, "Promo Service", "Spring Boot", "Промокоды")
+  Container(review_svc, "Review Service", "Spring Boot", "Отзывы об отелях")
+  Container(booking_svc, "Booking Service", "Spring Boot", "Оркестрация бронирований")
+  
+  ContainerDb(user_db_final, "БД Пользователей", "PostgreSQL", "Пользователи")
+  ContainerDb(hotel_db, "БД Отелей", "PostgreSQL", "Отели")
+  ContainerDb(promo_db, "БД Промо", "PostgreSQL", "Промокоды")
+  ContainerDb(review_db, "БД Отзывов", "PostgreSQL", "Отзывы")
+  ContainerDb(booking_db, "БД Бронирований", "PostgreSQL", "Бронирования")
+  
+  Container(kafka_final, "Kafka", "Поток событий", "Событийное взаимодействие")
+  Container(monitoring, "Мониторинг", "Prometheus/Grafana/Jaeger", "Стек наблюдаемости")
+  
+  Rel(api_gw_final, user_svc, "Маршруты")
+  Rel(api_gw_final, hotel_svc, "Маршруты")
+  Rel(api_gw_final, promo_svc, "Маршруты")
+  Rel(api_gw_final, review_svc, "Маршруты")
+  Rel(api_gw_final, booking_svc, "Маршруты")
+  
+  Rel(user_svc, user_db_final, "CRUD")
+  Rel(hotel_svc, hotel_db, "CRUD")
+  Rel(promo_svc, promo_db, "CRUD")
+  Rel(review_svc, review_db, "CRUD")
+  Rel(booking_svc, booking_db, "CRUD")
+  
+  Rel_D(booking_svc, kafka_final, "События")
+  Rel_U(user_svc, kafka_final, "События")
+  Rel_U(hotel_svc, kafka_final, "События")
+  Rel_U(promo_svc, kafka_final, "События")
+  Rel_U(review_svc, kafka_final, "События")
+}
+
+Rel(user, monolith_current, "API вызовы", "HTTPS")
+Rel(user, api_gateway, "API вызовы", "HTTPS")  
+Rel(user, api_gw_final, "API вызовы", "HTTPS")
+
+note top of current : **Текущее состояние**\nМонолитная архитектура\nЕдиная база данных\nПлотная связанность
+note top of phase1 : **Фаза 1** (2-3 месяца)\nПервый микросервис выделен\nВведен API Gateway\nНачало событийной архитектуры
+note top of target : **Целевое состояние** (1 год)\nПолностью распределенная система\nСобытийная архитектура\nНезависимое масштабирование
+
+@enduml

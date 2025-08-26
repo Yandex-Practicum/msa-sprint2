@@ -1,0 +1,49 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: booking-service
+  namespace: default
+spec:
+  host: booking-service
+  # Circuit Breaker конфигурация
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 10  # Максимум 10 одновременных соединений
+      http:
+        http1MaxPendingRequests: 10  # Максимум 10 запросов в очереди
+        http2MaxRequests: 100  # Максимум 100 запросов для HTTP/2
+        maxRequestsPerConnection: 2  # Максимум 2 запроса на соединение
+        h2UpgradePolicy: UPGRADE  # Автоматический апгрейд до HTTP/2
+    outlierDetection:
+      # Определение сбойных инстансов
+      consecutiveErrors: 5  # После 5 последовательных ошибок
+      interval: 30s  # Интервал анализа
+      baseEjectionTime: 30s  # Время исключения из пула
+      maxEjectionPercent: 50  # Максимум 50% инстансов могут быть исключены
+      minHealthPercent: 30  # Минимум 30% инстансов должны быть здоровыми
+      splitExternalLocalOriginErrors: true  # Разделять локальные и внешние ошибки
+  # Определение subsets для версий
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+    trafficPolicy:
+      connectionPool:
+        tcp:
+          maxConnections: 10
+        http:
+          http1MaxPendingRequests: 5
+          http2MaxRequests: 50
+          maxRequestsPerConnection: 1
+  - name: v2
+    labels:
+      version: v2
+    trafficPolicy:
+      connectionPool:
+        tcp:
+          maxConnections: 15  # v2 может обрабатывать больше соединений
+        http:
+          http1MaxPendingRequests: 10
+          http2MaxRequests: 150
+          maxRequestsPerConnection: 2

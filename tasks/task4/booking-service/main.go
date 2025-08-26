@@ -1,27 +1,143 @@
 package main
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
+
+var (
+	isReady = false
+	version = "1.0.0"
+)
+
+type HealthStatus struct {
+	Status  string `json:"status"`
+	Version string `json:"version"`
+	Ready   bool   `json:"ready"`
+}
+
+type FeatureResponse struct {
+	Feature string `json:"feature"`
+	Enabled bool   `json:"enabled"`
+	Message string `json:"message"`
+}
 
 func main() {
 	enableFeatureX := os.Getenv("ENABLE_FEATURE_X") == "true"
+	environment := os.Getenv("ENVIRONMENT")
+	if environment == "" {
+		environment = "development"
+	}
 
-	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
+	// Настройка маршрутов
+	mux := http.NewServeMux()
+
+	// Health check endpoint (для liveness probe)
+	mux.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("[%s] Health check from %s", environment, r.RemoteAddr)
 		fmt.Fprintf(w, "pong")
 	})
 
-	// TODO: Feature flag route
-	// if ENABLE_FEATURE_X=true, expose /feature
+	// Ready endpoint (для readiness probe)
+	mux.HandleFunc("/ready", func(w http.ResponseWriter, r *http.Request) {
+		if !isReady {
+			log.Printf("[%s] Readiness check failed - service not ready", environment)
+			w.WriteHeader(http.StatusServiceUnavailable)
+			fmt.Fprintf(w, "not ready")
+			return
+		}
+		log.Printf("[%s] Readiness check passed", environment)
+		fmt.Fprintf(w, "ready")
+	})
+
+	// Status endpoint с JSON ответом
+	mux.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
+		status := HealthStatus{
+			Status:  "healthy",
+			Version: version,
+			Ready:   isReady,
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(status)
+	})
+
+	// Feature flag endpoint
 	if enableFeatureX {
-		http.HandleFunc("/feature", func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprintf(w, "Feature X is enabled!")
+		log.Printf("[%s] Feature X is ENABLED", environment)
+		mux.HandleFunc("/feature", func(w http.ResponseWriter, r *http.Request) {
+			log.Printf("[%s] Feature X accessed from %s", environment, r.RemoteAddr)
+			response := FeatureResponse{
+				Feature: "X",
+				Enabled: true,
+				Message: fmt.Sprintf("Feature X is enabled in %s environment!", environment),
+			}
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(response)
 		})
+	} else {
+		log.Printf("[%s] Feature X is DISABLED", environment)
 	}
 
-	log.Println("Server running on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	// Bookings endpoint (простая заглушка для демонстрации)
+	mux.HandleFunc("/bookings", func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("[%s] Bookings requested from %s", environment, r.RemoteAddr)
+		bookings := map[string]interface{}{
+			"bookings": []map[string]string{
+				{"id": "1", "hotel": "Grand Hotel", "status": "confirmed"},
+				{"id": "2", "hotel": "City Plaza", "status": "pending"},
+			},
+			"environment": environment,
+			"featureX":    enableFeatureX,
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(bookings)
+	})
+
+	// Создание HTTP сервера
+	srv := &http.Server{
+		Addr:         ":8080",
+		Handler:      mux,
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+
+	// Запуск сервера в горутине
+	go func() {
+		log.Printf("[%s] Starting booking-service on :8080", environment)
+		log.Printf("[%s] Version: %s", environment, version)
+		log.Printf("[%s] Feature X: %v", environment, enableFeatureX)
+		
+		// Имитация инициализации (например, подключение к БД)
+		time.Sleep(2 * time.Second)
+		isReady = true
+		log.Printf("[%s] Service is ready to accept requests", environment)
+
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("Failed to start server: %v", err)
+		}
+	}()
+
+	// Graceful shutdown
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	log.Printf("[%s] Shutting down server...", environment)
+
+	// Даём 5 секунд на завершение активных запросов
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Printf("[%s] Server forced to shutdown: %v", environment, err)
+	}
+
+	log.Printf("[%s] Server exited", environment)
 }

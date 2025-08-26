@@ -1,0 +1,32 @@
+🧪 УСПЕШНЫЙ ЗАПРОС С АВТОРИЗАЦИЕЙ
+=====================================
+
+Команда:
+--------
+curl -s -X POST http://localhost:4000 \
+  -H "Content-Type: application/json" \
+  -H "userid: test-user-2" \
+  -d '{"query": "query { bookingsByUser(userId: \"test-user-2\") { id userId hotelId hotel { name city stars } discountPercent price } }"}'
+
+Результат:
+----------
+{
+  "data": {
+    "bookingsByUser": [
+      {
+        "id": "booking_1756138453375376512",
+        "userId": "test-user-2",
+        "hotelId": "test-hotel-1",
+        "hotel": {
+          "name": "Hotel test-hotel-1",
+          "city": "Seoul",
+          "stars": 4
+        },
+        "discountPercent": 0,
+        "price": 100
+      }
+    ]
+  }
+}
+
+✅ Пользователь test-user-2 успешно получил свои бронирования с информацией об отеле

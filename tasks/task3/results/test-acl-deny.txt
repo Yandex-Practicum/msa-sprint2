@@ -1,0 +1,47 @@
+🚫 ACL БЛОКИРОВКА - ТЕСТЫ ЗАЩИТЫ ДАННЫХ
+=========================================
+
+ТЕСТ 1: ЗАПРОС БЕЗ ЗАГОЛОВКА userid
+------------------------------------
+Команда:
+curl -s -X POST http://localhost:4000 \
+  -H "Content-Type: application/json" \
+  -d '{"query": "query { bookingsByUser(userId: \"test-user-2\") { id userId hotelId } }"}'
+
+Результат:
+{
+  "errors": [
+    {
+      "message": "Unauthorized: userid header required",
+      "path": ["bookingsByUser"],
+      "extensions": {
+        "code": "INTERNAL_SERVER_ERROR",
+        "serviceName": "booking"
+      }
+    }
+  ],
+  "data": {
+    "bookingsByUser": null
+  }
+}
+
+❌ Доступ запрещен - отсутствует заголовок авторизации
+
+
+ТЕСТ 2: ПОПЫТКА ДОСТУПА К ЧУЖИМ ДАННЫМ
+----------------------------------------
+Команда:
+curl -s -X POST http://localhost:4000 \
+  -H "Content-Type: application/json" \
+  -H "userid: test-user-1" \
+  -d '{"query": "query { bookingsByUser(userId: \"test-user-2\") { id userId hotelId } }"}'
+
+Результат:
+{
+  "data": {
+    "bookingsByUser": []
+  }
+}
+
+❌ Доступ заблокирован - пользователь test-user-1 не может видеть данные test-user-2
+✅ ACL работает корректно - возвращен пустой массив

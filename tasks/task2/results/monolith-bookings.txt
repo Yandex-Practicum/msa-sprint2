@@ -1,0 +1,5 @@
+                               info                               
+------------------------------------------------------------------
+ No bookings table in monolith - all bookings now in microservice
+(1 row)
+

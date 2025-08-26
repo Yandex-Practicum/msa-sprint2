@@ -6,5 +6,6 @@ COPY package.json ./
 RUN npm install
 
 COPY . .
+COPY proto/ ./proto/
 
 CMD ["node", "index.js"]

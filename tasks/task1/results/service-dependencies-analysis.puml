@@ -1,0 +1,34 @@
+@startuml Service_Dependencies_Analysis
+
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title "Анализ зависимостей сервисов Hotelio"
+
+System_Boundary(analysis, "Зависимости в текущем монолите") {
+  Component(booking, "BookingService", "Java Service", "Центральный оркестратор")
+  Component(user, "UserService", "Java Service", "Валидация пользователей и статус")
+  Component(hotel, "HotelService", "Java Service", "Информация об отелях и доступность")
+  Component(promo, "PromoCodeService", "Java Service", "Валидация промокодов")
+  Component(review, "ReviewService", "Java Service", "Агрегация отзывов")
+}
+
+' Зависимости от BookingService
+Rel(booking, user, "validateUser()\nisUserActive()\nisUserBlacklisted()\ngetUserStatus()")
+Rel(booking, hotel, "isHotelOperational()\nisHotelFullyBooked()")
+Rel(booking, promo, "validate(promoCode, userId)")
+Rel(booking, review, "isTrustedHotel(hotelId)")
+
+' Зависимость PromoCodeService  
+Rel(promo, user, "getUserStatus()\nisVipUser()")
+
+note top of booking : **САМЫЙ СЛОЖНЫЙ**\n- Зависит от ВСЕХ сервисов\n- Сложная логика валидации\n- Оркестрация транзакций\n\n**Приоритет миграции: ПОСЛЕДНИЙ**
+
+note right of user : **НЕЗАВИСИМЫЙ**\n- Нет зависимостей\n- Простые CRUD операции\n- Стабильный API\n\n**Приоритет миграции: ПЕРВЫЙ** ✅
+
+note top of hotel : **НЕЗАВИСИМЫЙ**\n- Нет зависимостей\n- Управление каталогом\n- Потенциальные внешние интеграции\n\n**Приоритет миграции: 3-й**
+
+note left of promo : **ПРОСТАЯ ЗАВИСИМОСТЬ**\n- Зависит только от UserService\n- Прямолинейная логика\n\n**Приоритет миграции: 2-й**
+
+note bottom of review : **НЕЗАВИСИМЫЙ**\n- Нет зависимостей\n- Логика агрегации\n- Высокая нагрузка на чтение\n\n**Приоритет миграции: 3-й**
+
+@enduml

@@ -1,0 +1,80 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: booking-feature-flag
+  namespace: default
+spec:
+  workloadSelector:
+    labels:
+      app: booking-service
+  configPatches:
+  # Патч для добавления HTTP фильтра
+  - applyTo: HTTP_FILTER
+    match:
+      context: SIDECAR_INBOUND
+      listener:
+        filterChain:
+          filter:
+            name: "envoy.filters.network.http_connection_manager"
+            subFilter:
+              name: "envoy.filters.http.router"
+    patch:
+      operation: INSERT_BEFORE
+      value:
+        name: envoy.filters.http.lua
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+          inline_code: |
+            function envoy_on_request(request_handle)
+              -- Получаем заголовок X-Feature-Enabled
+              local feature_header = request_handle:headers():get("X-Feature-Enabled")
+              
+              -- Логируем feature flag запрос
+              if feature_header == "true" then
+                request_handle:logInfo("Feature flag detected: routing to v2")
+                -- Добавляем метаданные для метрик
+                request_handle:headers():add("X-Feature-Routed", "v2")
+              else
+                request_handle:logDebug("Normal routing applies")
+                request_handle:headers():add("X-Feature-Routed", "default")
+              end
+              
+              -- Добавляем заголовок с timestamp для трейсинга
+              local timestamp = os.time()
+              request_handle:headers():add("X-Request-Time", tostring(timestamp))
+            end
+            
+            function envoy_on_response(response_handle)
+              -- Добавляем заголовок версии в ответ
+              local version = response_handle:headers():get("X-Version")
+              if version then
+                response_handle:logInfo("Response from version: " .. version)
+                -- Добавляем метрики
+                response_handle:headers():add("X-Served-By", "booking-service-" .. version)
+              end
+              
+              -- Логируем feature routing результат
+              local feature_routed = response_handle:headers():get("X-Feature-Routed")
+              if feature_routed then
+                response_handle:logInfo("Feature routing result: " .. feature_routed)
+              end
+            end
+  
+  # Патч для добавления access логов с feature flag информацией
+  - applyTo: NETWORK_FILTER
+    match:
+      context: SIDECAR_INBOUND
+      listener:
+        filterChain:
+          filter:
+            name: "envoy.filters.network.http_connection_manager"
+    patch:
+      operation: MERGE
+      value:
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+          access_log:
+          - name: envoy.access_loggers.stdout
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.access_loggers.stream.v3.StdoutAccessLog
+              format: "[%START_TIME%] \"%REQ(:METHOD)% %REQ(X-ENVOY-ORIGINAL-PATH?:PATH)% %PROTOCOL%\" %RESPONSE_CODE% %RESPONSE_FLAGS% \"%REQ(X-FEATURE-ENABLED)%\" \"%RESP(X-VERSION)%\" \"%UPSTREAM_HOST%\"\n"

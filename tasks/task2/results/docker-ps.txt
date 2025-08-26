@@ -1,0 +1,9 @@
+CONTAINER ID   IMAGE                             COMMAND                  CREATED         STATUS         PORTS                                        NAMES
+a09e9223e9fe   task2-booking-service             "./booking-service"      3 minutes ago   Up 2 minutes   0.0.0.0:9090->9090/tcp                       booking-service
+f6da75a6f58d   task2-monolith                    "java -jar app.jar"      3 minutes ago   Up 3 minutes   0.0.0.0:8084->8080/tcp                       hotelio-monolith
+59978cda496b   task2-booking-history-service     "./booking-history-s…"   3 minutes ago   Up 2 minutes                                                booking-history-service
+7b6399329055   confluentinc/cp-kafka:7.2.1       "/etc/confluent/dock…"   3 minutes ago   Up 3 minutes   0.0.0.0:9092->9092/tcp                       kafka
+955cb105fa37   postgres:15                       "docker-entrypoint.s…"   3 minutes ago   Up 3 minutes   0.0.0.0:5434->5432/tcp                       history-db
+954d271e3316   postgres:15                       "docker-entrypoint.s…"   3 minutes ago   Up 3 minutes   0.0.0.0:5433->5432/tcp                       booking-db
+1904f10c57f2   postgres:15                       "docker-entrypoint.s…"   3 minutes ago   Up 3 minutes   0.0.0.0:5435->5432/tcp                       hotelio-db
+9a6c416b15d4   confluentinc/cp-zookeeper:7.2.1   "/etc/confluent/dock…"   3 minutes ago   Up 3 minutes   2888/tcp, 0.0.0.0:2181->2181/tcp, 3888/tcp   zookeeper
