@@ -1,0 +1,23 @@
+@startuml
+!include <C4/C4_Context>
+
+title Система Hotelio - Контекстная диаграмма
+
+Person(customer, "Клиент", "Пользователь платформы бронирования отелей")
+Person(admin, "Администратор", "Управляет промокодами и контентом системы")
+
+System(hotelio, "Hotelio Platform", "Платформа онлайн бронирования отелей с каталогом, отзывами и промокодами")
+
+System_Ext(payment, "Payment Gateway", "Внешняя платежная система для обработки платежей")
+System_Ext(hotels, "Hotel Management Systems", "Системы управления отелями для получения актуальной информации")
+System_Ext(email, "Email Service", "Сервис отправки email уведомлений о бронированиях")
+System_Ext(analytics, "Analytics Platform", "Система аналитики для отчетности по бронированиям")
+
+Rel(customer, hotelio, "Ищет отели, создает бронирования, читает отзывы", "HTTPS")
+Rel(admin, hotelio, "Управляет промокодами и модерирует контент", "HTTPS")
+Rel(hotelio, payment, "Обрабатывает платежи за бронирования", "HTTPS/REST")
+Rel(hotelio, hotels, "Получает информацию о доступности номеров", "HTTPS/REST")
+Rel(hotelio, email, "Отправляет подтверждения бронирований", "SMTP")
+Rel(hotelio, analytics, "Передает данные для аналитики", "HTTPS/REST")
+
+@enduml

@@ -1,0 +1,104 @@
+hotelio-monolith:
+hotelio-monolith:   .   ____          _            __ _ _
+hotelio-monolith:  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+hotelio-monolith: ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+hotelio-monolith:  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+hotelio-monolith:   '  |____| .__|_| |_|_| |_\__, | / / / /
+hotelio-monolith:  =========|_|==============|___/=/_/_/_/
+hotelio-monolith:  :: Spring Boot ::                (v3.2.5)
+hotelio-monolith:
+hotelio-monolith: 2025-08-26T22:01:31.743Z  INFO 1 --- [           main] c.hotelio.monolith.MonolithApplication   : Starting MonolithApplication v1.0.0 using Java 17.0.2 with PID 1 (/app/app.jar started by root in /app)
+hotelio-monolith: 2025-08-26T22:01:31.744Z  INFO 1 --- [           main] c.hotelio.monolith.MonolithApplication   : No active profile set, falling back to 1 default profile: "default"
+hotelio-monolith: 2025-08-26T22:01:32.071Z  INFO 1 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+hotelio-monolith: 2025-08-26T22:01:32.101Z  INFO 1 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 26 ms. Found 5 JPA repository interfaces.
+hotelio-monolith: 2025-08-26T22:01:32.319Z  INFO 1 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+hotelio-monolith: 2025-08-26T22:01:32.325Z  INFO 1 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+hotelio-monolith: 2025-08-26T22:01:32.325Z  INFO 1 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.20]
+hotelio-monolith: 2025-08-26T22:01:32.340Z  INFO 1 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+hotelio-monolith: 2025-08-26T22:01:32.340Z  INFO 1 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 558 ms
+hotelio-monolith: 2025-08-26T22:01:32.404Z  INFO 1 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+hotelio-monolith: 2025-08-26T22:01:32.435Z  INFO 1 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
+hotelio-monolith: 2025-08-26T22:01:32.450Z  INFO 1 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+hotelio-monolith: 2025-08-26T22:01:32.548Z  INFO 1 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+hotelio-monolith: 2025-08-26T22:01:32.562Z  INFO 1 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+hotelio-monolith: 2025-08-26T22:01:32.658Z  INFO 1 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@733534f9
+hotelio-monolith: 2025-08-26T22:01:32.659Z  INFO 1 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+hotelio-monolith: 2025-08-26T22:01:33.022Z  INFO 1 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+hotelio-monolith: Hibernate: drop table if exists app_user cascade
+hotelio-monolith: Hibernate: drop table if exists booking cascade
+hotelio-monolith: Hibernate: drop table if exists hotel cascade
+hotelio-monolith: Hibernate: drop table if exists promo_code cascade
+hotelio-monolith: Hibernate: drop table if exists review cascade
+hotelio-monolith: Hibernate: create table app_user (active boolean not null, blacklisted boolean not null, city varchar(255), email varchar(255), id varchar(255) not null, name varchar(255), status varchar(255), primary key (id))
+hotelio-monolith: Hibernate: create table booking (discount_percent float(53), price float(53) not null, created_at timestamp(6) with time zone, id bigserial not null, hotel_id varchar(255), promo_code varchar(255), user_id varchar(255), primary key (id))
+hotelio-monolith: Hibernate: create table hotel (fully_booked boolean not null, operational boolean not null, rating float(53) not null, description varchar(1000), city varchar(255), id varchar(255) not null, primary key (id))
+hotelio-monolith: Hibernate: create table promo_code (discount float(53) not null, expired boolean not null, valid_until date, vip_only boolean not null, code varchar(255) not null, description varchar(255), primary key (code))
+hotelio-monolith: Hibernate: create table review (created_at date, rating integer not null, text varchar(2000), hotel_id varchar(255), id varchar(255) not null, user_id varchar(255), primary key (id))
+hotelio-monolith: 2025-08-26T22:01:33.180Z  INFO 1 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+hotelio-monolith: 2025-08-26T22:01:33.331Z  WARN 1 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+hotelio-monolith: 2025-08-26T22:01:33.489Z  INFO 1 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path ''
+hotelio-monolith: 2025-08-26T22:01:33.493Z  INFO 1 --- [           main] c.hotelio.monolith.MonolithApplication   : Started MonolithApplication in 1.971 seconds (process running for 2.261)
+hotelio-monolith: ➡️  BookingService beans:
+hotelio-monolith:     - bookingService: class com.hotelio.monolith.service.BookingService
+
+----
+
+🏁 Регрессионный тест до миграции Hotelio
+🧪 Проверка подключения к БД...
+🧪 Загрузка фикстур...
+DELETE 0
+DELETE 0
+DELETE 0
+DELETE 0
+DELETE 0
+INSERT 0 4
+INSERT 0 3
+INSERT 0 12
+INSERT 0 3
+INSERT 0 2
+🧪 Выполнение HTTP-тестов...
+
+Тесты пользователей...
+✅ Получение test-user-1 по ID работает
+✅ Статус test-user-1: ACTIVE
+✅ test-user-1 в блэклисте
+✅ test-user-1 активен
+✅ test-user-1 не авторизован (в блэклисте)
+✅ test-user-3 — VIP-пользователь
+✅ test-user-2 авторизован
+
+Тесты отелей...
+✅ test-hotel-1 получен по ID
+✅ test-hotel-1 работает
+✅ test-hotel-3 не работает
+✅ test-hotel-2 полностью забронирован
+✅ Поиск отелей в Сеуле работает
+✅ Топ-отели в Сеуле загружены
+
+Тесты ревью...
+✅ Отзывы test-hotel-1 найдены
+✅ test-hotel-1 признан надёжным
+✅ test-hotel-3 НЕ признан надёжным (ожидаемо)
+
+Тесты промокодов...
+✅ Промокод TESTCODE1 найден
+✅ VIP-промо доступен VIP
+✅ VIP-промо недоступен обычному
+✅ Обычный промо доступен
+✅ Истекший промо недоступен
+✅ POST /validate промо прошёл
+
+Тесты бронирования...
+✅ Все бронирования получены
+✅ Бронирования test-user-2 найдены
+✅ Бронирование прошло (без промо)
+✅ Бронирование с промо прошло
+✅ Отклонено: неактивный пользователь
+✅ Отклонено: недоверенный отель
+✅ Отклонено: отель полностью забронирован
+✅ Все HTTP-тесты пройдены!
+
+---
+
+ curl http://localhost:8084/api/bookings
+[{"id":1,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":10.0,"price":90.0,"createdAt":"2025-08-26T22:23:30.319770Z"},{"id":2,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":null,"discountPercent":0.0,"price":80.0,"createdAt":"2025-08-26T22:23:30.319770Z"},{"id":3,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":null,"discountPercent":0.0,"price":80.0,"createdAt":null},{"id":4,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":10.0,"price":90.0,"createdAt":null}]⏎

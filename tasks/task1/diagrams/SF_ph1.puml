@@ -1,0 +1,64 @@
+@startuml
+!include <C4/C4_Container>
+
+title Миграция UserService - Паттерн Strangler Fig (Фаза 1)
+
+Person(customer, "Клиент")
+
+Container_Boundary(gateway, "API Gateway/Router") {
+  Container(router, "Traffic Router", "Kong + Feature Flags", "Интеллектуальная маршрутизация с постепенным переключением")
+}
+
+Container_Boundary(legacy, "Existing Monolith") {
+  Container(monolith, "Hotelio Monolith", "Spring Boot", "Существующее монолитное приложение")
+  Container(old_user, "UserService", "Java Service", "Старая реализация (будет удалена)")
+  Container(booking, "BookingService", "Java Service", "Зависит от UserService")
+  Container(other_services, "Other Services", "Java Service", "HotelService, PromoService, ReviewService")
+}
+
+Container_Boundary(new_microservices, "New Microservices") {
+  Container(new_user, "User Microservice", "Spring Boot", "Новый независимый User сервис с идентичным API")
+}
+
+Container_Boundary(data_layer, "Data Persistence") {
+  ContainerDb(monolith_db, "Monolith Database", "PostgreSQL", "Существующая общая база данных")
+  ContainerDb(user_db, "User Database", "PostgreSQL", "Новая изолированная база для User сервиса")
+}
+
+Container_Boundary(migration_tools, "Migration Infrastructure") {
+  Container(feature_flags, "Feature Flags", "Config Service", "Управление процентами трафика: 0% → 10% → 50% → 100%")
+  Container(data_sync, "Data Sync Tool", "Spring Batch", "Синхронизация данных между базами во время миграции")
+  Container(monitoring, "Migration Monitoring", "Grafana", "Метрики сравнения производительности старого и нового сервиса")
+}
+
+' User requests flow
+Rel(customer, router, "HTTP запросы /api/users/*", "HTTPS")
+
+' Traffic routing with migration percentages
+Rel_R(router, old_user, "100% → 90% → 50% → 0%", "Постепенное снижение")
+Rel_L(router, new_user, "0% → 10% → 50% → 100%", "Постепенное увеличение")
+
+' Internal service dependencies (current state)
+Rel(booking, old_user, "Прямые вызовы методов", "Internal calls")
+
+' Internal service dependencies (target state)
+Rel(booking, new_user, "HTTP REST вызовы", "HTTP/REST")
+Rel_U(booking, router, "Через API Gateway", "HTTP/REST")
+
+' Database access patterns
+Rel(old_user, monolith_db, "Читает/пишет app_user таблицу", "JDBC")
+Rel(new_user, user_db, "Полный контроль над User данными", "JDBC")
+
+' Migration process flow
+Rel(data_sync, monolith_db, "Читает изменения", "JDBC")
+Rel(data_sync, user_db, "Реплицирует данные", "JDBC")
+Rel(router, feature_flags, "Проверяет routing конфигурацию", "HTTP")
+Rel(router, monitoring, "Отправляет метрики трафика", "HTTP")
+Rel(new_user, monitoring, "Метрики производительности", "HTTP")
+Rel(old_user, monitoring, "Метрики производительности", "HTTP")
+
+note right of router : **Этапы миграции:**\n• Этап 1: Создание нового сервиса (0% трафика)\n• Этап 2: A/B тестирование (10% трафика)\n• Этап 3: Постепенное увеличение (50% трафика)\n• Этап 4: Полное переключение (100% трафика)\n• Этап 5: Удаление старого кода из монолита
+
+note left of data_sync : **Синхронизация данных:**\n• Реальное время для критичных операций\n• Batch синхронизация для массовых операций\n• Rollback capability при проблемах
+
+@enduml

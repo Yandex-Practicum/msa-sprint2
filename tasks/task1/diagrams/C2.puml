@@ -1,0 +1,175 @@
+@startuml
+!include <C4/C4_Container>
+
+title Hotelio - Целевая микросервисная архитектура
+
+Person(customer, "Клиент")
+Person(admin, "Администратор")
+
+Container_Boundary(frontend, "Client Applications") {
+  Container(web, "Web Application", "React SPA", "Веб-приложение для десктопа")
+  Container(mobile, "Mobile App", "React Native", "Мобильное приложение")
+}
+
+Container_Boundary(gateway, "API Gateway Layer") {
+  Container(api_gw, "API Gateway", "Kong/Spring Cloud", "Маршрутизация запросов, аутентификация, rate limiting")
+  Container(bff, "Backend For Frontend", "Node.js/Express", "Агрегация данных для оптимизации UI")
+}
+
+Container_Boundary(microservices, "Microservices") {
+  Container(user_svc, "User Service", "Spring Boot", "Управление пользователями, статусы, blacklist")
+  Container(hotel_svc, "Hotel Service", "Spring Boot", "Каталог отелей, поиск, доступность")
+  Container(booking_svc, "Booking Service", "Spring Boot", "Центральная обработка бронирований")
+  Container(promo_svc, "Promo Service", "Spring Boot", "Управление промокодами и скидками")
+  Container(review_svc, "Review Service", "Spring Boot", "Отзывы, рейтинги, доверие отелей")
+}
+
+Container_Boundary(data, "Data Persistence Layer") {
+  ContainerDb(user_db, "User Database", "PostgreSQL", "Пользователи, статусы, blacklist")
+  ContainerDb(hotel_db, "Hotel Database", "PostgreSQL", "Отели, города, рейтинги")
+  ContainerDb(booking_db, "Booking Database", "PostgreSQL", "Бронирования, цены")
+  ContainerDb(promo_db, "Promo Database", "PostgreSQL", "Промокоды, скидки")
+  ContainerDb(review_db, "Review Database", "PostgreSQL", "Отзывы, оценки")
+}
+
+Container_Boundary(infrastructure, "Infrastructure Services") {
+  Container(kafka, "Message Bus", "Apache Kafka", "Асинхронные события и интеграция")
+  Container(monitoring, "Monitoring", "Prometheus + Grafana", "Метрики, алерты, дашборды")
+  Container(tracing, "Distributed Tracing", "Jaeger", "Трассировка запросов между сервисами")
+  Container(logging, "Centralized Logging", "ELK Stack", "Агрегация логов всех сервисов")
+}
+
+' Client connections
+Rel(customer, web, "Использует", "HTTPS")
+Rel(customer, mobile, "Использует", "HTTPS")
+Rel(admin, web, "Администрирует", "HTTPS")
+
+' Frontend to Gateway
+Rel(web, api_gw, "API запросы", "HTTPS/REST")
+Rel(mobile, api_gw, "API запросы", "HTTPS/REST")
+Rel(api_gw, bff, "Проксирование", "HTTP")
+
+' Gateway to Services (external API)
+Rel(bff, user_svc, "Запросы пользователей", "HTTP/REST")
+Rel(bff, hotel_svc, "Поиск отелей", "HTTP/REST")
+Rel(bff, booking_svc, "Создание бронирований", "HTTP/REST")
+Rel(bff, review_svc, "Получение отзывов", "HTTP/REST")
+Rel(api_gw, promo_svc, "Управление промокодами", "HTTP/REST")
+
+' Inter-service communication (business logic)
+Rel(booking_svc, user_svc, "Валидация пользователя", "HTTP/REST")
+Rel(booking_svc, hotel_svc, "Проверка отеля", "HTTP/REST")
+Rel(booking_svc, promo_svc, "Применение промокода", "HTTP/REST")
+Rel(booking_svc, review_svc, "Проверка доверия", "HTTP/REST")
+
+' Services to Databases
+Rel(user_svc, user_db, "CRUD операции", "JDBC/SQL")
+Rel(hotel_svc, hotel_db, "CRUD операции", "JDBC/SQL")
+Rel(booking_svc, booking_db, "CRUD операции", "JDBC/SQL")
+Rel(promo_svc, promo_db, "CRUD операции", "JDBC/SQL")
+Rel(review_svc, review_db, "CRUD операции", "JDBC/SQL")
+
+' Event-driven communication
+Rel(booking_svc, kafka, "BookingCreated events", "Kafka Protocol")
+Rel(review_svc, kafka, "ReviewSubmitted events", "Kafka Protocol")
+Rel(hotel_svc, kafka, "Подписка на события", "Kafka Protocol")
+Rel(user_svc, kafka, "UserStatusChanged events", "Kafka Protocol")
+
+' Observability
+Rel(user_svc, monitoring, "Метрики", "HTTP")
+Rel(hotel_svc, monitoring, "Метрики", "HTTP")
+Rel(booking_svc, monitoring, "Метрики", "HTTP")
+Rel(promo_svc, monitoring, "Метрики", "HTTP")
+Rel(review_svc, monitoring, "Метрики", "HTTP")
+
+Rel(booking_svc, tracing, "Spans", "HTTP")
+Rel(user_svc, logging, "Логи", "TCP/Syslog")
+
+@enduml@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Hotelio - Целевая микросервисная архитектура
+
+Person(customer, "Клиент")
+Person(admin, "Администратор")
+
+Container_Boundary(frontend, "Client Applications") {
+  Container(web, "Web Application", "React SPA", "Веб-приложение для десктопа")
+  Container(mobile, "Mobile App", "React Native", "Мобильное приложение")
+}
+
+Container_Boundary(gateway, "API Gateway Layer") {
+  Container(api_gw, "API Gateway", "Kong/Spring Cloud", "Маршрутизация запросов, аутентификация, rate limiting")
+  Container(bff, "Backend For Frontend", "Node.js/Express", "Агрегация данных для оптимизации UI")
+}
+
+Container_Boundary(microservices, "Microservices") {
+  Container(user_svc, "User Service", "Spring Boot", "Управление пользователями, статусы, blacklist")
+  Container(hotel_svc, "Hotel Service", "Spring Boot", "Каталог отелей, поиск, доступность")
+  Container(booking_svc, "Booking Service", "Spring Boot", "Центральная обработка бронирований")
+  Container(promo_svc, "Promo Service", "Spring Boot", "Управление промокодами и скидками")
+  Container(review_svc, "Review Service", "Spring Boot", "Отзывы, рейтинги, доверие отелей")
+}
+
+Container_Boundary(data, "Data Persistence Layer") {
+  ContainerDb(user_db, "User Database", "PostgreSQL", "Пользователи, статусы, blacklist")
+  ContainerDb(hotel_db, "Hotel Database", "PostgreSQL", "Отели, города, рейтинги")
+  ContainerDb(booking_db, "Booking Database", "PostgreSQL", "Бронирования, цены")
+  ContainerDb(promo_db, "Promo Database", "PostgreSQL", "Промокоды, скидки")
+  ContainerDb(review_db, "Review Database", "PostgreSQL", "Отзывы, оценки")
+}
+
+Container_Boundary(infrastructure, "Infrastructure Services") {
+  Container(kafka, "Message Bus", "Apache Kafka", "Асинхронные события и интеграция")
+  Container(monitoring, "Monitoring", "Prometheus + Grafana", "Метрики, алерты, дашборды")
+  Container(tracing, "Distributed Tracing", "Jaeger", "Трассировка запросов между сервисами")
+  Container(logging, "Centralized Logging", "ELK Stack", "Агрегация логов всех сервисов")
+}
+
+' Client connections
+Rel(customer, web, "Использует", "HTTPS")
+Rel(customer, mobile, "Использует", "HTTPS")
+Rel(admin, web, "Администрирует", "HTTPS")
+
+' Frontend to Gateway
+Rel(web, api_gw, "API запросы", "HTTPS/REST")
+Rel(mobile, api_gw, "API запросы", "HTTPS/REST")
+Rel(api_gw, bff, "Проксирование", "HTTP")
+
+' Gateway to Services (external API)
+Rel(bff, user_svc, "Запросы пользователей", "HTTP/REST")
+Rel(bff, hotel_svc, "Поиск отелей", "HTTP/REST")
+Rel(bff, booking_svc, "Создание бронирований", "HTTP/REST")
+Rel(bff, review_svc, "Получение отзывов", "HTTP/REST")
+Rel(api_gw, promo_svc, "Управление промокодами", "HTTP/REST")
+
+' Inter-service communication (business logic)
+Rel(booking_svc, user_svc, "Валидация пользователя", "HTTP/REST")
+Rel(booking_svc, hotel_svc, "Проверка отеля", "HTTP/REST")
+Rel(booking_svc, promo_svc, "Применение промокода", "HTTP/REST")
+Rel(booking_svc, review_svc, "Проверка доверия", "HTTP/REST")
+
+' Services to Databases
+Rel(user_svc, user_db, "CRUD операции", "JDBC/SQL")
+Rel(hotel_svc, hotel_db, "CRUD операции", "JDBC/SQL")
+Rel(booking_svc, booking_db, "CRUD операции", "JDBC/SQL")
+Rel(promo_svc, promo_db, "CRUD операции", "JDBC/SQL")
+Rel(review_svc, review_db, "CRUD операции", "JDBC/SQL")
+
+' Event-driven communication
+Rel(booking_svc, kafka, "BookingCreated events", "Kafka Protocol")
+Rel(review_svc, kafka, "ReviewSubmitted events", "Kafka Protocol")
+Rel(hotel_svc, kafka, "Подписка на события", "Kafka Protocol")
+Rel(user_svc, kafka, "UserStatusChanged events", "Kafka Protocol")
+
+' Observability
+Rel(user_svc, monitoring, "Метрики", "HTTP")
+Rel(hotel_svc, monitoring, "Метрики", "HTTP")
+Rel(booking_svc, monitoring, "Метрики", "HTTP")
+Rel(promo_svc, monitoring, "Метрики", "HTTP")
+Rel(review_svc, monitoring, "Метрики", "HTTP")
+
+Rel(booking_svc, tracing, "Spans", "HTTP")
+Rel(user_svc, logging, "Логи", "TCP/Syslog")
+
+@enduml

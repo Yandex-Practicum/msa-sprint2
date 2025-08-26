@@ -26,7 +26,7 @@ docker-compose up -d --build
 Проверьте работоспособность:
 
 ```bash
-curl http://localhost:8084/bookings
+curl http://localhost:8084/api/bookings
 ```
 
 ---

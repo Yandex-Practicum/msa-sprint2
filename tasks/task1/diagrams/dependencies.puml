@@ -1,0 +1,66 @@
+@startuml
+title Анализ зависимостей текущего монолита Hotelio
+
+package "Monolith Components" {
+  [BookingService] as booking
+  [UserService] as user
+  [HotelService] as hotel
+  [PromoCodeService] as promo
+  [ReviewService] as review
+}
+
+package "Controllers (REST API)" {
+  [BookingController] as booking_ctrl
+  [UserController] as user_ctrl
+  [HotelController] as hotel_ctrl
+  [PromoCodeController] as promo_ctrl
+  [ReviewController] as review_ctrl
+}
+
+database "Shared PostgreSQL" as db {
+  frame "Tables" {
+    [app_user] as user_table
+    [booking] as booking_table
+    [hotel] as hotel_table
+    [promo_code] as promo_table
+    [review] as review_table
+  }
+}
+
+' Controller dependencies
+booking_ctrl --> booking
+user_ctrl --> user
+hotel_ctrl --> hotel
+promo_ctrl --> promo
+review_ctrl --> review
+
+' Service dependencies (критическая проблема)
+booking --> user : validateUser()\nisUserActive()\nisUserBlacklisted()
+booking --> hotel : isHotelOperational()\nisHotelFullyBooked()
+booking --> promo : validate(promoCode, userId)
+booking --> review : isTrustedHotel(hotelId)
+
+' Cross-service dependencies
+promo --> user : getUserStatus()\nisVipUser()
+
+' Database access patterns
+user --> user_table : CRUD operations
+booking --> booking_table : CRUD operations
+hotel --> hotel_table : Read operations
+promo --> promo_table : Read operations
+review --> review_table : Read operations
+
+note right of booking : **КРИТИЧЕСКАЯ ПРОБЛЕМА:**\nBookingService - единая точка отказа\n• Зависит от ВСЕХ других сервисов\n• Любой сбой блокирует бронирование\n• Сложная цепочка валидаций\n• Невозможно масштабировать независимо
+
+note right of user : **ОПТИМАЛЬНЫЙ КАНДИДАТ:**\n• Минимум зависимостей\n• Простая бизнес-логика\n• Четкие границы домена\n• Низкие риски для бизнеса\n• Хорошая отправная точка
+
+note bottom of db : **Проблема общей БД:**\n• Конфликты схемы при параллельной разработке\n• Блокировки на уровне таблиц\n• Невозможность независимого масштабирования\n• Сложность backup/restore стратегий
+
+' Ranking services by migration complexity
+note left of user : **Сложность: 1/5**\nНезависимый сервис
+note left of hotel : **Сложность: 2/5**\nПростые зависимости
+note left of review : **Сложность: 3/5**\nИнтеграция с Kafka
+note left of promo : **Сложность: 3/5**\nЗависимость от UserService
+note left of booking : **Сложность: 5/5**\nЗависит от всех сервисов
+
+@enduml
