@@ -1,0 +1,76 @@
+Attaching to apollo-gateway-1, booking-subgraph-1, hotel-subgraph-1
+booking-subgraph-1  | Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+booking-subgraph-1  | ✅ Booking subgraph ready at http://localhost:4001/
+hotel-subgraph-1    | Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+hotel-subgraph-1    | ✅ Hotel subgraph ready at http://localhost:4002/
+apollo-gateway-1    | The `serviceList` option is deprecated and will be removed in a future version of `@apollo/gateway`. Please migrate to its replacement `IntrospectAndCompose`. More information on `IntrospectAndCompose` can be found in the documentation.
+apollo-gateway-1    | 🚀 Gateway ready at http://localhost:4000/
+booking-subgraph-1  | [Bookings] Incoming request for userId: test-user-2
+booking-subgraph-1  | [Bookings] Request headers: {
+booking-subgraph-1  |   'content-type': 'application/json',
+booking-subgraph-1  |   userid: 'test-user-2',
+booking-subgraph-1  |   accept: '*/*',
+booking-subgraph-1  |   'content-length': '107',
+booking-subgraph-1  |   'user-agent': 'minipass-fetch/3.0.5 (+https://github.com/isaacs/minipass-fetch)',
+booking-subgraph-1  |   'accept-encoding': 'gzip,deflate',
+booking-subgraph-1  |   host: 'booking-subgraph:4001',
+booking-subgraph-1  |   connection: 'keep-alive'
+booking-subgraph-1  | }
+booking-subgraph-1  | [Bookings] Access granted for user: test-user-2
+booking-subgraph-1  | [Bookings] Fetching bookings from http://hotelio-monolith:8080/api/bookings?userId=test-user-2
+booking-subgraph-1  | [Bookings] Fetched 2 bookings: [
+booking-subgraph-1  |   {
+booking-subgraph-1  |     id: 1,
+booking-subgraph-1  |     userId: 'test-user-2',
+booking-subgraph-1  |     hotelId: 'test-hotel-1',
+booking-subgraph-1  |     promoCode: 'TESTCODE1',
+booking-subgraph-1  |     discountPercent: 10,
+booking-subgraph-1  |     price: 90,
+booking-subgraph-1  |     createdAt: '2025-08-26T16:24:47.163Z'
+booking-subgraph-1  |   },
+booking-subgraph-1  |   {
+booking-subgraph-1  |     id: 4,
+booking-subgraph-1  |     userId: 'test-user-2',
+booking-subgraph-1  |     hotelId: 'test-hotel-1',
+booking-subgraph-1  |     promoCode: 'TESTCODE1',
+booking-subgraph-1  |     discountPercent: 0,
+booking-subgraph-1  |     price: 100,
+booking-subgraph-1  |     createdAt: '2025-08-26T16:24:47.941Z'
+booking-subgraph-1  |   }
+booking-subgraph-1  | ]
+booking-subgraph-1  | [Bookings] Resolving hotel for booking 1, hotelId: test-hotel-1
+booking-subgraph-1  | [Bookings] Returning hotel reference: { __typename: 'Hotel', id: 'test-hotel-1' }
+booking-subgraph-1  | [Bookings] Resolving hotel for booking 4, hotelId: test-hotel-1
+booking-subgraph-1  | [Bookings] Returning hotel reference: { __typename: 'Hotel', id: 'test-hotel-1' }
+hotel-subgraph-1    | [Hotel] __resolveReference called for hotel id: test-hotel-1
+hotel-subgraph-1    | [Hotel] Fetching hotel from http://hotelio-monolith:8080/api/hotels/test-hotel-1
+hotel-subgraph-1    | [Hotel] __resolveReference called for hotel id: test-hotel-1
+hotel-subgraph-1    | [Hotel] Fetching hotel from http://hotelio-monolith:8080/api/hotels/test-hotel-1
+hotel-subgraph-1    | [Hotel] Fetched hotel: {
+hotel-subgraph-1    |   id: 'test-hotel-1',
+hotel-subgraph-1    |   operational: true,
+hotel-subgraph-1    |   fullyBooked: false,
+hotel-subgraph-1    |   city: 'Seoul',
+hotel-subgraph-1    |   rating: 4.7,
+hotel-subgraph-1    |   description: 'Modern hotel in Seoul downtown with spa and skybar.'
+hotel-subgraph-1    | }
+hotel-subgraph-1    | [Hotel] Fetched hotel: {
+hotel-subgraph-1    |   id: 'test-hotel-1',
+hotel-subgraph-1    |   operational: true,
+hotel-subgraph-1    |   fullyBooked: false,
+hotel-subgraph-1    |   city: 'Seoul',
+hotel-subgraph-1    |   rating: 4.7,
+hotel-subgraph-1    |   description: 'Modern hotel in Seoul downtown with spa and skybar.'
+hotel-subgraph-1    | }
+booking-subgraph-1  | [Bookings] Incoming request for userId: test-user-3
+booking-subgraph-1  | [Bookings] Request headers: {
+booking-subgraph-1  |   'content-type': 'application/json',
+booking-subgraph-1  |   userid: 'test-user-2',
+booking-subgraph-1  |   accept: '*/*',
+booking-subgraph-1  |   'content-length': '107',
+booking-subgraph-1  |   'user-agent': 'minipass-fetch/3.0.5 (+https://github.com/isaacs/minipass-fetch)',
+booking-subgraph-1  |   'accept-encoding': 'gzip,deflate',
+booking-subgraph-1  |   host: 'booking-subgraph:4001',
+booking-subgraph-1  |   connection: 'keep-alive'
+booking-subgraph-1  | }
+booking-subgraph-1  | [Bookings] Access denied

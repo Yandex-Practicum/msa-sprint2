@@ -1,0 +1,53 @@
+stages:
+  - build
+  - test
+  - deploy
+  - tag
+
+variables:
+  IMAGE_TAG: latest
+  IMAGE_NAME: task4-booking-service
+
+build:
+  stage: build
+  script:
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG ./booking-service
+  tags:
+    - local
+
+
+test:
+  stage: test
+  script:
+    - docker run -d --name tmp-test -p 8080:8080 $IMAGE_NAME:$IMAGE_TAG
+    - sleep 8
+    - curl -f http://localhost:8080/ping
+    - docker rm -f tmp-test
+  tags:
+    - local
+
+
+staging_deploy:
+  stage: deploy
+  script:
+    - minikube image load $IMAGE_NAME:$IMAGE_TAG
+    - helm upgrade --install booking-service-staging helm/booking-service -f helm/booking-service/values-staging.yaml
+  tags:
+    - local
+
+prod_deploy:
+  stage: deploy
+  script:
+    - minikube image load $IMAGE_NAME:$IMAGE_TAG
+    - helm upgrade --install booking-service-prod helm/booking-service -f helm/booking-service/values-prod.yaml
+  tags:
+    - local
+
+tag:
+  stage: tag
+  script:
+    - TIMESTAMP=$(date +%Y%m%d%H%M%S)
+    - git tag v$TIMESTAMP
+    #- git push origin v$TIMESTAMP
+  tags:
+    - local

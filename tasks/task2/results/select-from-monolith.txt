@@ -1,0 +1,22 @@
+docker exec -it hotelio-db psql -U hotelio -d hotelio
+psql (15.14 (Debian 15.14-1.pgdg13+1))
+Type "help" for help.
+
+hotelio=# \d
+              List of relations
+ Schema |      Name      |   Type   |  Owner  
+--------+----------------+----------+---------
+ public | app_user       | table    | hotelio
+ public | booking        | table    | hotelio
+ public | booking_id_seq | sequence | hotelio
+ public | hotel          | table    | hotelio
+ public | promo_code     | table    | hotelio
+ public | review         | table    | hotelio
+(6 rows)
+
+hotelio=# SELECT * FROM booking;
+ discount_percent | price | created_at | id | hotel_id | promo_code | user_id 
+------------------+-------+------------+----+----------+------------+---------
+(0 rows)
+
+hotelio=# 

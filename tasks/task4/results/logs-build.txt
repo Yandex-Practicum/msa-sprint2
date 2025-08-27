@@ -1,0 +1,64 @@
+build          starting shell (build)
+build          $ docker build -t $IMAGE_NAME:$IMAGE_TAG ./booking-service
+build          > #0 building with "default" instance using docker driver
+build          > 
+build          > #1 [internal] load build definition from Dockerfile
+build          > #1 transferring dockerfile: 1.09kB done
+build          > #1 DONE 0.0s
+build          > 
+build          > #2 [internal] load metadata for docker.io/library/alpine:latest
+build          > #2 ...
+build          > 
+build          > #3 [internal] load metadata for docker.io/library/golang:1.21-alpine
+build          > #3 DONE 0.5s
+build          > 
+build          > #2 [internal] load metadata for docker.io/library/alpine:latest
+build          > #2 DONE 0.5s
+build          > 
+build          > #4 [internal] load .dockerignore
+build          > #4 transferring context: 2B done
+build          > #4 DONE 0.0s
+build          > 
+build          > #5 [stage-1 1/4] FROM docker.io/library/alpine:latest@sha256:4bcff63911fcb4448bd4fdacec207030997caf25e9bea4045fa6c8c44de311d1
+build          > #5 DONE 0.0s
+build          > 
+build          > #6 [builder 1/7] FROM docker.io/library/golang:1.21-alpine@sha256:2414035b086e3c42b99654c8b26e6f5b1b1598080d65fd03c7f499552ff4dc94
+build          > #6 DONE 0.0s
+build          > 
+build          > #7 [internal] load build context
+build          > #7 transferring context: 61B done
+build          > #7 DONE 0.0s
+build          > 
+build          > #8 [builder 3/7] WORKDIR /app
+build          > #8 CACHED
+build          > 
+build          > #9 [builder 5/7] COPY check-dns.sh .
+build          > #9 CACHED
+build          > 
+build          > #10 [builder 7/7] RUN go build -o booking-service main.go
+build          > #10 CACHED
+build          > 
+build          > #11 [builder 6/7] RUN chmod +x check-dns.sh
+build          > #11 CACHED
+build          > 
+build          > #12 [stage-1 2/4] WORKDIR /app
+build          > #12 CACHED
+build          > 
+build          > #13 [stage-1 3/4] COPY --from=builder /app/booking-service .
+build          > #13 CACHED
+build          > 
+build          > #14 [builder 2/7] RUN apk add --no-cache curl
+build          > #14 CACHED
+build          > 
+build          > #15 [builder 4/7] COPY main.go .
+build          > #15 CACHED
+build          > 
+build          > #16 [stage-1 4/4] COPY --from=builder /app/check-dns.sh .
+build          > #16 CACHED
+build          > 
+build          > #17 exporting to image
+build          > #17 exporting layers done
+build          > #17 writing image sha256:e804ee877715017cdcad148022ce617e005d27af6136f437d1744f04e7d85e01 done
+build          > #17 naming to docker.io/library/task4-booking-service:latest done
+build          > #17 DONE 0.0s
+build          finished in 601 ms

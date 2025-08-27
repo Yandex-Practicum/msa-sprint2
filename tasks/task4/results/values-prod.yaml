@@ -1,0 +1,28 @@
+replicaCount: 3
+
+image:
+  name: task4-booking-service
+  tag: latest
+  pullPolicy: Never
+
+env:
+  - name: ENABLE_FEATURE_X
+    value: "true"
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+resources:
+  requests:
+    cpu: "200m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+livenessProbe:
+
+readinessProbe:
+

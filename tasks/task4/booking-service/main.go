@@ -10,6 +10,11 @@ import (
 func main() {
 	enableFeatureX := os.Getenv("ENABLE_FEATURE_X") == "true"
 
+	//ready check
+	http.HandleFunc("/ready", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "ready")
+	})
+	//health check
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "pong")
 	})
