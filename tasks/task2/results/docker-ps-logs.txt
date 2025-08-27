@@ -1,0 +1,10 @@
+docker ps
+CONTAINER ID   IMAGE                             COMMAND                  CREATED         STATUS                   PORTS                                                                                      NAMES
+1bcefd2534ca   task2-booking-service             "/start.sh"              2 minutes ago   Up 2 minutes             0.0.0.0:9090->9090/tcp, [::]:9090->9090/tcp, 0.0.0.0:8085->8080/tcp, [::]:8085->8080/tcp   booking-service
+f6e10a6a13f3   task2-booking-history-service     "python kafka_consum…"   2 minutes ago   Up 2 minutes                                                                                                        booking-history-service
+f6d4251b1240   confluentinc/cp-kafka:7.2.1       "/etc/confluent/dock…"   2 minutes ago   Up 2 minutes (healthy)   0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp                                                task2-kafka-1
+46fea897b5d6   confluentinc/cp-zookeeper:7.2.1   "/etc/confluent/dock…"   2 minutes ago   Up 2 minutes             2888/tcp, 0.0.0.0:2181->2181/tcp, [::]:2181->2181/tcp, 3888/tcp                            task2-zookeeper-1
+a3eff1c4b8ab   postgres:15                       "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes             0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp                                                hotelio-db
+3038be7c784c   postgres:15                       "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes             0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp                                                booking-history-db
+eadc78b9f95e   postgres:15                       "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes             0.0.0.0:5433->5432/tcp, [::]:5433->5432/tcp                                                booking-service-db
+5190e5e7928c   task2-monolith                    "java -jar app.jar"      2 minutes ago   Up 2 minutes             0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp                                                hotelio-monolith

@@ -42,6 +42,12 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
       - hotelio-net
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "9092"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.2.1
     ports:
@@ -51,9 +57,66 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     networks:
       - hotelio-net
+  
+  booking-service:
+    build:
+      context: ./booking-service
+      dockerfile: Dockerfile
+    container_name: booking-service
+    ports:
+      - "9090:9090"
+      - "8085:8080"
+    networks:
+      - hotelio-net
+    depends_on:
+      kafka:
+        condition: service_healthy
+  
+  booking-service-db:
+    image: postgres:15
+    container_name: booking-service-db
+    environment:
+      POSTGRES_USER: userhotelio
+      POSTGRES_PASSWORD: passhotelio
+      POSTGRES_DB: booking_service
+    ports:
+      - "5433:5432"
+    volumes:
+      - booking-service-db-data:/var/lib/postgresql/data
+      - ./init-scripts/02-init-db-bookings.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - hotelio-net
+  
+  booking-history-service:
+    build: 
+      context: ./booking-history-service
+      dockerfile: Dockerfile
+    container_name: booking-history-service
+    networks:
+      - hotelio-net
+    depends_on:
+      kafka:
+        condition: service_healthy
+  
+  booking-history-db:
+    image: postgres:15
+    container_name: booking-history-db
+    environment:
+      POSTGRES_USER: userhotelio
+      POSTGRES_PASSWORD: passhotelio
+      POSTGRES_DB: booking_history
+    ports:
+      - "5434:5432"
+    volumes:
+      - booking-history-db-data:/var/lib/postgresql/data
+      - ./init-scripts/01-init-db-bookings-history.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - hotelio-net
 
 volumes:
   monolith-db-data:
+  booking-service-db-data:
+  booking-history-db-data:
 
 networks:
   hotelio-net:

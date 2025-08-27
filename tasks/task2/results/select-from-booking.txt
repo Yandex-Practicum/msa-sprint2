@@ -1,0 +1,14 @@
+docker exec -it booking-service-db psql -U userhotelio -d booking_service
+psql (15.14 (Debian 15.14-1.pgdg13+1))
+Type "help" for help.
+
+booking_service=# SELECT * FROM booking;
+ id |   user_id   |   hotel_id   | promo_code | discount_percent | price |         created_at         
+----+-------------+--------------+------------+------------------+-------+----------------------------
+  7 | test-user-2 | test-hotel-1 | TESTCODE1  |               10 |    90 | 2025-08-25 19:50:14.427861
+  8 | test-user-3 | test-hotel-1 |            |                0 |    80 | 2025-08-25 19:50:14.427861
+  9 | test-user-3 | test-hotel-1 |            |                0 |   100 | 2025-08-25 19:50:14.932293
+ 10 | test-user-2 | test-hotel-1 | TESTCODE1  |                0 |   100 | 2025-08-25 19:50:14.995608
+(4 rows)
+
+booking_service=# SSWORD=hotelio
