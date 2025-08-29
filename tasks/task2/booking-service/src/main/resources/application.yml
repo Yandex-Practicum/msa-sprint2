@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: booking-service
+  
+  datasource:
+    url: jdbc:postgresql://booking-db:5432/booking_service
+    username: booking_user
+    password: booking_pass
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  
+  kafka:
+    bootstrap-servers: kafka:9092
+    consumer:
+      group-id: booking-service
+      auto-offset-reset: earliest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+server:
+  port: 8080
+
+kafka:
+  topic:
+    booking-created: booking-events
+
+logging:
+  level:
+    com.hotelio.booking: DEBUG
+    org.springframework.kafka: DEBUG
