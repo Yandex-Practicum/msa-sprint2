@@ -1,0 +1,81 @@
+hotelio-monolith-task3    | 
+hotelio-monolith-task3    |   .   ____          _            __ _ _
+hotelio-monolith-task3    |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+hotelio-monolith-task3    | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+hotelio-monolith-task3    |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+hotelio-monolith-task3    |   '  |____| .__|_| |_|_| |_\__, | / / / /
+hotelio-monolith-task3    |  =========|_|==============|___/=/_/_/_/
+hotelio-monolith-task3    |  :: Spring Boot ::                (v3.2.5)
+hotelio-monolith-task3    | 
+hotelio-monolith-task3    | 2025-08-29T17:08:35.930Z  INFO 1 --- [           main] c.hotelio.monolith.MonolithApplication   : Starting MonolithApplication v1.0.0 using Java 17.0.2 with PID 1 (/app/app.jar started by root in /app)
+hotelio-monolith-task3    | 2025-08-29T17:08:35.932Z  INFO 1 --- [           main] c.hotelio.monolith.MonolithApplication   : No active profile set, falling back to 1 default profile: "default"
+hotelio-monolith-task3    | 2025-08-29T17:08:36.369Z  INFO 1 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+hotelio-monolith-task3    | 2025-08-29T17:08:36.407Z  INFO 1 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 29 ms. Found 5 JPA repository interfaces.
+hotelio-monolith-task3    | 2025-08-29T17:08:36.650Z  INFO 1 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+hotelio-monolith-task3    | 2025-08-29T17:08:36.658Z  INFO 1 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+hotelio-monolith-task3    | 2025-08-29T17:08:36.658Z  INFO 1 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.20]
+hotelio-monolith-task3    | 2025-08-29T17:08:36.675Z  INFO 1 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+hotelio-monolith-task3    | 2025-08-29T17:08:36.675Z  INFO 1 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 660 ms
+hotelio-monolith-task3    | 2025-08-29T17:08:36.743Z  INFO 1 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+hotelio-monolith-task3    | 2025-08-29T17:08:36.761Z  INFO 1 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
+hotelio-monolith-task3    | 2025-08-29T17:08:36.773Z  INFO 1 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+hotelio-monolith-task3    | 2025-08-29T17:08:36.903Z  INFO 1 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+hotelio-apollo-gateway    | 
+hotelio-apollo-gateway    | > apollo-gateway@1.0.0 start
+hotelio-booking-db-task3  | 
+hotelio-booking-db-task3  | PostgreSQL Database directory appears to contain a database; Skipping initialization
+hotelio-booking-db-task3  | 
+hotelio-booking-db-task3  | 2025-08-29 17:08:34.657 UTC [1] LOG:  starting PostgreSQL 15.14 (Debian 15.14-1.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+hotelio-booking-db-task3  | 2025-08-29 17:08:34.658 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+hotelio-booking-db-task3  | 2025-08-29 17:08:34.658 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+hotelio-booking-db-task3  | 2025-08-29 17:08:34.659 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+hotelio-booking-db-task3  | 2025-08-29 17:08:34.661 UTC [28] LOG:  database system was shut down at 2025-08-29 17:08:21 UTC
+hotelio-booking-db-task3  | 2025-08-29 17:08:34.663 UTC [1] LOG:  database system is ready to accept connections
+hotelio-booking-db-task3  | 2025-08-29 17:09:47.986 UTC [35] ERROR:  relation "bookings" does not exist at character 15
+hotelio-booking-db-task3  | 2025-08-29 17:09:47.986 UTC [35] STATEMENT:  SELECT * FROM bookings LIMIT 5;
+hotelio-monolith-task3    | 2025-08-29T17:08:36.922Z  INFO 1 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+hotelio-monolith-task3    | 2025-08-29T17:08:37.053Z  INFO 1 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@6fb0261e
+hotelio-monolith-task3    | 2025-08-29T17:08:37.056Z  INFO 1 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+hotelio-apollo-gateway    | > node index.js
+hotelio-apollo-gateway    | 
+hotelio-apollo-gateway    | The `serviceList` option is deprecated and will be removed in a future version of `@apollo/gateway`. Please migrate to its replacement `IntrospectAndCompose`. More information on `IntrospectAndCompose` can be found in the documentation.
+hotelio-apollo-gateway    | Apollo Gateway ready at http://localhost:4000/
+hotelio-apollo-gateway    | GraphQL Playground available at http://localhost:4000/
+hotelio-monolith-task3    | 2025-08-29T17:08:37.499Z  INFO 1 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+hotelio-monolith-task3    | Hibernate: drop table if exists app_user cascade
+hotelio-monolith-task3    | Hibernate: drop table if exists booking cascade
+hotelio-monolith-task3    | Hibernate: drop table if exists hotel cascade
+hotelio-monolith-task3    | Hibernate: drop table if exists promo_code cascade
+hotelio-monolith-task3    | Hibernate: drop table if exists review cascade
+hotelio-monolith-task3    | Hibernate: create table app_user (active boolean not null, blacklisted boolean not null, city varchar(255), email varchar(255), id varchar(255) not null, name varchar(255), status varchar(255), primary key (id))
+hotelio-monolith-task3    | Hibernate: create table booking (discount_percent float(53), price float(53) not null, created_at timestamp(6) with time zone, id bigserial not null, hotel_id varchar(255), promo_code varchar(255), user_id varchar(255), primary key (id))
+hotelio-monolith-task3    | Hibernate: create table hotel (fully_booked boolean not null, operational boolean not null, rating float(53) not null, description varchar(1000), city varchar(255), id varchar(255) not null, primary key (id))
+hotelio-monolith-task3    | Hibernate: create table promo_code (discount float(53) not null, expired boolean not null, valid_until date, vip_only boolean not null, code varchar(255) not null, description varchar(255), primary key (code))
+hotelio-monolith-task3    | Hibernate: create table review (created_at date, rating integer not null, text varchar(2000), hotel_id varchar(255), id varchar(255) not null, user_id varchar(255), primary key (id))
+hotelio-monolith-task3    | 2025-08-29T17:08:37.530Z  INFO 1 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+hotelio-monolith-task3    | 2025-08-29T17:08:37.723Z  WARN 1 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+hotelio-monolith-task3    | 2025-08-29T17:08:37.908Z  INFO 1 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path ''
+hotelio-monolith-task3    | 2025-08-29T17:08:37.912Z  INFO 1 --- [           main] c.hotelio.monolith.MonolithApplication   : Started MonolithApplication in 2.275 seconds (process running for 3.191)
+hotelio-monolith-task3    | ➡️  BookingService beans:
+hotelio-monolith-task3    |     - bookingService: class com.hotelio.monolith.service.BookingService
+hotelio-db-task3          | 
+hotelio-db-task3          | PostgreSQL Database directory appears to contain a database; Skipping initialization
+hotelio-db-task3          | 
+hotelio-booking-subgraph  | 
+hotelio-booking-subgraph  | > booking-subgraph@1.0.0 start
+hotelio-booking-subgraph  | > node index.js
+hotelio-booking-subgraph  | 
+hotelio-booking-subgraph  | Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+hotelio-booking-subgraph  | Booking subgraph ready at http://localhost:4001/
+hotelio-db-task3          | 2025-08-29 17:08:34.646 UTC [1] LOG:  starting PostgreSQL 15.14 (Debian 15.14-1.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+hotelio-db-task3          | 2025-08-29 17:08:34.646 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+hotelio-db-task3          | 2025-08-29 17:08:34.646 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+hotelio-db-task3          | 2025-08-29 17:08:34.647 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+hotelio-db-task3          | 2025-08-29 17:08:34.648 UTC [28] LOG:  database system was shut down at 2025-08-29 17:08:21 UTC
+hotelio-db-task3          | 2025-08-29 17:08:34.650 UTC [1] LOG:  database system is ready to accept connections
+hotelio-hotel-subgraph    | 
+hotelio-hotel-subgraph    | > hotel-subgraph@1.0.0 start
+hotelio-hotel-subgraph    | > node index.js
+hotelio-hotel-subgraph    | 
+hotelio-hotel-subgraph    | Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+hotelio-hotel-subgraph    | Hotel subgraph ready at http://localhost:4002/

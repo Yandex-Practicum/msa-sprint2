@@ -1,30 +1,80 @@
-import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
-import { buildSubgraphSchema } from '@apollo/subgraph';
-import gql from 'graphql-tag';
+const { ApolloServer } = require('@apollo/server');
+const { buildSubgraphSchema } = require('@apollo/subgraph');
+const { startStandaloneServer } = require('@apollo/server/standalone');
+const { gql } = require('graphql-tag');
+const axios = require('axios');
 
 const typeDefs = gql`
   type Hotel @key(fields: "id") {
     id: ID!
-    name: String
-    city: String
-    stars: Int
+    name: String!
+    city: String!
+    description: String
+    rating: Float
+    amenities: [String!]
   }
 
   type Query {
-    hotelsByIds(ids: [ID!]!): [Hotel]
+    hotels: [Hotel!]!
+    hotel(id: ID!): Hotel
   }
 `;
 
 const resolvers = {
-  Hotel: {
-    __resolveReference: async ({ id }) => {
-      // TODO: Реальный вызов к hotel-сервису или заглушка
+  Query: {
+    hotels: async () => {
+      try {
+        const response = await axios.get('http://hotelio-monolith-task3:8080/api/hotels');
+        return response.data.map(hotel => ({
+          id: hotel.id,
+          name: hotel.name,
+          city: hotel.city,
+          description: hotel.description,
+          rating: hotel.rating,
+          amenities: hotel.amenities || [],
+        }));
+      } catch (error) {
+        console.error('Error fetching hotels from monolith:', error);
+        return [];
+      }
+    },
+    
+    hotel: async (_, { id }) => {
+      try {
+        const response = await axios.get(`http://hotelio-monolith-task3:8080/api/hotels/${id}`);
+        const hotel = response.data;
+        return {
+          id: hotel.id,
+          name: hotel.name,
+          city: hotel.city,
+          description: hotel.description,
+          rating: hotel.rating,
+          amenities: hotel.amenities || [],
+        };
+      } catch (error) {
+        console.error(`Error fetching hotel ${id}:`, error);
+        return null;
+      }
     },
   },
-  Query: {
-    hotelsByIds: async (_, { ids }) => {
-      // TODO: Заглушка или REST-запрос
+  
+  Hotel: {
+    __resolveReference: async (reference) => {
+      try {
+        const response = await axios.get(`http://hotelio-monolith-task3:8080/api/hotels/${reference.id}`);
+        const hotel = response.data;
+        return {
+          id: hotel.id,
+          name: hotel.name,
+          city: hotel.city,
+          description: hotel.description,
+          rating: hotel.rating,
+          amenities: hotel.amenities || [],
+        };
+      } catch (error) {
+        console.error(`Error resolving hotel reference ${reference.id}:`, error);
+        return null;
+      }
     },
   },
 };
@@ -33,8 +83,10 @@ const server = new ApolloServer({
   schema: buildSubgraphSchema([{ typeDefs, resolvers }]),
 });
 
+const port = process.env.PORT || 4002;
+
 startStandaloneServer(server, {
-  listen: { port: 4002 },
-}).then(() => {
-  console.log('✅ Hotel subgraph ready at http://localhost:4002/');
+  listen: { port },
+}).then(({ url }) => {
+  console.log(`Hotel subgraph ready at ${url}`);
 });

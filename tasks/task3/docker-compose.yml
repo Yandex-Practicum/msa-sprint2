@@ -1,20 +1,103 @@
-version: '3.8'
+version: "3.8"
 
 services:
+  booking-subgraph:
+    build:
+      context: ./booking-subgraph
+      dockerfile: Dockerfile
+    container_name: hotelio-booking-subgraph
+    ports:
+      - "4001:4001"
+    environment:
+      - PORT=4001
+      - BOOKING_DB_HOST=hotelio-booking-db
+      - BOOKING_DB_PORT=5432
+      - BOOKING_DB_NAME=booking_service
+      - BOOKING_DB_USER=booking_user
+      - BOOKING_DB_PASSWORD=booking_pass
+    networks:
+      - hotelio-net
+    depends_on:
+      - hotelio-booking-db
+      - hotelio-monolith
+
+  hotel-subgraph:
+    build:
+      context: ./hotel-subgraph
+      dockerfile: Dockerfile
+    container_name: hotelio-hotel-subgraph
+    ports:
+      - "4002:4002"
+    environment:
+      - PORT=4002
+    networks:
+      - hotelio-net
+    depends_on:
+      - hotelio-monolith
+
   apollo-gateway:
-    build: ./gateway
+    build:
+      context: ./apollo-gateway
+      dockerfile: Dockerfile
+    container_name: hotelio-apollo-gateway
     ports:
       - "4000:4000"
+    environment:
+      - PORT=4000
+    networks:
+      - hotelio-net
     depends_on:
       - booking-subgraph
       - hotel-subgraph
 
-  booking-subgraph:
-    build: ./booking-subgraph
+  hotelio-booking-db:
+    image: postgres:15
+    container_name: hotelio-booking-db-task3
+    environment:
+      POSTGRES_USER: booking_user
+      POSTGRES_PASSWORD: booking_pass
+      POSTGRES_DB: booking_service
     ports:
-      - "4001:4001"
+      - "5436:5432"
+    volumes:
+      - booking-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
 
-  hotel-subgraph:
-    build: ./hotel-subgraph
+  hotelio-monolith:
+    build:
+      context: ../monolith
+      dockerfile: Dockerfile
+    container_name: hotelio-monolith-task3
     ports:
-      - "4002:4002"
+      - "8087:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://hotelio-db:5432/hotelio
+      SPRING_DATASOURCE_USERNAME: hotelio
+      SPRING_DATASOURCE_PASSWORD: hotelio
+    networks:
+      - hotelio-net
+    depends_on:
+      - hotelio-db
+
+  hotelio-db:
+    image: postgres:15
+    container_name: hotelio-db-task3
+    environment:
+      POSTGRES_USER: hotelio
+      POSTGRES_PASSWORD: hotelio
+      POSTGRES_DB: hotelio
+    ports:
+      - "5437:5432"
+    volumes:
+      - monolith-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+
+volumes:
+  booking-db-data:
+  monolith-db-data:
+
+networks:
+  hotelio-net:
+    external: true

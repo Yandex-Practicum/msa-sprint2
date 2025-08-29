@@ -1,0 +1,9 @@
+CONTAINER ID   IMAGE                    COMMAND                  CREATED          STATUS          PORTS                                                             NAMES
+d95dca8eca5c   task3-apollo-gateway     "docker-entrypoint.s…"   59 seconds ago   Up 58 seconds   0.0.0.0:4000->4000/tcp, [::]:4000->4000/tcp                       hotelio-apollo-gateway
+b2d70fca744e   task3-booking-subgraph   "docker-entrypoint.s…"   59 seconds ago   Up 58 seconds   0.0.0.0:4001->4001/tcp, [::]:4001->4001/tcp                       hotelio-booking-subgraph
+54daa96b4fe0   task3-hotel-subgraph     "docker-entrypoint.s…"   59 seconds ago   Up 58 seconds   0.0.0.0:4002->4002/tcp, [::]:4002->4002/tcp                       hotelio-hotel-subgraph
+b1762beefaa9   task3-hotelio-monolith   "java -jar app.jar"      59 seconds ago   Up 58 seconds   0.0.0.0:8087->8080/tcp, [::]:8087->8080/tcp                       hotelio-monolith-task3
+5b33c4522104   postgres:15              "docker-entrypoint.s…"   59 seconds ago   Up 58 seconds   0.0.0.0:5437->5432/tcp, [::]:5437->5432/tcp                       hotelio-db-task3
+9ae9e90bfb80   postgres:15              "docker-entrypoint.s…"   59 seconds ago   Up 58 seconds   0.0.0.0:5436->5432/tcp, [::]:5436->5432/tcp                       hotelio-booking-db-task3
+3f5302acc0da   postgres:latest          "docker-entrypoint.s…"   2 weeks ago      Up 4 hours      0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp                       postgres-postgres-1
+d48be24bade8   qdrant/qdrant            "./entrypoint.sh"        2 weeks ago      Up 4 hours      0.0.0.0:6333-6334->6333-6334/tcp, [::]:6333-6334->6333-6334/tcp   qdrant

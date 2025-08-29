@@ -1,0 +1,21 @@
+{
+  "name": "apollo-gateway",
+  "version": "1.0.0",
+  "description": "Apollo Gateway for Hotelio GraphQL Federation",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "@apollo/gateway": "^2.5.7",
+    "@apollo/server": "^4.9.5",
+    "graphql": "^16.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": ["graphql", "federation", "gateway", "hotelio"],
+  "author": "Hotelio Team",
+  "license": "MIT"
+}
