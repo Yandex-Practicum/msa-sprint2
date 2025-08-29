@@ -1,0 +1,24 @@
+REPOSITORY                      TAG           IMAGE ID       CREATED          SIZE
+booking-service                 latest        42a366f71de6   2 minutes ago    31.2MB
+<none>                          <none>        40d1e92108ac   3 minutes ago    425MB
+task3-apollo-gateway            latest        89bf8d483f53   55 minutes ago   324MB
+task3-hotel-subgraph            latest        4ed69bd0fd93   55 minutes ago   278MB
+task3-booking-subgraph          latest        883698a5ba62   57 minutes ago   282MB
+task2-booking-service           latest        df49f6932ff2   5 hours ago      1.74GB
+task2-booking-history-service   latest        9e32a3739b3a   5 hours ago      1.74GB
+task3-hotelio-monolith          latest        865fc811ec8d   5 hours ago      755MB
+task2-monolith                  latest        b67b9331d86a   5 hours ago      755MB
+postgres                        15            bc51cf4f1fe0   2 weeks ago      650MB
+clickhouse/clickhouse-server    latest        17cf22f98a16   2 weeks ago      948MB
+qdrant/qdrant                   latest        82872f85515f   2 weeks ago      304MB
+postgres                        latest        0f9d52b23739   3 weeks ago      662MB
+mongo                           6             363f5fab76d1   6 weeks ago      1GB
+alpine                          latest        4bcff63911fc   6 weeks ago      13.3MB
+gcr.io/k8s-minikube/kicbase     <none>        6ed579c9292b   3 months ago     1.76GB
+gcr.io/k8s-minikube/kicbase     v0.0.47       631837ba851f   3 months ago     1.76GB
+mongo                           5             54bcd8da3ea5   7 months ago     993MB
+golang                          1.21-alpine   2414035b086e   12 months ago    334MB
+kong                            3.4           09f55022ccfb   14 months ago    369MB
+zookeeper                       3.7.1         dd834732be44   2 years ago      379MB
+confluentinc/cp-kafka           7.2.1         7494848da233   3 years ago      1.24GB
+confluentinc/cp-zookeeper       7.2.1         a09fad082e13   3 years ago      1.24GB
