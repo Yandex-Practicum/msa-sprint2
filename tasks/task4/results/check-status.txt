@@ -17,5 +17,7 @@ booking-service	default  	1       	2025-08-29 21:01:57.964994 +0300 MSK	deployed
 ▶️ Quick curl (if port-forward already running):
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100     4  100     4    0     0    341      0 --:--:-- --:--:-- --:--:--   363
-pong✅ Reachable
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100     4  100     4    0     0    341      0 --:--:-- --:--:-- --:--:--   363
+pong Reachable

@@ -2,7 +2,7 @@
 
 set -e
 
-echo "▶️ Проверка Feature Flag (X-Feature-Enabled: true)..."
+echo "Checking Feature Flag (X-Feature-Enabled: true)..."
 
-# Отправляем запрос с заголовком, чтобы маршрутизировать трафик на `v2`
-curl -H "X-Feature-Enabled: true" http://localhost:9090/ping
+# Отправляем запрос с заголовком, чтобы маршрутизировать трафик на v2
+kubectl run test-feature-flag --image=curlimages/curl --rm -it --restart=Never -- curl -s --max-time 5 -H "X-Feature-Enabled: true" http://booking-service/ping

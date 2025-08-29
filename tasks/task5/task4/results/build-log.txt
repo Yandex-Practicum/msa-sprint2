@@ -1,0 +1,41 @@
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  3.584kB
+Step 1/12 : FROM golang:1.21-alpine AS builder
+ ---> 2414035b086e
+Step 2/12 : WORKDIR /app
+ ---> Using cache
+ ---> 82aaa448c125
+Step 3/12 : COPY main.go .
+ ---> Using cache
+ ---> c110274664ac
+Step 4/12 : RUN go mod init booking-service
+ ---> Using cache
+ ---> 505ea3455514
+Step 5/12 : RUN go build -o booking-service main.go
+ ---> Using cache
+ ---> 40d1e92108ac
+Step 6/12 : FROM alpine:latest
+ ---> 4bcff63911fc
+Step 7/12 : RUN apk add --no-cache curl
+ ---> Using cache
+ ---> bce7f3ea76c9
+Step 8/12 : WORKDIR /app
+ ---> Using cache
+ ---> 221eaa9d172c
+Step 9/12 : COPY --from=builder /app/booking-service .
+ ---> Using cache
+ ---> 8754860b8836
+Step 10/12 : EXPOSE 8080
+ ---> Using cache
+ ---> 85c4100d90be
+Step 11/12 : HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3   CMD curl -f http://localhost:8080/health || exit 1
+ ---> Using cache
+ ---> 2d6aa44af990
+Step 12/12 : CMD ["./booking-service"]
+ ---> Using cache
+ ---> 42a366f71de6
+Successfully built 42a366f71de6
+Successfully tagged booking-service:latest

@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: feature-flag-filter
+  namespace: default
+spec:
+  configPatches:
+  - applyTo: HTTP_ROUTE
+    match:
+      context: SIDECAR_OUTBOUND
+      routeConfiguration:
+        vhost:
+          route:
+            name: "route.0"
+    patch:
+      operation: MERGE
+      value:
+        request_headers_to_add:
+        - header:
+            key: "x-feature-version"
+            value: "v2"

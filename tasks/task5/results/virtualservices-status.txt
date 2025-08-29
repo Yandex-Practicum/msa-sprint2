@@ -1,0 +1,2 @@
+NAME              GATEWAYS   HOSTS                 AGE
+booking-service              ["booking-service"]   22m

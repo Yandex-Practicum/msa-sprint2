@@ -5,7 +5,7 @@
 
 set -e
 
-echo "🚀 Запуск тестирования системы Hotelio с Kong Gateway"
+echo "Запуск тестирования системы Hotelio с Kong Gateway"
 echo "=================================================="
 
 # Цвета для вывода
@@ -21,7 +21,7 @@ log() {
 }
 
 success() {
-    echo -e "${GREEN}✅ $1${NC}"
+    echo -e "${GREEN}$1${NC}"
 }
 
 error() {
@@ -33,7 +33,7 @@ warning() {
 }
 
 # Проверка доступности Kong Gateway
-log "🔍 Проверка Kong Gateway..."
+log "Проверка Kong Gateway..."
 if curl -s http://localhost:8001/status > /dev/null; then
     success "Kong Gateway доступен"
 else
@@ -42,7 +42,7 @@ else
 fi
 
 # Проверка доступности Kong Proxy
-log "🔍 Проверка Kong Proxy..."
+log "Проверка Kong Proxy..."
 if curl -s http://localhost:8000/ > /dev/null; then
     success "Kong Proxy доступен на порту 8000"
 else
@@ -51,7 +51,7 @@ else
 fi
 
 # Проверка Kong конфигурации
-log "🔍 Проверка Kong конфигурации..."
+log "Проверка Kong конфигурации..."
 KONG_SERVICES=$(curl -s http://localhost:8001/services | jq '.data | length')
 if [ "$KONG_SERVICES" -ge 3 ]; then
     success "Kong настроен: $KONG_SERVICES сервисов"
@@ -60,7 +60,7 @@ else
 fi
 
 # Проверка Kong маршрутов
-log "🔍 Проверка Kong маршрутов..."
+log "Проверка Kong маршрутов..."
 KONG_ROUTES=$(curl -s http://localhost:8001/routes | jq '.data | length')
 if [ "$KONG_ROUTES" -ge 4 ]; then
     success "Kong маршруты настроены: $KONG_ROUTES маршрутов"
@@ -274,7 +274,7 @@ else
 fi
 
 echo ""
-echo "🎯 Результаты тестирования Kong Gateway"
+echo "Результаты тестирования Kong Gateway"
 echo "======================================="
 
 # Подсчет успешных тестов
@@ -289,12 +289,12 @@ for i in {1..20}; do
 done
 
 echo "📊 Всего тестов: $TOTAL_TESTS"
-echo "✅ Успешно: $SUCCESS_TESTS"
+echo "Успешно: $SUCCESS_TESTS"
 echo "❌ Провалено: $((TOTAL_TESTS - SUCCESS_TESTS))"
 
 if [ $SUCCESS_TESTS -eq $TOTAL_TESTS ]; then
     echo ""
-    success "🎉 Все тесты пройдены! Kong Gateway работает корректно!"
+    success "Все тесты пройдены! Kong Gateway работает корректно!"
     echo ""
     echo "🌐 Доступные endpoints:"
     echo "   • Kong Gateway: http://localhost:8000"

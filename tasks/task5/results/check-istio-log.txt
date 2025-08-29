@@ -1,0 +1,11 @@
+Checking Istio installation and injection...
+
+NAME                                    READY   STATUS    RESTARTS      AGE
+istio-egressgateway-559bd55945-mkx8l    1/1     Running   1 (19m ago)   32m
+istio-ingressgateway-74df47f5f9-zwccs   1/1     Running   1 (19m ago)   32m
+istiod-85798b5866-m4c2r                 1/1     Running   1 (19m ago)   32m
+
+Checking Istio injection in default namespace...
+"enabled"
+
+Result: Istio is properly installed and injection is enabled in default namespace.

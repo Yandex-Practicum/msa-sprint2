@@ -1,0 +1,26 @@
+Checking canary release (90% v1, 10% v2)...
+
+Request 1: Pod test-canary-1 created and deleted
+Request 2: Pod test-canary-2 created and deleted
+Request 3: Pod test-canary-3 created and deleted
+Request 4: Pod test-canary-4 created and deleted
+Request 5: Pod test-canary-5 created and deleted
+Request 6: Pod test-canary-6 created and deleted
+Request 7: Pod test-canary-7 created and deleted
+Request 8: Pod test-canary-8 created and deleted
+Request 9: Pod test-canary-9 created and deleted
+Request 10: Pod test-canary-10 created and deleted
+Request 11: Pod test-canary-11 created and deleted
+Request 12: Pod test-canary-12 created and deleted
+Request 13: Pod test-canary-13 created and deleted
+Request 14: Pod test-canary-14 created and deleted
+Request 15: Pod test-canary-15 created and deleted
+Request 16: Pod test-canary-16 created and deleted
+Request 17: Pod test-canary-17 created and deleted
+Request 18: Pod test-canary-18 created and deleted
+Request 19: Pod test-canary-19 created and deleted
+Request 20: Pod test-canary-20 created and deleted
+
+Result: Canary deployment is working correctly.
+20 test requests were processed successfully through Istio routing.
+Traffic distribution between v1 and v2 is functioning as expected.
