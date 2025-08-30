@@ -1,0 +1,12 @@
+2025-08-23 23:48:06 apollo-gateway-1    | The `serviceList` option is deprecated and will be removed in a future version of `@apollo/gateway`. Please migrate to its replacement `IntrospectAndCompose`. More information on `IntrospectAndCompose` can be found in the documentation.
+2025-08-23 23:48:07 apollo-gateway-1    | 🚀 Gateway ready at http://localhost:4000/
+2025-08-23 23:56:47 hotel-subgraph-1    | Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+2025-08-23 23:56:47 hotel-subgraph-1    | ✅ Hotel subgraph ready at http://localhost:4002/
+2025-08-23 23:56:47 booking-subgraph-1  | Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+2025-08-23 23:56:48 booking-subgraph-1  | ✅ Booking subgraph ready at http://localhost:4001/
+2025-08-23 23:56:48 apollo-gateway-1    | The `serviceList` option is deprecated and will be removed in a future version of `@apollo/gateway`. Please migrate to its replacement `IntrospectAndCompose`. More information on `IntrospectAndCompose` can be found in the documentation.
+2025-08-23 23:56:48 apollo-gateway-1    | 🚀 Gateway ready at http://localhost:4000/
+2025-08-23 23:59:59 booking-subgraph-1  | userId header is matched, access granted!
+2025-08-24 00:00:01 booking-subgraph-1  | Received bookings from booking-service through gRPC...
+2025-08-24 00:00:02 hotel-subgraph-1    | Getting hotel by id = 1 through REST...
+2025-08-24 00:00:09 booking-subgraph-1  | userId header is NOT matched, returning FORBIDDEN status!
