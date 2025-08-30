@@ -5,7 +5,7 @@ set -e
 echo "▶️ Checking canary release (90% v1, 10% v2)..."
 
 # Посылаем 100 запросов
-for i in {1..100}
-do
-    curl -s http://localhost:9090/ping
-done
+kubectl run canary-test --rm -it \
+  --image=busybox \
+  --restart=Never \
+  -- /bin/sh -c "for i in \$(seq 1 100); do wget -qO- http://booking-service/ping; echo; done"
