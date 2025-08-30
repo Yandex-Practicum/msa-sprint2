@@ -1,0 +1,41 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+System_Boundary(hotelio, "Hotelio App") {
+  Container(bookingService, "Booking Service")
+  ComponentDb(bookingServiceDB, "Booking Service DB", "PostgreSQL", "Stores booking and promocodes data")
+  Rel(bookingService, bookingServiceDB, "Operates with data from")
+
+  Container(userService, "User Service")
+  ComponentDb(userServiceDB, "User Service DB", "PostgreSQL", "Stores user information")
+  Rel(userService, userServiceDB, "Operates with data from")
+
+  Container(hotelService, "Hotel Service")
+  ComponentDb(hotelServiceDB, "Hotel Service DB", "PostgreSQL", "Stores hotel information")
+  Rel(hotelService, hotelServiceDB, "Operates with data from")
+
+  Container(bookingHistoryService, "Booking History Service")
+  ComponentDb(bookingHistoryServiceDB, "Booking History Service DB", "MongoDB", "Stores booking-history information for analytics")
+  Rel(bookingHistoryService, bookingHistoryServiceDB, "Stores data to")
+  Container(kafka, "Kafka")
+  Rel(bookingHistoryService, kafka, "Receive booking information from")
+  Rel(bookingService, kafka, "Sends booking events")
+
+
+  Container(SmartphoneBFF, "Smartphone BFF")
+  Container(webBFF, "Web BFF")
+
+}
+
+Person(smartphoneUser, "Smartphone user", "Interacts with frontend through IPhone/Android device")
+Person(webUser, "Web user", "Interacts with frontend through browser")
+Rel(smartphoneUser, SmartphoneBFF, "uses")
+Rel(SmartphoneBFF, bookingService, "uses")
+Rel(SmartphoneBFF, hotelService, "uses")
+Rel(SmartphoneBFF, userService, "uses")
+Rel(webUser, webBFF, "uses")
+Rel(webBFF, bookingService, "uses")
+Rel(webBFF, hotelService, "uses")
+Rel(webBFF, userService, "uses")
+
+@enduml
