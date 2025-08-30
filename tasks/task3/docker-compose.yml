@@ -2,19 +2,36 @@ version: '3.8'
 
 services:
   apollo-gateway:
+    networks:
+      - hotelio-net
     build: ./gateway
     ports:
       - "4000:4000"
     depends_on:
       - booking-subgraph
       - hotel-subgraph
+    environment:
+      BOOKING_SUBGRAPH_URL: http://booking-subgraph:4001
+      HOTEL_SUBGRAPH_URL: http://hotel-subgraph:4002
 
   booking-subgraph:
     build: ./booking-subgraph
+    networks:
+      - hotelio-net
     ports:
       - "4001:4001"
+    environment:
+       BOOKING_SERVICE_URL: booking-service:9090
 
   hotel-subgraph:
     build: ./hotel-subgraph
+    networks:
+      - hotelio-net
     ports:
       - "4002:4002"
+    environment:
+      MONOLITH_SERVICE_URL: http://monolith:8080
+
+networks:
+  hotelio-net:
+    external: true

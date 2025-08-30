@@ -42,10 +42,3 @@ VALUES
   ('TESTCODE-VIP', 20.0, true, false, '2099-12-31', 'Только для VIP'),
   ('TESTCODE-OLD', 5.0, false, true, '2000-01-01', 'Истёкший промокод');
   
-  
--- Бронирования (для GET /api/bookings)
-INSERT INTO booking (user_id, hotel_id, promo_code, discount_percent, price, created_at)
-VALUES
-('test-user-2', 'test-hotel-1', 'TESTCODE1', 10.0, 90.0, NOW()),
-('test-user-3', 'test-hotel-1', null, 0.0, 80.0, NOW());
-

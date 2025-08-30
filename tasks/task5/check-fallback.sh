@@ -3,4 +3,9 @@
 set -e
 
 echo "▶️ Testing fallback route..."
-curl -s http://localhost:9090/ping || echo "Fallback route working"
+
+kubectl run fallback-test --rm -it \
+  --image=curlimages/curl \
+  --restart=Never \
+  -- /bin/sh -c "for i in \$(seq 1 10); do curl http://booking-service/ping; echo; done"
+
