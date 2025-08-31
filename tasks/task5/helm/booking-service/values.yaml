@@ -1,0 +1,49 @@
+replicaCount: 1
+
+image:
+  name: task4-booking-service
+  tag: latest
+  tag_v1: "1.1"
+  tag_v2: "2.0"
+  name_v1: "v1"
+  name_v2: "v2"
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 8080
+
+resources:
+
+livenessProbe:
+  enabled: true
+  httpGet:
+    path: /ping
+    port: 8080
+  # количество секунд, которое Kubernetes ждёт после старта контейнера перед первой проверкой
+  initialDelaySeconds: 5
+  # интервал (в секундах) между последовательными проверками после первой.
+  periodSeconds: 10
+  # время ожидания ответа на проверку. Если ответ не поступил за это время, проверка считается проваленной.
+  timeoutSeconds: 2
+  # число последовательных неудачных проверок, после которых Kubernetes считает контейнер "плохим" и, в случае livenessProbe, перезапускает его.
+  failureThreshold: 3
+  # число успешных проверок подряд, после которых контейнер считается "здоровым". Обычно 1, используется для readinessProbe.
+  successThreshold: 1
+
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: /feature
+    port: 8080
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 2
+  failureThreshold: 3
+  successThreshold: 1
+
+environment:
+  ENABLE_FEATURE_X: "true"
+  IMAGE_VERSION_2: "2.0"
+

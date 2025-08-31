@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url:  ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/hotelio}
+    username: ${SPRING_DATASOURCE_USERNAME:hotelio}
+    password: ${SPRING_DATASOURCE_PASSWORD:hotelio}
   jpa:
     hibernate:
       ddl-auto: create
@@ -10,7 +10,7 @@ spring:
     properties:
       hibernate.format_sql: false
 
-#booking:
-#  service:
-#    external-host: booking-service
-#    external-port: 9090
+booking:
+  service:
+    external-host: ${BOOKING_SERVICE_EXTERNAL_HOST:localhost}
+    external-port: ${BOOKING_SERVICE_EXTERNAL_PORT:9090}

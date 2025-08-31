@@ -1,0 +1,3 @@
+- Деплойьент сервиса с 2 версиями helm-chart.  Настройки сервиса через environment поэтому используется один [values.yaml](../helm/booking-service/values.yaml)
+- Установка Istio
+- доработка check-canary.sh

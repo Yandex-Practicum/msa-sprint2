@@ -1,0 +1,11 @@
+▶️ Проверка установки Istio...
+NAME                                    READY   STATUS    RESTARTS   AGE
+grafana-cdb9db549-55stw                 1/1     Running   0          3h21m
+istio-egressgateway-559bd55945-rpnsb    1/1     Running   0          3h26m
+istio-ingressgateway-74df47f5f9-w5r6x   1/1     Running   0          3h26m
+istiod-85798b5866-kwrcd                 1/1     Running   0          3h26m
+jaeger-84b9c75d5f-7jq7l                 1/1     Running   0          3h21m
+kiali-56f54f58f9-6vrjf                  1/1     Running   0          3h21m
+prometheus-7bf56b6bc-k276s              2/2     Running   0          3h21m
+▶️ Проверка Istio инъекции в default namespace...
+"enabled"

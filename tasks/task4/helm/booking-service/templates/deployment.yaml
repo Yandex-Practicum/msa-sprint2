@@ -20,4 +20,7 @@ spec:
           imagePullPolicy: Never
 
           ports:
-            - containerPort: {{ .Values.service.targetPort }}
+            - containerPort:  {{ .Values.service.targetPort }}
+          env:
+            - name: ENABLE_FEATURE_X
+              value: "{{ .Values.env.ENABLE_FEATURE_X }}"

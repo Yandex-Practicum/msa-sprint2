@@ -22,14 +22,14 @@ minikube start --driver=docker
 
 # Структура проекта
 
-task4/
-├── booking-service/               # REST-сервис (Node/Java/etc)
-├── helm/
-│   └── booking-service/          # Helm-чарт сервиса
-├── .gitlab-ci.yml                # CI/CD пайплайн (требуется доработка)
-├── check-dns.sh                  # Проверка DNS внутри кластера
-├── check-status                  # Статус деплоя и curl локально
-├── README.md                     # Этот файл
+task4/</br>
+├── booking-service/              # REST-сервис (Node/Java/etc)</br>
+├── helm/</br>
+│   └── booking-service/          # Helm-чарт сервиса</br>
+├── .gitlab-ci.yml                # CI/CD пайплайн (требуется доработка)</br>
+├── check-dns.sh                  # Проверка DNS внутри кластера</br>
+├── check-status                  # Статус деплоя и curl локально</br>
+├── README.md                     # Этот файл</br>
 
 # Что нужно реализовать
 
