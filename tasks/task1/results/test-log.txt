@@ -1,0 +1,102 @@
+dows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS D:\projects\learn\microservice_architecture_courses\sprints\sprint_2\msa-sprint2\test> docker run --rm -e DB_HOST=host.docker.internal -e DB_PORT=5432 -e DB_NAME=hotelio -e DB_USER=hotelio -e DB_PASSWORD=hotelio -e API_URL=http://host.docker.internal:8084 hotelio-tester
+>> docker build -t hotelio-tester .
+>> cd test/
+docker: error during connect: Head "http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/_ping": open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
+
+Run 'docker run --help' for more information
+ERROR: error during connect: Head "http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/_ping": open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
+cd : Cannot find path 'D:\projects\learn\microservice_architecture_courses\sprints\sprint_2\msa-sprint2\test\test\' because it does not exist.
+At line:3 char:1
++ cd test/
++ ~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (D:\projects\lea...int2\test\test\:String) [Set-Location], ItemNotFoundException
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.SetLocationCommand
+
+PS D:\projects\learn\microservice_architecture_courses\sprints\sprint_2\msa-sprint2\test> docker run --rm -e DB_HOST=host.docker.internal -e DB_PORT=5432 -e DB_NAME=hotelio -e DB_USER=hotelio -e DB_PASSWORD=hotelio -e API_URL=http://host.docker.internal:8084 hotelio-tester
+>> docker build -t hotelio-tester .
+>> cd test/
+🏁 Регрессионный тест до миграции Hotelio
+🧪 Проверка подключения к БД...
+🧪 Загрузка фикстур...
+DELETE 0
+DELETE 0
+DELETE 0
+DELETE 0
+DELETE 0
+INSERT 0 4
+INSERT 0 3
+INSERT 0 12
+INSERT 0 3
+INSERT 0 2
+🧪 Выполнение HTTP-тестов...
+
+Тесты пользователей...
+✅ Получение test-user-1 по ID работает
+✅ Статус test-user-1: ACTIVE
+✅ test-user-1 в блэклисте
+✅ test-user-1 активен
+✅ test-user-1 не авторизован (в блэклисте)
+✅ test-user-3 — VIP-пользователь
+✅ test-user-2 авторизован
+
+Тесты отелей...
+✅ test-hotel-1 получен по ID
+✅ test-hotel-1 работает
+✅ test-hotel-3 не работает
+✅ test-hotel-2 полностью забронирован
+✅ Поиск отелей в Сеуле работает
+✅ Топ-отели в Сеуле загружены
+
+Тесты ревью...
+✅ Отзывы test-hotel-1 найдены
+✅ test-hotel-1 признан надёжным
+✅ test-hotel-3 НЕ признан надёжным (ожидаемо)
+
+Тесты промокодов...
+✅ Промокод TESTCODE1 найден
+✅ VIP-промо доступен VIP
+✅ VIP-промо недоступен обычному
+✅ Обычный промо доступен
+✅ Истекший промо недоступен
+✅ POST /validate промо прошёл
+
+Тесты бронирования...
+✅ Все бронирования получены
+✅ Бронирования test-user-2 найдены
+✅ Бронирование прошло (без промо)
+✅ Бронирование с промо прошло
+✅ Отклонено: неактивный пользователь
+✅ Отклонено: недоверенный отель
+✅ Отклонено: отель полностью забронирован
+✅ Все HTTP-тесты пройдены!
+[+] Building 1.8s (11/11) FINISHED                                                                                                                                                                          docker:desktop-linux
+ => [internal] load build definition from Dockerfile                                                                                                                                                                        0.0s
+ => => transferring dockerfile: 408B                                                                                                                                                                                        0.0s
+ => [internal] load metadata for docker.io/library/debian:bullseye-slim                                                                                                                                                     1.1s
+ => [internal] load .dockerignore                                                                                                                                                                                           0.0s
+ => => transferring context: 2B                                                                                                                                                                                             0.0s
+ => [1/6] FROM docker.io/library/debian:bullseye-slim@sha256:849d9d34d5fe0bf88b5fb3d09eb9684909ac4210488b52f4f7bbe683eedcb851                                                                                               0.0s
+ => => resolve docker.io/library/debian:bullseye-slim@sha256:849d9d34d5fe0bf88b5fb3d09eb9684909ac4210488b52f4f7bbe683eedcb851                                                                                               0.0s
+ => [internal] load build context                                                                                                                                                                                           0.0s
+ => => transferring context: 8.76kB                                                                                                                                                                                         0.0s
+ => CACHED [2/6] WORKDIR /app                                                                                                                                                                                               0.0s
+ => CACHED [3/6] RUN apt-get update && apt-get install -y     curl     postgresql-client     bash     && rm -rf /var/lib/apt/lists/*                                                                                        0.0s
+ => CACHED [4/6] COPY wait-for-it.sh /usr/local/bin/wait-for-it                                                                                                                                                             0.0s
+ => CACHED [5/6] COPY init-fixtures.sql regress.sh ./                                                                                                                                                                       0.0s
+ => CACHED [6/6] RUN chmod +x /usr/local/bin/wait-for-it regress.sh                                                                                                                                                         0.0s
+ => exporting to image                                                                                                                                                                                                      0.2s
+ => => exporting layers                                                                                                                                                                                                     0.0s
+ => => exporting manifest sha256:22c6493748a0673f9edfdd7d1d7994d879fdbbb5dab6a8d40f02448d65afd672                                                                                                                           0.0s
+ => => exporting config sha256:03c853f7bcaf879de8164411473c8fa8656a2753705c76adc8fed6451d8f3fe5                                                                                                                             0.0s
+ => => exporting attestation manifest sha256:c340d304a7d7d809a846ee91b48529958ab1e209c3da1e7a7cdc48ab14243cad                                                                                                               0.1s
+ => => exporting manifest list sha256:d44cf583c458e01f627184767ddd223037619f1f9a5f4c224f81a896daa5b751                                                                                                                      0.0s
+ => => naming to docker.io/library/hotelio-tester:latest                                                                                                                                                                    0.0s
+ => => unpacking to docker.io/library/hotelio-tester:latest                                                                                                                                                                 0.0s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/q9ffg746ax3lgcth97ak25iyk
+

@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: {{ .Chart.Name }}
+spec:
+  workloadSelector:
+    labels:
+      app: {{ .Chart.Name }}
+  configPatches:
+    - applyTo: HTTP_ROUTE
+      match:
+        context: SIDECAR_OUTBOUND
+        routeConfiguration:
+          vhost:
+            name: "{{ .Chart.Name }}.default.svc.cluster.local:8800"
+          route:
+            name: "default"
+      patch:
+        operation: MERGE
+        value:
+          route:
+            clusterHeader: "x-feature-enabled"
+            weightedClusters:
+              clusters:
+                - name: "outbound|80|v2|{{ .Chart.Name }}.default.svc.cluster.local"
+                  weight: 100

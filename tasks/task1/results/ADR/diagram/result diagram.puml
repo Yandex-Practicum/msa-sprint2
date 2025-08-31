@@ -1,0 +1,72 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Целевое состояние архитектуры Hotelio
+
+System_Boundary(hotelio, "Hotelio Microservice") {
+
+  Component(api_gateway, "Gateway Service", "", "API Gateway")
+
+  Container(hotel_container, "Hotel", "Spring Boot", "Информация об отелях") {
+    Component(hotelController, "HotelController", "", "/api/hotels")
+    Component(hotelService, "HotelService", "Java Service", "")
+    ComponentDb(hotel_db, "Hotel DB", "PostgreSQL", "")
+
+    Rel(hotelController, hotelService, "Uses")
+    Rel(hotelService, hotel_db, "Reads")
+  }
+
+  Container(promo_container, "Promo", "Spring Boot", "Промокоды пользователей") {
+    Component(promoController, "PromoCodeController", "Spring MVC", "/api/promos")
+    Component(promoService, "PromoCodeService", "Java Service", "")
+    ComponentDb(promo_db, "Promo DB", "PostgreSQL", "")
+
+    Rel(promoController, promoService, "Uses")
+    Rel(promoService, promo_db, "Reads")
+  }
+
+  Container(review_container, "Review", "Spring Boot", "Отзывы об отелях") {
+    Component(reviewController, "ReviewController", "Spring MVC", "/api/reviews")
+    Component(reviewService, "ReviewService", "Java Service", "")
+    ComponentDb(eview_db, "Review DB", "PostgreSQL", "")
+
+    Rel(reviewController, reviewService, "Uses")
+    Rel(reviewService, eview_db, "Reads/Writes")
+  }
+
+  Container(booking_container, "Booking", "Spring Boot", "Бронирование отелей") {
+    Component(bookingController, "BookingController", "Spring MVC", "/api/bookings")
+    Component(bookingService, "BookingService", "Java Service", "Validates and CRUD bookings")
+    ComponentDb(booking_db, "Booking DB", "PostgreSQL", "")
+
+    Rel(bookingController, bookingService, "Uses")
+    Rel(bookingService, booking_db, "Reads/Writes")
+  }
+
+  Container(user_container, "User", "Spring Boot", "Управление пользователями") {
+    Component(userController, "UserController", "Spring MVC", "/api/users")
+    Component(userService, "UserService", "Java Service", "User details")
+    ComponentDb(user_db, "User DB", "PostgreSQL", "")
+
+    Rel(userController, userService, "Uses")
+    Rel(userService, user_db, "Reads")
+  }
+
+  ' Service-Service and Service-DB
+  Rel(bookingService, hotelController, "Calls")
+  Rel(bookingService, promoController, "Calls")
+  Rel(bookingService, reviewController, "Calls")
+  Rel(promoService, userController, "Calls")
+
+}
+
+Person(user, "User", "Использует")
+Rel(user, api_gateway, "Gateway")
+Rel(api_gateway, userController, "REST API")
+Rel(api_gateway, bookingController, "REST API")
+Rel(api_gateway, hotelController, "REST API")
+Rel(api_gateway, promoController, "REST API")
+Rel(api_gateway, reviewController, "REST API")
+
+
+@enduml

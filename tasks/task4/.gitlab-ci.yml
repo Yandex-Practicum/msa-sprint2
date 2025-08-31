@@ -1,5 +1,4 @@
 stages:
-  - build
   - test
   - deploy
 
@@ -7,17 +6,25 @@ variables:
   IMAGE_TAG: latest
   IMAGE_NAME: booking-service
 
-build:
-  stage: build
-  script:
-
-
-test:
+ping-test:
   stage: test
+  before_script:
+    - docker build -t test-container .
+    - docker run -d --name test-container -p 8080:8080 test-container
   script:
-
+    - RESPONSE=$(curl -s localhost:8080/ping)
+    - echo "Pings response is $RESPONSE"
+    - |
+      if [ "$RESPONSE" != "pong" ]; then
+        echo "Unexpected response: $RESPONSE";
+        exit 1;
+      fi
+  after_script:
+    - docker stop test-container
+    - docker rm test-container
 
 deploy:
   stage: deploy
   script:
- 
+    - minikube image load $IMAGE_NAME:$IMAGE_TAG
+    - helm upgrade $IMAGE_NAME:$(date +%Y%m%d%H%M%S) booking-service

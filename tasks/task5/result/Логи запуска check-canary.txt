@@ -1,0 +1,5 @@
+▶️ Checking canary release (90% v1, 10% v2)...
+http://192.168.49.2:30167
+pong 2.0pong 1.1pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong 2.0pong
+Count V1: 5
+Count V2: 95

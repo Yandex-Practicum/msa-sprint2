@@ -1,0 +1,43 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: {{ .Chart.Name }}
+spec:
+  hosts:
+    - {{ .Chart.Name }}.default.svc.cluster.local
+  #hosts:
+  #  - "*"
+  #gateways:
+  #  - echo-gateway
+  http:
+    - match:
+        - headers:
+            X-Feature-Enabled:
+              exact: "true"
+      route:
+      - destination:
+          host: {{ .Chart.Name }}.default.svc.cluster.local
+          subset: v1
+        weight: 10
+      - destination:
+          host: {{ .Chart.Name }}.default.svc.cluster.local
+          subset: v2
+        weight: 90
+      #retries:
+      #  attempts: 2
+      #  perTryTimeout: 1s
+      #  retryOn: 5xx,connect-failure,refused-stream,reset
+      #fault:
+      #  abort:
+      #    httpStatus: 503
+      #    percentage:
+      #      value: 20
+      #  delay:
+      #    fixedDelay: 5s
+      #    percentage:
+      #      value: 30
+
+
+
+
+

@@ -21,12 +21,40 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     bookingsByUser: async (_, { userId }, { req }) => {
-		// TODO: Реальный вызов к grpc booking-сервису или заглушка + ACL
+      console.log('bookingsByUser called with userId: ', userId);
+      const authorizedUserId = 'user1';
+      if (!authorizedUserId || authorizedUserId !== userId) {
+        console.log('bookingsByUser, User is unauthorized: ', userId);
+        return []; // Не возвращаем данные, если пользователь не авторизован
+      }
+
+      return [
+        {
+          id: 'b1',
+          userId,
+          hotelId: 'h1',
+          discountPercent: 20,
+          promoCode: 'SUMMER',
+        },
+      ];
     },
   },
   Booking: {
-	  // TODO: Реальный вызов к grpc booking-сервису или заглушка + ACL
+    __resolveReference: async ({ id }) => {
+      console.log('__resolveReference called with id: ', id, '');
+      return {
+        id,
+        userId: 'u1',
+        hotelId: 'h1',
+        discountPercent: 20,
+        promoCode: 'SUMMER',
+      };
+    },
   },
+  hotel: async (booking) => {
+    return { __typename: 'Hotel', id: booking.hotelId };
+  }
+
 };
 
 const server = new ApolloServer({
