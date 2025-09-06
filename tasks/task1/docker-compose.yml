@@ -6,6 +6,8 @@ services:
       context: ../monolith
       dockerfile: Dockerfile
     container_name: hotelio-monolith
+    depends_on:
+      - monolith-db
     ports:
       - "8084:8080"
     networks:
