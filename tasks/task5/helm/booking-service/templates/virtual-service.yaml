@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: {{ .Chart.Name }}-vs
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - booking
+  http:
+    - name: feature-enable-route
+      match:
+        - headers:
+            X-Feature-Enabled:
+              exact: "true"
+      route:
+        - destination:
+            host: {{ .Chart.Name }}.default.svc.cluster.local
+            
+            subset: v2
+
+    - name: canary-deployment-route
+      route:
+        - destination:
+            host: {{ .Chart.Name }}.default.svc.cluster.local
+            subset: v1
+          weight: 90
+        - destination:
+            host: {{ .Chart.Name }}.default.svc.cluster.local
+            subset: v2
+          weight: 10
+      retries:
+        attempts: 3
+        perTryTimeout: 3s
+        retryOn: 5xx,gateway-error,connect-failure

@@ -1,0 +1,19 @@
+﻿curl http://localhost:8084/api/bookings
+
+
+StatusCode        : 200
+StatusDescription : 
+Content           : []
+RawContent        : HTTP/1.1 200 
+                    Transfer-Encoding: chunked
+                    Content-Type: application/json
+                    Date: Sat, 30 Aug 2025 15:21:39 GMT
+
+                    []
+Forms             : {}
+Headers           : {[Transfer-Encoding, chunked], [Content-Type, application/json], [Date, Sat, 30 Aug 2025 15:21:39 GMT]}
+Images            : {}
+InputFields       : {}
+Links             : {}
+ParsedHtml        : mshtml.HTMLDocumentClass
+RawContentLength  : 2

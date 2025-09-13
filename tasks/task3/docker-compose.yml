@@ -11,10 +11,14 @@ services:
 
   booking-subgraph:
     build: ./booking-subgraph
+    environment:
+      - API_HOST_URL=http://host.docker.internal:8084
     ports:
       - "4001:4001"
 
   hotel-subgraph:
     build: ./hotel-subgraph
+    environment:
+      - API_HOST_URL=http://host.docker.internal:8084
     ports:
       - "4002:4002"

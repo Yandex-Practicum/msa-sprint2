@@ -1,0 +1,9 @@
+
+
+$ sh check-feature-flag.sh
+▶️ Проверка Feature Flag (X-Feature-Enabled: true)...
+pong v2
+
+
+Лог на уровне ингресса:
+[2025-09-13T13:37:51.148Z] "GET /ping HTTP/1.1" 200 - via_upstream - "-" 0 7 1 1 "10.244.0.33" "curl/8.15.0" "c9c1db62-567b-975b-9f85-5fe29f25fc87" "localhost:9090" "10.244.0.39:8080" outbound|8080|v2|booking-service.default.svc.cluster.local 10.244.0.33:47846 127.0.0.1:8080 127.0.0.1:53124 - feature-enable-route

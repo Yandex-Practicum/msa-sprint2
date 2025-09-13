@@ -1,0 +1,14 @@
+replicaCount: 1
+
+environment:
+  - name: ENVIRONMENT
+    value: "staging"
+
+resources:
+  limits:
+    cpu: 50m
+    memory: 100Mi
+  requests:
+    cpu: 25m
+    memory: 100Mi
+

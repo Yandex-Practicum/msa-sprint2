@@ -3,7 +3,7 @@ DELETE FROM app_user;
 DELETE FROM hotel;
 DELETE FROM review;
 DELETE FROM promo_code;
-DELETE FROM booking;
+--DELETE FROM booking;
 
 INSERT INTO app_user (id, status, blacklisted, active, name, email, city)
 VALUES
@@ -44,8 +44,8 @@ VALUES
   
   
 -- Бронирования (для GET /api/bookings)
-INSERT INTO booking (user_id, hotel_id, promo_code, discount_percent, price, created_at)
-VALUES
-('test-user-2', 'test-hotel-1', 'TESTCODE1', 10.0, 90.0, NOW()),
-('test-user-3', 'test-hotel-1', null, 0.0, 80.0, NOW());
+-- INSERT INTO booking (user_id, hotel_id, promo_code, discount_percent, price, created_at)
+-- VALUES
+-- ('test-user-2', 'test-hotel-1', 'TESTCODE1', 10.0, 90.0, NOW()),
+-- ('test-user-3', 'test-hotel-1', null, 0.0, 80.0, NOW());
 

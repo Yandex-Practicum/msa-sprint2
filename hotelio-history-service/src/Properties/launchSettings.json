@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "HotelioHistoryService": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "DOTNET_ConnectionStrings__HotelioHistoryDb": "Host=host.docker.internal;Port=5434;Database=hotelio_history_service;Username=hotelio;Password=hotelio;Timeout=300;CommandTimeout=300;",
+        "KAFKA_BOOTSTRAP_SERVERS": "host.docker.internal:9092"
+      }
+    }
+  }
+}

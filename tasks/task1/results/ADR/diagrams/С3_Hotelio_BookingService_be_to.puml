@@ -1,0 +1,74 @@
+﻿@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+System_Boundary(hotelio, "Hotelio Monolith") {
+
+  Container(routing_app, "Hotelio routing app"){
+    Component(routing_service, "Routing Service", "Nginx", "Routes requests to new services or old monolith")
+  }
+
+  Container(monolith, "Monolith Application", "Spring Boot", "Legacy app exposing REST endpoints for hotel booking") {
+
+    ' Controllers
+    Component(bookingController, "BookingController", "Spring MVC", "/api/bookings")
+    Component(hotelController, "HotelController", "Spring MVC", "/api/hotels")
+    Component(promoController, "PromoCodeController", "Spring MVC", "/api/promos")
+    Component(reviewController, "ReviewController", "Spring MVC", "/api/reviews")
+    Component(userController, "UserController", "Spring MVC", "/api/users")
+
+    ' Services
+    Component(bookingService, "BookingService", "Java Service", "Validates and creates bookings")
+    Component(hotelService, "HotelService", "Java Service", "Retrieves hotel details")
+    Component(userService, "UserService", "Java Service", "Validates user status and blacklist")
+    Component(promoService, "PromoCodeService", "Java Service", "Applies discounts and rules")
+    Component(reviewService, "ReviewService", "Java Service", "Manages hotel reviews")
+
+    ' DB
+    ComponentDb(postgres, "Monolith DB", "PostgreSQL", "Stores users, hotels, bookings, reviews, promos")
+
+    ' Controller-Service relations
+    Rel(bookingController, bookingService, "Uses")
+    Rel(hotelController, hotelService, "Uses")
+    Rel(promoController, promoService, "Uses")
+    Rel(reviewController, reviewService, "Uses")
+    Rel(userController, userService, "Uses")
+
+    ' Service-Service and Service-DB
+    Rel(bookingService, hotelService, "Calls")
+    Rel(bookingService, userService, "Calls")
+    Rel(bookingService, promoService, "Calls")
+    Rel(bookingService, reviewService, "Calls")
+
+    Rel(bookingService, postgres, "Reads/Writes")
+    Rel(userService, postgres, "Reads")
+    Rel(hotelService, postgres, "Reads")
+    Rel(promoService, postgres, "Reads")
+    Rel(reviewService, postgres, "Reads/Writes")
+  }
+  
+  Container(booking_app, "Hotelio Booking service"){
+      Component(ms_bookingController, "BookingController", "Spring MVC", "/api/bookings")
+      Component(ms_bookingService, "BookingService", "Java Service", "Validates and creates bookings")
+      ComponentDb(booking_db, "Booking DB", "PostgreSQL", "Stores bookings")
+      
+      Rel(ms_bookingService, hotelController, "Calls")
+      Rel(ms_bookingService, userController, "Calls")
+      Rel(ms_bookingService, promoController, "Calls")
+      Rel(ms_bookingService, reviewController, "Calls")
+      Rel(ms_bookingService, booking_db, "Reads/Writes")
+      Rel(ms_bookingController, ms_bookingService, "Uses")
+      
+    }
+}
+
+Person(user, "User", "Interacts with frontend")
+Rel(user, routing_service, "Uses")
+Rel(user, hotelController, "Uses")
+Rel(user, promoController, "Uses")
+Rel(user, reviewController, "Uses")
+Rel(user, userController, "Uses")
+Rel(routing_service, ms_bookingController, "Uses")
+Rel(routing_service, bookingController, "Uses")
+@enduml
