@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1E4ECEE1-49CC-41B2-8178-B4E8EA4D50E8}"
+	ProjectSection(SolutionItems) = preProject
+		compose.yaml = compose.yaml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelioHistoryService", "HotelioHistoryService.csproj", "{56491221-F228-479D-9506-F97A574488AF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{56491221-F228-479D-9506-F97A574488AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56491221-F228-479D-9506-F97A574488AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56491221-F228-479D-9506-F97A574488AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56491221-F228-479D-9506-F97A574488AF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{56491221-F228-479D-9506-F97A574488AF} = {1E4ECEE1-49CC-41B2-8178-B4E8EA4D50E8}
+	EndGlobalSection
+EndGlobal

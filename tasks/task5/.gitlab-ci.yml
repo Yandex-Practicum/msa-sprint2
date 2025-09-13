@@ -1,0 +1,38 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  IMAGE_TAG: latest
+  IMAGE_NAME: booking-service
+  ENV: production
+  NAMESPACE: default
+  INTERNAL_PORT: 8080
+  EXTERNAL_PORT: 8080
+  VERSION: v2
+
+build:
+  stage: build
+  script: |
+    docker build --tag $IMAGE_NAME:$IMAGE_TAG \
+    --progress=plain . -f booking-service/Dockerfile
+
+
+test:
+  stage: test
+  script: |
+    docker stop $IMAGE_NAME || true
+    docker run --name $IMAGE_NAME -p $EXTERNAL_PORT:$INTERNAL_PORT  --rm \
+    -d $IMAGE_NAME:$IMAGE_TAG
+    sleep 5
+    curl --fail http://host.docker.internal:$EXTERNAL_PORT/ping && echo "✅ Reachable" || (echo "❌ Not responding" && docker stop $IMAGE_NAME && exit 1)
+    docker stop $IMAGE_NAME
+
+
+
+deploy:
+  stage: deploy
+  script: |
+    minikube image load $IMAGE_NAME:$IMAGE_TAG --overwrite
+    helm upgrade -i --namespace $NAMESPACE --create-namespace $IMAGE_NAME ./helm/booking-service --set app=$IMAGE_NAME -f ./helm/booking-service/values-$ENV.yaml

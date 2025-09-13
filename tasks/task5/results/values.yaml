@@ -1,0 +1,63 @@
+image:
+  name: booking-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080
+
+### v1
+replicaCount_v1: 1
+app_version_v1: "v1"
+
+environment_v1:
+  - name: ENVIRONMENT
+    value: "production"
+  - name: APP_VERSION
+    value: "v1"
+  - name: ENABLE_FEATURE_X
+    value: "false"
+
+livenessProbe_v1:
+  httpGet:
+    path: /ping
+    port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 20
+
+readinessProbe_v1:
+  httpGet:
+    path: /ping
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 5
+
+### v2
+
+replicaCount_v2: 1
+app_version_v2: "v2"
+
+environment_v2:
+  - name: ENVIRONMENT
+    value: "production"
+  - name: APP_VERSION
+    value: "v2"
+  - name: ENABLE_FEATURE_X
+    value: "true"
+
+livenessProbe_v2:
+  httpGet:
+    path: /ping
+    port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 20
+
+readinessProbe_v2:
+  httpGet:
+    path: /ping
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 5
+

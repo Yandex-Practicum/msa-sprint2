@@ -11,8 +11,24 @@ service:
   targetPort: 8080
 
 resources:
+  limits:
+    cpu: 100m
+    memory: 0.2Gi
+  requests:
+    cpu: 50m
+    memory: 0.1Gi
 
 livenessProbe:
+  httpGet:
+    path: /ping
+    port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 20
+
 
 readinessProbe:
-
+  httpGet:
+    path: /ping
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 5

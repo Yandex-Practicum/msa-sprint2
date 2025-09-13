@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-{{ .Values.app_version_v1 }}
+  labels:
+    app: {{ .Chart.Name }}
+    version: {{ .Values.app_version_v1 }}
+spec:
+  replicas: {{ .Values.replicaCount_v1 }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      version: {{ .Values.app_version_v1 }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+        version: {{ .Values.app_version_v1 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: Never
+          {{- with .Values.environment_v1 }}
+          env:
+            {{- range . }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+            {{- end }}
+          {{- end }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          {{- with .Values.livenessProbe_v1 }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe_v1 }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.resources_v1 }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-{{ .Values.app_version_v2 }}
+  labels:
+    app: {{ .Chart.Name }}
+    version: {{ .Values.app_version_v2 }}
+spec:
+  replicas: {{ .Values.replicaCount_v2 }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      version: {{ .Values.app_version_v2 }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+        version: {{ .Values.app_version_v2 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: Never
+          {{- with .Values.environment_v2 }}
+          env:
+            {{- range . }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+            {{- end }}
+          {{- end }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          {{- with .Values.livenessProbe_v2 }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe_v2 }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.resources_v2 }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}

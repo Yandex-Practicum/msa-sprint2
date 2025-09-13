@@ -1,0 +1,13 @@
+replicaCount: 2
+
+environment:
+  - name: ENVIRONMENT
+    value: "Production"
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 200Mi
+  requests:
+    cpu: 50m
+    memory: 100Mi
