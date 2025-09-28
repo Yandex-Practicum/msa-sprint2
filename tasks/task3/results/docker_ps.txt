@@ -1,0 +1,25 @@
+$ docker ps
+CONTAINER ID   IMAGE                             COMMAND                  CREATED         STATUS                   PORTS                                                                                      NAM
+ES
+47021ae1d30a   task3-hotel-subgraph              "docker-entrypoint.s…"   3 minutes ago   Up 3 minutes             0.0.0.0:4002->4002/tcp, [::]:4002->4002/tcp                                                tas
+k3-hotel-subgraph-1
+5423cdddd666   task3-booking-subgraph            "docker-entrypoint.s…"   3 minutes ago   Up 3 minutes             0.0.0.0:4001->4001/tcp, [::]:4001->4001/tcp                                                tas
+k3-booking-subgraph-1
+5a3e53570912   task3-apollo-gateway              "docker-entrypoint.s…"   2 hours ago     Up 2 hours               0.0.0.0:4000->4000/tcp, [::]:4000->4000/tcp                                                tas
+k3-apollo-gateway-1
+a9eabb995bb2   task2-booking-service             "uvicorn app.main:ap…"   7 hours ago     Up 2 hours (unhealthy)   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp, 0.0.0.0:9090->9090/tcp, [::]:9090->9090/tcp   boo
+king
+388a19626052   task2-booking-history-service     "uvicorn app.main:ap…"   8 hours ago     Up 2 hours               0.0.0.0:8001->8001/tcp, [::]:8001->8001/tcp                                                hot
+elio-booking-history-service
+ac07e5f6f423   postgres:15                       "docker-entrypoint.s…"   8 hours ago     Up 2 hours (healthy)     0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp                                                hot
+elio-history-db
+4c339bc36112   postgres:15                       "docker-entrypoint.s…"   8 hours ago     Up 2 hours (healthy)     0.0.0.0:5433->5432/tcp, [::]:5433->5432/tcp                                                hot
+elio-booking-db
+84e0d6f8b733   task2-monolith                    "java -jar app.jar"      8 hours ago     Up 2 hours               0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp                                                hot
+elio-monolith
+df92489fbf33   confluentinc/cp-kafka:7.2.1       "/etc/confluent/dock…"   8 hours ago     Up 2 hours (healthy)     0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp                                                tas
+k2-kafka-1
+7cb3f8a39d1e   confluentinc/cp-zookeeper:7.2.1   "/etc/confluent/dock…"   8 hours ago     Up 2 hours               0.0.0.0:2181->2181/tcp, [::]:2181->2181/tcp                                                tas
+k2-zookeeper-1
+11b93bcbe459   postgres:15                       "docker-entrypoint.s…"   8 hours ago     Up 2 hours               0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp                                                hot
+elio-db

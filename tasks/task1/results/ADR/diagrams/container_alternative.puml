@@ -1,0 +1,67 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+System_Boundary(hotelio, "Hotelio Microservices") {
+ Container(hotelMicroService, "Hotel microservice", "Spring Boot", "Legacy app exposing REST endpoints for hotels"){
+   Component(hotelController, "HotelController", "Spring MVC", "/api/hotels")
+   Component(hotelService, "HotelService", "Java Service", "Retrieves hotel details")
+   ComponentDb(hotelPostgres, "Hotel DB", "PostgreSQL", "Stores hotels")
+ }
+ Container(reviewMicroService, "Review microservice", "Spring Boot", "Legacy app exposing REST endpoints for review"){
+   Component(reviewController, "ReviewController", "Spring MVC", "/api/reviews")
+   Component(reviewService, "ReviewService", "Java Service", "Manages hotel reviews")
+   ComponentDb(reviewPostgres, "Review DB", "PostgreSQL", "Stores reviews")
+ }
+
+
+ Container(bookingMicroService, "Booking microservice", "Spring Boot", "Legacy app exposing REST endpoints for booking"){
+    Component(bookingController, "BookingController", "Spring MVC", "/api/bookings")
+    Component(bookingService, "BookingService", "Java Service", "Validates and creates bookings")
+   ComponentDb(bookingPostgres, "Bookings DB", "PostgreSQL", "Stores bookings")
+ }
+
+ Container(Kafka, "Брокер сообщений", "Kafka", "Шина данных")
+
+  Container(promoMicroService, "User promo microservice", "Spring Boot", "Legacy app exposing REST endpoints for users and promo codes") {
+    Component(promoController, "PromoCodeController", "Spring MVC", "/api/promos")
+    Component(promoService, "PromoCodeService", "Java Service", "Applies discounts and rules")
+
+    Component(userController, "UserController", "Spring MVC", "/api/users")
+    Component(userService, "UserService", "Java Service", "Validates user status and blacklist")
+    ComponentDb(userPromoPostgres, "Promo DB", "PostgreSQL", "Stores promos")
+
+    ' Controller-Service relations
+    Rel(bookingController, bookingService, "Uses")
+    Rel(hotelController, hotelService, "Uses")
+    Rel(promoController, promoService, "Uses")
+    Rel(reviewController, reviewService, "Uses")
+    Rel(userController, userService, "Uses")
+
+    ' Service-Service and Service-DB
+    Rel(bookingService, Kafka, "Calls")
+
+
+    ' Service-Service and Service-DB
+    Rel(Kafka, hotelService, "Calls")
+    Rel(Kafka, userService, "Calls")
+    Rel(Kafka, promoService, "Calls")
+    Rel(Kafka, reviewService, "Calls")
+
+
+    Rel(hotelService, hotelPostgres, "Reads")
+    Rel(reviewService, reviewPostgres, "Reads/Writes")
+    Rel(bookingService, bookingPostgres, "Reads/Writes")
+    Rel(userService, userPromoPostgres, "Reads")
+    Rel(promoService, userPromoPostgres, "Reads")
+  }
+}
+
+Person(user, "User", "Interacts with frontend")
+Rel(user, bookingController, "Uses")
+Rel(user, hotelController, "Uses")
+Rel(user, promoController, "Uses")
+Rel(user, reviewController, "Uses")
+Rel(user, userController, "Uses")
+@enduml

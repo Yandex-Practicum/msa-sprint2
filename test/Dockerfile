@@ -7,10 +7,18 @@ RUN apt-get update && apt-get install -y \
     curl \
     postgresql-client \
     bash \
+    locales \
     && rm -rf /var/lib/apt/lists/*
 
+# Настройка русской локали
+RUN sed -i '/ru_RU.UTF-8/s/^# //g' /etc/locale.gen && \
+    locale-gen
+ENV LANG ru_RU.UTF-8
+ENV LANGUAGE ru_RU:ru
+ENV LC_ALL ru_RU.UTF-8
+
 COPY wait-for-it.sh /usr/local/bin/wait-for-it
-COPY init-fixtures.sql regress.sh ./
+COPY init-fixtures.sql regress.sh init-booking_fixtures.sql ./
 RUN chmod +x /usr/local/bin/wait-for-it regress.sh
 
 ENTRYPOINT ["./regress.sh"]
