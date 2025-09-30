@@ -11,3 +11,11 @@ ENABLE_FEATURE_X: true
 config:
   logLevel: "INFO"
 
+version: v1
+
+image:
+  tag: v1
+
+app:
+  version: v1
+  featureFlags: false

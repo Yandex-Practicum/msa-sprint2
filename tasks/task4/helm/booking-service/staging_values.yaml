@@ -1,42 +1,9 @@
 replicaCount: 3
 
-image:
-  name: booking-service
-  tag: latest
-  pullPolicy: IfNotPresent
-
-service:
-  type: ClusterIP
-  port: 80
-  targetPort: 8080
-
 autoscaling:
   enabled: false
 
 ENABLE_FEATURE_X: false
 
 config:
-  logLevel: "INFO"
-
-resources:
-  requests:
-    memory: "128Mi"
-    cpu: "100m"
-  limits:
-    memory: "256Mi"
-    cpu: "200m"
-
-livenessProbe:  # перезапускает контейнер если проба fails
-    path: /health
-    initialDelaySeconds: 30
-    periodSeconds: 10
-    timeoutSeconds: 5
-    failureThreshold: 3
-
-readinessProbe: # убирает pod из service rotation если проба fails
-    path: /ready
-    initialDelaySeconds: 5
-    periodSeconds: 10
-    timeoutSeconds: 5
-    failureThreshold: 3
-
+  logLevel: "DEBUG"

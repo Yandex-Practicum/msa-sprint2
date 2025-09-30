@@ -1,0 +1,19 @@
+replicaCount: 3
+
+autoscaling:
+  enabled: false
+
+ENABLE_FEATURE_X: false
+X-Feature-Enabled: true
+
+config:
+  logLevel: "INFO"
+
+version: v2
+
+image:
+  tag: v2
+
+app:
+  version: v2
+  featureFlags: true
