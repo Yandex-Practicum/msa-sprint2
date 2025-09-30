@@ -1,0 +1,26 @@
+pkln@5CG4221J5N:~/projects/msa-sprint2/tasks/task4/helm$ minikube start
+😄  minikube v1.37.0 on Ubuntu 22.04 (amd64)
+✨  Using the docker driver based on existing profile
+LAST DEPLOYED: Tue Sep 30 12:52:06 2025
+NAMESPACE: default
+STATUS: deployed
+REVISION: 9
+TEST SUITE: None
+
+pkln@5CG4221J5N:~/projects/msa-sprint2/tasks/task4$ kubectl logs booking-6b78f57cc8-94429
+INFO:     Started server process [1]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+INFO:     127.0.0.1:49540 - "GET /ping HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49540 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:58400 - "GET /ping HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58400 - "GET /ping HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58400 - "GET /ping HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47222 - "GET /ping HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60430 - "GET /ping HTTP/1.1" 200 OK
+INFO:     10.244.0.7:40880 - "GET /ping HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41388 - "GET /ping HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41422 - "GET /ping HTTP/1.1" 200 OK
+INFO:     10.244.0.8:38606 - "GET /ping HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60584 - "GET /ping HTTP/1.1" 200 OK

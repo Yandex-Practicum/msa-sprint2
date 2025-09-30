@@ -1,25 +1,20 @@
-# Используем официальный минимальный образ Go
-FROM golang:1.21-alpine
+FROM python:3.11
 
-# TODO: Добавить необходимые пакеты (например, curl)
-# Ожидаемый код:
-RUN apk add --no-cache curl
-
-# Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем Go-файл и скрипт проверки DNS
-COPY main.go .
-COPY check-dns.sh .
+# Устанавливаем зависимости для PostgreSQL и компиляции
+RUN apt-get update && apt-get install -y \
+    gcc \
+    python3-dev \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# TODO: Сделать скрипт исполняемым
-# Ожидаемый код:
-RUN chmod +x check-dns.sh
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# TODO: Собрать бинарник из main.go
-# Ожидаемый код:
-RUN go build -o booking-service main.go
+COPY . .
 
-# TODO: Задать команду запуска
-# Ожидаемый код:
-CMD ["./booking-service"]
+
+EXPOSE 8080
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]

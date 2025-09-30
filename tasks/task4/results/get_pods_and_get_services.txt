@@ -1,0 +1,8 @@
+pkln@5CG4221J5N:~/projects/msa-sprint2/tasks/task4$ kubectl get pods
+NAME                       READY   STATUS    RESTARTS       AGE
+booking-6b78f57cc8-94429   1/1     Running   7 (111m ago)   14h
+pkln@5CG4221J5N:~/projects/msa-sprint2/tasks/task4$ kubectl get services
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+booking      ClusterIP   10.108.160.252   <none>        80/TCP    14h
+kubernetes   ClusterIP   10.96.0.1        <none>        443/TCP   16h
+pkln@5CG4221J5N:~/projects/msa-sprint2/tasks/task4$

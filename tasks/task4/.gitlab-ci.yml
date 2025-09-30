@@ -10,14 +10,36 @@ variables:
 build:
   stage: build
   script:
-
+    - docker build -t booking-service:latest ./booking-service
 
 test:
   stage: test
   script:
+    - docker run booking-service:latest
+    - curl http://localhost:8080/ping
+    - docker down booking-service:latest
+    - docker rm booking-service:latest
 
 
 deploy:
   stage: deploy
   script:
- 
+    - minikube start
+    - helm upgrade booking ./helm/booking-service/
+
+create_tag:
+  stage: tag
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache git
+    - git config --global user.email "gitlab-ci@example.com"
+    - git config --global user.name "GitLab CI"
+  script:
+    - |
+      TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+      TAG_NAME="v1.0.0-${TIMESTAMP}"
+      git tag -a "$TAG_NAME" -m "Auto-generated tag ${TAG_NAME}"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  only:
+    - main

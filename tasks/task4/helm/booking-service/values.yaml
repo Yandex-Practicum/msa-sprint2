@@ -10,9 +10,29 @@ service:
   port: 80
   targetPort: 8080
 
+
+autoscaling:
+  enabled: false
+
 resources:
+  requests:
+    memory: "128Mi"
+    cpu: "100m"
+  limits:
+    memory: "256Mi"
+    cpu: "200m"
 
-livenessProbe:
+livenessProbe:  # перезапускает контейнер если проба fails
+    path: /health
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
 
-readinessProbe:
+readinessProbe: # убирает pod из service rotation если проба fails
+    path: /ready
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
 
