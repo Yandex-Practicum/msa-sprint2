@@ -5,11 +5,15 @@ import gql from 'graphql-tag';
 
 const typeDefs = gql`
   type Booking @key(fields: "id") {
+    hotel: Hotel
     id: ID!
     userId: String!
     hotelId: String!
     promoCode: String
     discountPercent: Int
+  }
+  extend type Hotel @key(fields: "id") {
+    id: ID! @external
   }
 
   type Query {
@@ -21,11 +25,39 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     bookingsByUser: async (_, { userId }, { req }) => {
-		// TODO: Реальный вызов к grpc booking-сервису или заглушка + ACL
+		  const uid = req.headers.userid;
+
+      console.log(`[Bookings] Incoming request for userId: ${userId}`);
+      console.log(`[Bookings] Request headers:`, req.headers);
+      if (uid !== userId || !uid) {
+        console.log('[Bookings] Access denied');
+        throw new Error('Access denied');
+      }
+      console.log(`[Bookings] Access granted for user: ${uid}`);
+      const url = 'http://host.docker.internal:8084';
+      console.log(`[Bookings] Fetching bookings from ${url}/api/bookings?userId=${userId}`);
+
+      const res = await fetch(`${url}/api/bookings?userId=${userId}`);
+      if (!res.ok) {
+        console.error(`[Bookings] Error fetching bookings: ${res.status} ${res.statusText}`);
+        throw new Error(`Error while fetching bookings: ${res.status}`);
+      }
+      const bookings = await res.json();
+      console.log(`[Bookings] Fetched ${bookings.length} bookings:`, bookings);
+      return bookings;
     },
   },
   Booking: {
-	  // TODO: Реальный вызов к grpc booking-сервису или заглушка + ACL
+	   hotel: (booking) => {
+      console.log(`[Bookings] Resolving hotel for booking ${booking.id}, hotelId: ${booking.hotelId}`);
+      const hotelRef = {
+        __typename: 'Hotel',
+        id: booking.hotelId,
+      };
+
+      console.log(`[Bookings] Returning hotel reference:`, hotelRef);
+      return hotelRef;
+    },
   },
 };
 

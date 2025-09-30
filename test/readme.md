@@ -49,12 +49,33 @@
 ```bash
 cd test/
 docker build -t hotelio-tester .
-docker run --rm \                                                                                                                                                                   ok | 4s | 01:49:56
-  -e DB_HOST=host.docker.internal \
+docker run --rm \
+  --network hotelio-net \
+  -e DB_HOST=hotelio-db \
   -e DB_PORT=5432 \
   -e DB_NAME=hotelio \
   -e DB_USER=hotelio \
   -e DB_PASSWORD=hotelio \
+  -e API_URL=http://host.docker.internal:8084 \
+  hotelio-tester
+```
+
+
+```bash
+cd test/
+docker build -t hotelio-tester .
+docker run --rm \
+  --network hotelio-net \
+  -e DB_HOST=hotelio-db \
+  -e DB_PORT=5432 \
+  -e DB_NAME=hotelio \
+  -e DB_USER=hotelio \
+  -e DB_PASSWORD=hotelio \
+  -e DB_BOOKING_HOST=hotelio-booking-db \
+  -e DB_BOOKING_PORT=5432 \
+  -e DB_BOOKING_NAME=booking_db \
+  -e DB_BOOKING_USER=booking_user \
+  -e DB_BOOKING_PASSWORD=booking_pass \
   -e API_URL=http://host.docker.internal:8084 \
   hotelio-tester
 ```

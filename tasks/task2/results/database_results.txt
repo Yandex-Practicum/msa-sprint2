@@ -1,0 +1,49 @@
+
+
+
+===== старый сервис до тестов
+psql -U hotelio -d hotelio -c "SELECT * FROM booking;"
+ discount_percent | price | created_at | id | hotel_id | promo_code | user_id
+------------------+-------+------------+----+----------+------------+---------
+(0 rows)
+
+===== старый сервис после тестов
+psql -U hotelio -d hotelio -c "SELECT * FROM booking;"
+ discount_percent | price |          created_at           | id |   hotel_id   | promo_code |   user_id
+------------------+-------+-------------------------------+----+--------------+------------+-------------
+               10 |    90 | 2025-09-28 12:14:54.703287+00 |  3 | test-hotel-1 | TESTCODE1  | test-user-2
+                0 |    80 | 2025-09-28 12:14:54.703287+00 |  4 | test-hotel-1 |            | test-user-3
+(2 rows)
+
+
+===== новый сервис до тестов
+psql -U booking_user -d booking_db -c "SELECT * FROM bookings";
+ id | user_id | hotel_id | promo_code | discount_percent | price | created_at
+----+---------+----------+------------+------------------+-------+------------
+(0 rows)
+
+===== Новый сервис после тестов
+psql -U booking_user -d booking_db -c "SELECT * FROM bookings";
+ id |   user_id   |   hotel_id   | promo_code | discount_percent | price |          created_at
+----+-------------+--------------+------------+------------------+-------+-------------------------------
+  7 | test-user-2 | test-hotel-1 | TESTCODE1  |               10 |    90 | 2025-09-28 12:17:17.997071+00
+  8 | test-user-3 | test-hotel-1 |            |                0 |    80 | 2025-09-28 12:17:17.997071+00
+  9 | test-user-3 | test-hotel-1 |            |                0 |   100 | 2025-09-28 12:17:20.830698+00
+ 10 | test-user-2 | test-hotel-1 | TESTCODE1  |               10 |    90 | 2025-09-28 12:17:21.160434+00
+
+
+
+
+========= Сервер истории до тестов
+# psql -U history_user -d history_db -c "SELECT * FROM booking_history"
+ id | booking_id | user_id | hotel_id | price | discount_percent | promo_code | event_type | created_at
+----+------------+---------+----------+-------+------------------+------------+------------+------------
+(0 rows)
+
+
+========= Сервер истории после тестов
+psql -U history_user -d history_db -c "SELECT * FROM booking_history"
+ id | booking_id |   user_id   |   hotel_id   | price | discount_percent | promo_code |   event_type   |          created_at
+----+------------+-------------+--------------+-------+------------------+------------+----------------+-------------------------------
+  1 | 9          | test-user-3 | test-hotel-1 |   100 |                0 |            | BookingCreated | 2025-09-28 12:17:20.977678+00
+  2 | 10         | test-user-2 | test-hotel-1 |    90 |               10 | TESTCODE1  | BookingCreated | 2025-09-28 12:17:21.188144+00

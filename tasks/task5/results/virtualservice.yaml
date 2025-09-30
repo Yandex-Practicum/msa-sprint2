@@ -1,0 +1,43 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: booking-service
+spec:
+  hosts:
+  - booking-service
+  http:
+  - name: "feature-flag-route"
+    match:
+    - headers:
+        x-feature-enabled:
+          exact: "true"
+    route:
+    - destination:
+        host: booking-service
+        subset: v2
+
+  - name: "canary-route"
+    route:
+    - destination:
+        host: booking-service
+        subset: v1
+      weight: 90
+    - destination:
+        host: booking-service
+        subset: v2
+      weight: 10
+
+  - name: "fallback-route"
+    retries:
+      attempts: 3
+      perTryTimeout: 2s
+      retryOn: 5xx,gateway-error,connect-failure
+    route:
+    - destination:
+        host: booking-service
+        subset: v1
+      weight: 100
+    fallback:
+      destination:
+        host: booking-service
+        subset: v2

@@ -1,0 +1,7 @@
+TypeDefs (booking-subgraph): добавлено поле hotel: Hotel для связи с подграфом hotel-subgraph
+Query.hotelsByIds возвращает последовательные REST-запросы по массиву ids
+В __resolveReference также реализованы REST-запросы для получения сведений об отеле (api/hotels/:id)
+Добавлен buildService, чтобы прокидывать userId из заголовков в сабграфы
+В Query.bookingsByUser реализован ACL по userId через передачу хедеров
+Booking.hotel возвращает {__typename: "Hotel", id: booking.hotelId} для того, чтобы гейтвей подтянул данные из hotel-subgraph
+Добавлены REST-запросы к API-сервису booking-service через монолит (из Task2)

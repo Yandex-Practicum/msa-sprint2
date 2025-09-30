@@ -1,0 +1,95 @@
+ docker compose logs
+time="2025-09-29T00:41:10+03:00" level=warning msg="C:\\Dev\\msa-sprint2\\tasks\\task3\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusio
+n"
+apollo-gateway-1  | The `serviceList` option is deprecated and will be removed in a future version of `@apollo/gateway`. Please migrate to its replacement `IntrospectAndCompose`. More information on `Introspec
+tAndCompose` can be found in the documentation.
+apollo-gateway-1    | � Gateway ready at http://localhost:4000/
+hotel-subgraph-1    | Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+hotel-subgraph-1    | ✅ Hotel subgraph ready at http://localhost:4002/
+booking-subgraph-1  | Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+booking-subgraph-1  | ✅ Booking subgraph ready at http://localhost:4001/
+booking-subgraph-1  | [Bookings] Incoming request for userId: test-user-3
+booking-subgraph-1  | [Bookings] Request headers: {
+booking-subgraph-1  |   'content-type': 'application/json',
+booking-subgraph-1  |   userid: 'test-user-3',
+booking-subgraph-1  |   accept: '*/*',
+booking-subgraph-1  |   'content-length': '133',
+booking-subgraph-1  |   'user-agent': 'minipass-fetch/3.0.5 (+https://github.com/isaacs/minipass-fetch)',
+booking-subgraph-1  |   'accept-encoding': 'gzip,deflate',
+booking-subgraph-1  |   host: 'booking-subgraph:4001',
+booking-subgraph-1  |   connection: 'keep-alive'
+booking-subgraph-1  | }
+booking-subgraph-1  | [Bookings] Access granted for user: test-user-3
+booking-subgraph-1  | [Bookings] Fetching bookings from http://host.docker.internal:8084/api/bookings?userId=test-user-3
+booking-subgraph-1  | [Bookings] Fetched 2 bookings: [
+booking-subgraph-1  |   {
+booking-subgraph-1  |     id: 18,
+booking-subgraph-1  |     userId: 'test-user-3',
+booking-subgraph-1  |     hotelId: 'test-hotel-1',
+booking-subgraph-1  |     promoCode: '',
+booking-subgraph-1  |     discountPercent: 0,
+booking-subgraph-1  |     price: 80,
+booking-subgraph-1  |     createdAt: '2025-09-28T21:22:31.405793Z'
+booking-subgraph-1  |   },
+booking-subgraph-1  |   {
+booking-subgraph-1  |     id: 19,
+booking-subgraph-1  |     userId: 'test-user-3',
+booking-subgraph-1  |     hotelId: 'test-hotel-1',
+booking-subgraph-1  |     promoCode: '',
+booking-subgraph-1  |     discountPercent: 0,
+booking-subgraph-1  |     price: 100,
+booking-subgraph-1  |     createdAt: '2025-09-28T21:22:35.952999Z'
+booking-subgraph-1  |   }
+booking-subgraph-1  | ]
+booking-subgraph-1  | [Bookings] Resolving hotel for booking 18, hotelId: test-hotel-1
+booking-subgraph-1  | [Bookings] Returning hotel reference: { __typename: 'Hotel', id: 'test-hotel-1' }
+booking-subgraph-1  | [Bookings] Resolving hotel for booking 19, hotelId: test-hotel-1
+booking-subgraph-1  | [Bookings] Returning hotel reference: { __typename: 'Hotel', id: 'test-hotel-1' }
+booking-subgraph-1  | [Bookings] Incoming request for userId: test-user-3
+booking-subgraph-1  | [Bookings] Request headers: {
+booking-subgraph-1  |   'content-type': 'application/json',
+booking-subgraph-1  |   userid: 'test-user-3',
+booking-subgraph-1  |   accept: '*/*',
+booking-subgraph-1  |   'content-length': '133',
+booking-subgraph-1  |   'user-agent': 'minipass-fetch/3.0.5 (+https://github.com/isaacs/minipass-fetch)',
+booking-subgraph-1  |   'accept-encoding': 'gzip,deflate',
+booking-subgraph-1  |   host: 'booking-subgraph:4001',
+booking-subgraph-1  |   connection: 'keep-alive'
+booking-subgraph-1  | }
+booking-subgraph-1  | [Bookings] Access granted for user: test-user-3
+booking-subgraph-1  | [Bookings] Fetching bookings from http://host.docker.internal:8084/api/bookings?userId=test-user-3
+booking-subgraph-1  | [Bookings] Fetched 2 bookings: [
+booking-subgraph-1  |   {
+booking-subgraph-1  |     id: 18,
+booking-subgraph-1  |     userId: 'test-user-3',
+booking-subgraph-1  |     hotelId: 'test-hotel-1',
+booking-subgraph-1  |     promoCode: '',
+booking-subgraph-1  |     discountPercent: 0,
+booking-subgraph-1  |     price: 80,
+booking-subgraph-1  |     createdAt: '2025-09-28T21:22:31.405793Z'
+booking-subgraph-1  |   },
+booking-subgraph-1  |   {
+booking-subgraph-1  |     id: 19,
+booking-subgraph-1  |     userId: 'test-user-3',
+booking-subgraph-1  |     hotelId: 'test-hotel-1',
+booking-subgraph-1  |     promoCode: '',
+booking-subgraph-1  |     discountPercent: 0,
+booking-subgraph-1  |     price: 100,
+booking-subgraph-1  |     createdAt: '2025-09-28T21:22:35.952999Z'
+booking-subgraph-1  |   }
+booking-subgraph-1  | ]
+booking-subgraph-1  | [Bookings] Resolving hotel for booking 18, hotelId: test-hotel-1
+booking-subgraph-1  | [Bookings] Returning hotel reference: { __typename: 'Hotel', id: 'test-hotel-1' }
+booking-subgraph-1  | [Bookings] Resolving hotel for booking 19, hotelId: test-hotel-1
+booking-subgraph-1  | [Bookings] Returning hotel reference: { __typename: 'Hotel', id: 'test-hotel-1' }
+booking-subgraph-1  | [Bookings] Incoming request for userId: test-user-3
+booking-subgraph-1  | [Bookings] Request headers: {
+booking-subgraph-1  |   'content-type': 'application/json',
+booking-subgraph-1  |   accept: '*/*',
+booking-subgraph-1  |   'content-length': '133',
+booking-subgraph-1  |   'user-agent': 'minipass-fetch/3.0.5 (+https://github.com/isaacs/minipass-fetch)',
+booking-subgraph-1  |   'accept-encoding': 'gzip,deflate',
+booking-subgraph-1  |   host: 'booking-subgraph:4001',
+booking-subgraph-1  |   connection: 'keep-alive'
+booking-subgraph-1  | }
+booking-subgraph-1  | [Bookings] Access denied

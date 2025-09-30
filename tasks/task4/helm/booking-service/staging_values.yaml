@@ -1,0 +1,9 @@
+replicaCount: 3
+
+autoscaling:
+  enabled: false
+
+ENABLE_FEATURE_X: false
+
+config:
+  logLevel: "DEBUG"

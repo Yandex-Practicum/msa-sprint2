@@ -1,0 +1,20 @@
+pkln@5CG4221J5N:~/projects/msa-sprint2/tasks/task5$ /bin/bash check-istio.sh
+▶️ Проверка установки Istio...
+NAME                                    READY   STATUS    RESTARTS   AGE
+istio-egressgateway-77fc94779-s2lfj     1/1     Running   0          87m
+istio-ingressgateway-59498f8c9c-xtngs   1/1     Running   0          87m
+istiod-db77dc465-trj57                  1/1     Running   0          87m
+▶️ Проверка Istio инъекции в default namespace...
+"enabled"
+
+
+pkln@5CG4221J5N:~/projects/msa-sprint2/tasks/task5$ /bin/bash check-feature-flag.sh
+▶️ Проверка Feature Flag (X-Feature-Enabled: true)...
+pong
+
+pkln@5CG4221J5N:~/projects/msa-sprint2/tasks/task5$ /bin/bash check-canary.sh
+▶️ Checking canary release (90% v1, 10% v2).
+
+pkln@5CG4221J5N:~/projects/msa-sprint2/tasks/task5$ /bin/bash check-fallback.sh
+▶️ Testing fallback route...
+Fallback route working

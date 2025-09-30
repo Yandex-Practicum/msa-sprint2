@@ -1,0 +1,20 @@
+$ docker ps
+CONTAINER ID   IMAGE                             COMMAND                  CREATED          STATUS                       PORTS
+    NAMES
+23d666a693b6   task2-booking-service             "uvicorn app.main:ap…"   57 minutes ago   Up 57 minutes (unhealthy)    0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp, 0.0.0.0:9090->9090/tcp, [::]:9090->9090/tc
+p   booking
+621f77ae0aa4   task2-booking-history-service     "uvicorn app.main:ap…"   3 hours ago      Up About an hour             0.0.0.0:8001->8001/tcp, [::]:8001->8001/tcp
+    hotelio-booking-history-service
+56575ce058ab   postgres:15                       "docker-entrypoint.s…"   3 hours ago      Up About an hour (healthy)   0.0.0.0:5433->5432/tcp, [::]:5433->5432/tcp
+    hotelio-booking-db
+8dc32cc795f9   postgres:15                       "docker-entrypoint.s…"   3 hours ago      Up About an hour (healthy)   0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp
+    hotelio-history-db
+344e1a7b3a85   postgres:15                       "docker-entrypoint.s…"   3 hours ago      Up About an hour             0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+    hotelio-db
+2fbd58ea03c9   confluentinc/cp-zookeeper:7.2.1   "/etc/confluent/dock…"   3 hours ago      Up About an hour             0.0.0.0:2181->2181/tcp, [::]:2181->2181/tcp
+    task2-zookeeper-1
+16d6600292ba   confluentinc/cp-kafka:7.2.1       "/etc/confluent/dock…"   3 hours ago      Up About an hour (healthy)   0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp
+    task2-kafka-1
+de463c04f3ee   task2-monolith                    "java -jar app.jar"      3 hours ago      Up About an hour             0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp
+    hotelio-monolith
+

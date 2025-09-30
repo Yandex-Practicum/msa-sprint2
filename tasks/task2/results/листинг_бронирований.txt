@@ -1,0 +1,40 @@
+http://localhost:8084/api/bookings
+
+[
+    {
+        "id": 3,
+        "userId": "test-user-2",
+        "hotelId": "test-hotel-1",
+        "promoCode": "TESTCODE1",
+        "discountPercent": 10.0,
+        "price": 90.0,
+        "createdAt": "2025-08-11T21:31:06.624629Z"
+    },
+    {
+        "id": 4,
+        "userId": "test-user-3",
+        "hotelId": "test-hotel-1",
+        "promoCode": null,
+        "discountPercent": 0.0,
+        "price": 80.0,
+        "createdAt": "2025-08-11T21:31:06.624629Z"
+    },
+    {
+        "id": 5,
+        "userId": "test-user-3",
+        "hotelId": "test-hotel-1",
+        "promoCode": null,
+        "discountPercent": 0.0,
+        "price": 80.0,
+        "createdAt": null
+    },
+    {
+        "id": 6,
+        "userId": "test-user-2",
+        "hotelId": "test-hotel-1",
+        "promoCode": "TESTCODE1",
+        "discountPercent": 10.0,
+        "price": 90.0,
+        "createdAt": null
+    }
+]
