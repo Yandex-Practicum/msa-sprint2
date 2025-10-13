@@ -1,1 +1,2 @@
 .gitlab-ci-local/
+node_modules
