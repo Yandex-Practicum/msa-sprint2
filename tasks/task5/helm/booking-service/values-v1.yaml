@@ -1,0 +1,7 @@
+image:
+  name: booking-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+version:
+  name: "v1"

@@ -1,0 +1,61 @@
+➜  task3 git:(homework_sprint_2) ✗ docker compose up --build
+WARN[0000] /Users/jasonrammoray/Projects/msa-sprint2/tasks/task3/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion
+[+] Building 2.2s (28/28) FINISHED
+ => [internal] load local bake definitions                                                                                                                                              0.0s
+ => => reading from stdin 1.68kB                                                                                                                                                        0.0s
+ => [booking-subgraph internal] load build definition from Dockerfile                                                                                                                   0.0s
+ => => transferring dockerfile: 148B                                                                                                                                                    0.0s
+ => [apollo-gateway internal] load build definition from Dockerfile                                                                                                                     0.0s
+ => => transferring dockerfile: 148B                                                                                                                                                    0.0s
+ => [hotel-subgraph internal] load build definition from Dockerfile                                                                                                                     0.0s
+ => => transferring dockerfile: 148B                                                                                                                                                    0.0s
+ => [apollo-gateway internal] load metadata for docker.io/library/node:18                                                                                                               1.4s
+ => [hotel-subgraph internal] load .dockerignore                                                                                                                                        0.0s
+ => => transferring context: 2B                                                                                                                                                         0.0s
+ => [apollo-gateway internal] load .dockerignore                                                                                                                                        0.0s
+ => => transferring context: 2B                                                                                                                                                         0.0s
+ => [booking-subgraph internal] load .dockerignore                                                                                                                                      0.0s
+ => => transferring context: 2B                                                                                                                                                         0.0s
+ => [booking-subgraph 1/5] FROM docker.io/library/node:18@sha256:c6ae79e38498325db67193d391e6ec1d224d96c693a8a4d943498556716d3783                                                       0.0s
+ => [hotel-subgraph internal] load build context                                                                                                                                        0.0s
+ => => transferring context: 91B                                                                                                                                                        0.0s
+ => [apollo-gateway internal] load build context                                                                                                                                        0.0s
+ => => transferring context: 91B                                                                                                                                                        0.0s
+ => [booking-subgraph internal] load build context                                                                                                                                      0.0s
+ => => transferring context: 91B                                                                                                                                                        0.0s
+ => CACHED [apollo-gateway 2/5] WORKDIR /app                                                                                                                                            0.0s
+ => CACHED [booking-subgraph 3/5] COPY package.json ./                                                                                                                                  0.0s
+ => CACHED [booking-subgraph 4/5] RUN npm install                                                                                                                                       0.0s
+ => CACHED [booking-subgraph 5/5] COPY . .                                                                                                                                              0.0s
+ => CACHED [hotel-subgraph 3/5] COPY package.json ./                                                                                                                                    0.0s
+ => CACHED [hotel-subgraph 4/5] RUN npm install                                                                                                                                         0.0s
+ => CACHED [hotel-subgraph 5/5] COPY . .                                                                                                                                                0.0s
+ => CACHED [apollo-gateway 3/5] COPY package.json ./                                                                                                                                    0.0s
+ => CACHED [apollo-gateway 4/5] RUN npm install                                                                                                                                         0.0s
+ => CACHED [apollo-gateway 5/5] COPY . .                                                                                                                                                0.0s
+ => [apollo-gateway] exporting to image                                                                                                                                                 0.0s
+ => => exporting layers                                                                                                                                                                 0.0s
+ => => writing image sha256:eeda94cd3a7786e359ee394cce2e1379408e3df88b18190d27815c24f856d654                                                                                            0.0s
+ => => naming to docker.io/library/task3-apollo-gateway                                                                                                                                 0.0s
+ => [hotel-subgraph] exporting to image                                                                                                                                                 0.0s
+ => => exporting layers                                                                                                                                                                 0.0s
+ => => writing image sha256:c4b1f4dd7635e33c8d7e03f79dbcc64e903d3fea60405ff8408bb197e11de104                                                                                            0.0s
+ => => naming to docker.io/library/task3-hotel-subgraph                                                                                                                                 0.0s
+ => [booking-subgraph] exporting to image                                                                                                                                               0.0s
+ => => exporting layers                                                                                                                                                                 0.0s
+ => => writing image sha256:c33306e0d173a25fb5240bef9eeb815dae0dbf423945ea05a8cd6b361afbddce                                                                                            0.0s
+ => => naming to docker.io/library/task3-booking-subgraph                                                                                                                               0.0s
+ => [apollo-gateway] resolving provenance for metadata file                                                                                                                             0.0s
+ => [hotel-subgraph] resolving provenance for metadata file                                                                                                                             0.0s
+ => [booking-subgraph] resolving provenance for metadata file                                                                                                                           0.0s
+[+] Running 3/3
+ ✔ task3-booking-subgraph  Built                                                                                                                                                        0.0s
+ ✔ task3-hotel-subgraph    Built                                                                                                                                                        0.0s
+ ✔ task3-apollo-gateway    Built                                                                                                                                                        0.0s
+Attaching to apollo-gateway-1, booking-subgraph-1, hotel-subgraph-1
+hotel-subgraph-1  | Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+hotel-subgraph-1  | ✅ Hotel subgraph ready at http://localhost:4002/
+booking-subgraph-1  | Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+booking-subgraph-1  | ✅ Booking subgraph ready at http://localhost:4001/
+apollo-gateway-1    | The `serviceList` option is deprecated and will be removed in a future version of `@apollo/gateway`. Please migrate to its replacement `IntrospectAndCompose`. More information on `IntrospectAndCompose` can be found in the documentation.
+apollo-gateway-1    | 🚀 Gateway ready at http://localhost:4000/

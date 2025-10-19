@@ -1,0 +1,12 @@
+Changes made:
+1. apply hotelio-net for all containers;
+2. implement:
+  2.1 hotel subgraph:
+      * Hotel.__resolveReference();
+      * hotelsByIds() query.
+  2.2 booking subgraph:
+      * reference Hotel type;
+      * extension of Booking type with hotel: Hotel!;
+      * bookingsByUser() query;
+      * Booking.hotel() resolver.
+3. add static artifacts to the "results" folder.

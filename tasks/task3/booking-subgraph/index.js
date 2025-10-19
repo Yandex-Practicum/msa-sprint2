@@ -16,16 +16,35 @@ const typeDefs = gql`
     bookingsByUser(userId: String!): [Booking]
   }
 
+  extend type Hotel @key(fields: "id") {
+    id: ID! @external
+  }
+
+  extend type Booking @key(fields: "id") {
+    hotel: Hotel!
+  }
 `;
+
+async function fetchUserBookings(userId) {
+    const reqUrl = `http://host.docker.internal:8084/api/bookings?userId=${userId}`;
+    const response = await fetch(reqUrl);
+    const userBookings = await response.json();
+
+    return userBookings;
+}
 
 const resolvers = {
   Query: {
     bookingsByUser: async (_, { userId }, { req }) => {
-		// TODO: Реальный вызов к grpc booking-сервису или заглушка + ACL
+        if (!userId) {
+            return null;
+        }
+
+        return await fetchUserBookings(userId);
     },
   },
   Booking: {
-	  // TODO: Реальный вызов к grpc booking-сервису или заглушка + ACL
+    hotel: booking => ({__typename: 'Hotel', id: booking.hotelId}),
   },
 };
 

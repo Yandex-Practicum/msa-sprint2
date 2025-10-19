@@ -1,0 +1,37 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: booking-service-virtual-service
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - booking-service-gateway
+  http:
+  - match:
+    - headers:
+        x-feature-enabled:
+          exact: "true"
+    route:
+      - destination:
+          host: booking-service.default.svc.cluster.local
+          subset: "v2"
+          port:
+            number: 80
+  - route:
+    - destination:
+        host: booking-service.default.svc.cluster.local
+        subset: "v1"
+        port:
+          number: 80
+      weight: 90
+    - destination:
+        host: booking-service.default.svc.cluster.local
+        subset: "v2"
+        port:
+          number: 80
+      weight: 10
+    retries:
+      attempts: 3
+      perTryTimeout: 1s
+      retryOn: "5xx,gateway-error,connect-failure,refused-stream,unavailable,cancelled"

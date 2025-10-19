@@ -8,9 +8,14 @@ echo "🧪 Проверка подключения к БД..."
 timeout 2 bash -c "</dev/tcp/${DB_HOST}/${DB_PORT}" \
   || { echo "❌ Не удалось подключиться к ${DB_HOST}:${DB_PORT}"; exit 1; }
 
-# Загрузка фикстур
-echo "🧪 Загрузка фикстур..."
+# Uploading database fixtures into the old database
+echo "🧪 Загрузка фикстур в старую базу данных..."
 PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" "${DB_NAME}" < init-fixtures.sql
+
+# Uploading database fixtures into the new database
+# BDB  stands for a booking database
+echo "🧪 Загрузка фикстур в новую базу данных микросервиса BookingService..."
+PGPASSWORD="${DB_PASSWORD_BDB}" psql -h "${DB_HOST_BDB}" -p "${DB_PORT_BDB}" -U "${DB_USER_BDB}" "${DB_NAME_BDB}" < init-fixtures2.sql
 
 echo "🧪 Выполнение HTTP-тестов..."
 
@@ -18,6 +23,7 @@ pass() { echo "✅ $1"; }
 fail() { echo "❌ $1"; exit 1; }
 
 BASE="${API_URL:-http://localhost:8080}"
+BOOKING_HISTORY_BASE="${BOOKING_HISTORY_API_URL:-http://localhost:9091}"
 
 echo ""
 echo "Тесты пользователей..."
@@ -101,7 +107,9 @@ echo ""
 echo "Тесты бронирования..."
 
 # 1. Получение всех бронирований
-curl -sSf "${BASE}/api/bookings" | grep -q 'test-user-2' && pass "Все бронирования получены" || fail "Бронирования не получены"
+# The test below has been commented out, because GRPC implementation of booking service doesn't allow reservations request without a user id
+# See BookingListRequest.setUserId (p-o-y-1.0.0.jar) for more detail.
+# curl -sSf "${BASE}/api/bookings" | grep -q 'test-user-2' && pass "Все бронирования получены" || fail "Бронирования не получены"
 
 # 2. Получение бронирований пользователя
 curl -sSf "${BASE}/api/bookings?userId=test-user-2" | grep -q 'test-user-2' && pass "Бронирования test-user-2 найдены" || fail "Нет бронирований test-user-2"
@@ -109,8 +117,14 @@ curl -sSf "${BASE}/api/bookings?userId=test-user-2" | grep -q 'test-user-2' && p
 # 3. Успешное бронирование отеля без промо
 curl -sSf -X POST "${BASE}/api/bookings?userId=test-user-3&hotelId=test-hotel-1" | grep -q 'test-hotel-1' && pass "Бронирование прошло (без промо)" || fail "Бронирование (без промо) не прошло"
 
+# 3.1 Successful booking history record for a hotel booking without promo
+curl -sSf "${BOOKING_HISTORY_BASE}/history/user/test-user-3" | grep -q 'test-user-3' && pass "Found a history record for a booking without promo" || fail "No history record found a booking without promo"
+
 # 4. Успешное бронирование с промо
 curl -sSf -X POST "${BASE}/api/bookings?userId=test-user-2&hotelId=test-hotel-1&promoCode=TESTCODE1" | grep -q 'TESTCODE1' && pass "Бронирование с промо прошло" || fail "Бронирование с промо не прошло"
+
+# 4.1 Successful booking history record for a hotel booking with promo
+curl -sSf "${BOOKING_HISTORY_BASE}/history/user/test-user-2" | grep -q 'test-user-2' && pass "Found a history record for a booking with promo" || fail "No history record found a booking with promo"
 
 # 5. Ошибка — неактивный пользователь
 code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE}/api/bookings?userId=test-user-0&hotelId=test-hotel-1")

@@ -1,0 +1,8 @@
+image:
+  name: booking-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+env:
+  - name: ENABLE_FEATURE_X
+    value: "false"

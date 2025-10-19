@@ -1,0 +1,8 @@
+.idea
+.venv
+tasks/task2/results/booking_service/src/grpc_api/booking_pb2.py
+tasks/task2/results/booking_service/src/grpc_api/booking_pb2_grpc.py
+__pycache__
+.env*
+.DS_Store
+out/

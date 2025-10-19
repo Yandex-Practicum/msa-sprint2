@@ -1,0 +1,45 @@
+services:
+  booking_service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hotelio_booking_service
+    depends_on:
+      - booking_service_db
+    ports:
+      - "9090:8000"
+      - "50051:50051"
+    networks:
+      - hotelio-net
+    environment:
+      KAFKA_BOOTSTRAP_SERVER_HOST: host.docker.internal
+      KAFKA_BOOTSTRAP_SERVER_PORT: 9092
+      KAFKA_NEW_BOOKING_TOPIC_NAME: BookingCreated
+      MONOLITH_HOST: http://host.docker.internal
+      MONOLITH_PORT: 8084
+      POSTGRES_HOST: host.docker.internal
+      POSTGRES_USER: hotelio_booking_service_user
+      POSTGRES_PASSWORD: hotelio_booking_service_password
+      POSTGRES_DB: hotelio_booking_db
+      POSTGRES_PORT: 6432
+
+  booking_service_db:
+    image: postgres:15
+    container_name: booking_service_db
+    environment:
+      POSTGRES_USER: hotelio_booking_service_user
+      POSTGRES_PASSWORD: hotelio_booking_service_password
+      POSTGRES_DB: hotelio_booking_db
+    ports:
+      - "6432:5432"
+    volumes:
+      - booking-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+
+volumes:
+  booking-db-data:
+
+networks:
+  hotelio-net:
+    external: true

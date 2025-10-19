@@ -16,15 +16,34 @@ const typeDefs = gql`
   }
 `;
 
+async function fetchHotelById(hotelId) {
+    try {
+        const reqUrl = `http://host.docker.internal:8084/api/hotels/${hotelId}`;
+        const response = await fetch(reqUrl);
+        const hotelDetails = await response.json();
+
+        return {
+            id: hotelDetails.id,
+            name: null,
+            city: hotelDetails.city,
+            stars: Number.parseInt(hotelDetails.rating) || 0,
+        };
+    } catch (err) {
+        console.error(`Failed to fetch a hotel ${hotelId}: `, err);
+
+        return null;
+    }
+}
+
 const resolvers = {
   Hotel: {
     __resolveReference: async ({ id }) => {
-      // TODO: Реальный вызов к hotel-сервису или заглушка
+        return await fetchHotelById(id);
     },
   },
   Query: {
     hotelsByIds: async (_, { ids }) => {
-      // TODO: Заглушка или REST-запрос
+      return await Promise.all(ids.map(id => fetchHotelById(id)));
     },
   },
 };
