@@ -1,20 +1,32 @@
-version: '3.8'
+version: "3.9"
 
 services:
-  apollo-gateway:
-    build: ./gateway
-    ports:
-      - "4000:4000"
-    depends_on:
-      - booking-subgraph
-      - hotel-subgraph
-
   booking-subgraph:
     build: ./booking-subgraph
+    container_name: booking-subgraph
+    environment:
+      GRPC_HOST: booking-service
+      GRPC_PORT: "50051"
+      GRPC_PKG: booking
+      GRPC_SERVICE: BookingService
+      GRPC_PROTO_PATH: /app/proto/booking.proto
+      BOOKING_API_BASE: ${BOOKING_API_BASE:-http://monolith:8080}
     ports:
       - "4001:4001"
 
   hotel-subgraph:
     build: ./hotel-subgraph
+    container_name: hotel-subgraph
+    environment:
+      HOTEL_API_BASE: ${HOTEL_API_BASE:-http://monolith:8080}
     ports:
       - "4002:4002"
+
+  gateway:
+    build: ./gateway
+    container_name: apollo-gateway
+    depends_on:
+      - booking-subgraph
+      - hotel-subgraph
+    ports:
+      - "4000:4000"
