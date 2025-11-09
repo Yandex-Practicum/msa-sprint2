@@ -1,0 +1,28 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+LAYOUT_WITH_LEGEND()
+title Hotelio – Context
+
+Person(user, "Пользователь", "Web/Mobile клиент")
+System_Boundary(hotelio, "Hotelio Platform") {
+  System(gw, "API Gateway (Strangler)", "Envoy/Kong", "Маршрутизация /api/*, canary, shadow")
+  System(bff, "BFF / GraphQL", "Node/Spring", "Агрегация данных для клиентов")
+  System(legacy, "Monolith (Legacy Core)", "Spring Boot", "Booking, Users, Hotels, Promo, Reviews")
+  System(msPromo, "Promo Service", "Spring Boot", "Проверка и применение промокодов")
+  System(msReview, "Review Service", "Spring Boot", "Отзывы/рейтинг")
+  SystemDb(dbLegacy, "Legacy DB", "PostgreSQL", "Единая схема")
+  SystemDb(dbPromo, "Promo DB", "PostgreSQL", "Собственная схема Promo")
+  SystemDb(dbReview, "Review DB", "PostgreSQL", "Собственная схема Review")
+  System(kafka, "Kafka", "Events", "Доменные события / CDC")
+}
+Rel(user, gw, "HTTPS/REST/GraphQL")
+Rel(gw, bff, "GraphQL")
+Rel(gw, legacy, "REST (fallback)")
+Rel(bff, msPromo, "REST/gRPC")
+Rel(bff, msReview, "REST")
+Rel(legacy, kafka, "Outbox→CDC")
+Rel(msPromo, kafka, "Публикует события")
+Rel(legacy, dbLegacy, "R/W")
+Rel(msPromo, dbPromo, "R/W")
+Rel(msReview, dbReview, "R/W")
+@enduml

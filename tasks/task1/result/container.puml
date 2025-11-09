@@ -1,0 +1,32 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_WITH_LEGEND()
+title Hotelio – Containers (Stage 1)
+
+System_Boundary(hotelio, "Hotelio") {
+  Container(gw, "API Gateway", "Envoy/Kong", "Strangler routing, canary, mirroring")
+  Container(bff, "BFF / GraphQL", "Apollo/Spring GraphQL", "Schema & resolvers; Dataloader, cache")
+  Container(legacy, "Monolith", "Spring Boot", "Booking/Users/Hotels/Promo/Reviews")
+  ContainerDb(dbLegacy, "Legacy DB", "PostgreSQL", "Shared schema")
+  Container(promo, "Promo Service", "Spring Boot", "Promo rules/validation/apply")
+  ContainerDb(dbPromo, "Promo DB", "PostgreSQL", "Owned by Promo")
+  Container(review, "Review Service", "Spring Boot", "Reviews & ratings")
+  ContainerDb(dbReview, "Review DB", "PostgreSQL", "Owned by Review")
+  Container(kafka, "Kafka", "Kafka", "Async events/CDC")
+  Container(otel, "Observability", "Prometheus, Loki, Tempo/Jaeger, Grafana", "Metrics/Logs/Traces")
+}
+Rel(gw, bff, "GraphQL")
+Rel(gw, legacy, "REST fallback (/api/**)")
+Rel(bff, legacy, "REST (пока часть запросов)")
+Rel(bff, promo, "REST/gRPC (/api/promos/**)")
+Rel(bff, review, "REST (/api/reviews/**)")
+Rel(legacy, kafka, "Debezium CDC (outbox)")
+Rel(promo, kafka, "Domain events")
+Rel(legacy, dbLegacy, "JPA/Hibernate")
+Rel(promo, dbPromo, "JPA/Hibernate")
+Rel(review, dbReview, "JPA/Hibernate")
+Rel_Back(gw, otel, "OTel traces/metrics")
+Rel_Back(legacy, otel, "OTel agent")
+Rel_Back(promo, otel, "OTel SDK")
+Rel_Back(review, otel, "OTel SDK")
+@enduml
