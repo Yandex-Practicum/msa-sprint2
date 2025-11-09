@@ -13,4 +13,4 @@ COPY wait-for-it.sh /usr/local/bin/wait-for-it
 COPY init-fixtures.sql regress.sh ./
 RUN chmod +x /usr/local/bin/wait-for-it regress.sh
 
-ENTRYPOINT ["./regress.sh"]
+ENTRYPOINT ["/bin/bash", "/app/regress.sh"]
