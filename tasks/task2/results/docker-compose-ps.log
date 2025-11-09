@@ -1,0 +1,6 @@
+2d445af840f2   task2-monolith                    "java -jar app.jar"      6 minutes ago    Up 6 minutes    0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp   hotelio-monolith
+d206a9411f9e   postgres:15                       "docker-entrypoint.s…"   20 minutes ago   Up 20 minutes   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   hotelio-db
+4bb423a0f0b1   confluentinc/cp-zookeeper:7.2.1   "/etc/confluent/dock…"   20 minutes ago   Up 20 minutes   0.0.0.0:2181->2181/tcp, [::]:2181->2181/tcp   task2-zookeeper-1
+456f58030712   postgres:15                       "docker-entrypoint.s…"   20 minutes ago   Up 20 minutes   5432/tcp                                      task2-history-db-1
+84f5eafabb2b   postgres:15                       "docker-entrypoint.s…"   20 minutes ago   Up 20 minutes   5432/tcp                                      task2-booking-db-1
+4704dbd16146   confluentinc/cp-kafka:7.2.1       "/etc/confluent/dock…"   20 minutes ago   Up 20 minutes   0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp   task2-kafka-1
