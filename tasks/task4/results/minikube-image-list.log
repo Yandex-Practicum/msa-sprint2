@@ -1,0 +1,12 @@
+registry.k8s.io/pause:3.10
+registry.k8s.io/kube-scheduler:v1.33.1
+registry.k8s.io/kube-proxy:v1.33.1
+registry.k8s.io/kube-controller-manager:v1.33.1
+registry.k8s.io/kube-apiserver:v1.33.1
+registry.k8s.io/etcd:3.5.21-0
+registry.k8s.io/coredns/coredns:v1.12.0
+gcr.io/k8s-minikube/storage-provisioner:v5
+docker.io/library/busybox:latest
+docker.io/library/booking-service:latest
+docker.io/kubernetesui/metrics-scraper:<none>
+docker.io/kubernetesui/dashboard:<none>

@@ -1,0 +1,10 @@
+{
+  "name": "booking-service-app",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "unit": "node -e \"console.log('no unit tests yet')\""
+  },
+  "dependencies": {}
+}

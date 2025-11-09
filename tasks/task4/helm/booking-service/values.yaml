@@ -2,17 +2,22 @@ replicaCount: 1
 
 image:
   name: booking-service
-  tag: latest
+  tag: "dev"
   pullPolicy: IfNotPresent
 
 service:
-  type: ClusterIP
   port: 80
   targetPort: 8080
 
+env: []
+
 resources:
+  requests:
+    cpu: "50m"
+    memory: "64Mi"
+  limits:
+    cpu: "250m"
+    memory: "256Mi"
 
-livenessProbe:
-
-readinessProbe:
-
+featureFlags:
+  ENABLE_FEATURE_X: false
