@@ -1,0 +1,9 @@
+replicaCount: 3
+image:
+  tag: "prod"
+env:
+  - name: ENABLE_FEATURE_X
+    value: "false"
+resources:
+  requests: { cpu: "200m", memory: "256Mi" }
+  limits:   { cpu: "1",    memory: "1Gi" }

@@ -1,0 +1,30 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: booking-service
+spec:
+  hosts:
+    - booking-service
+  http:
+    - name: booking-canary
+      match:
+        - uri:
+            prefix: "/"
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+        retryOn: "5xx,connect-failure,refused-stream,retriable-status-codes"
+      route:
+        - destination:
+            host: booking-service
+            subset: v1
+            port:
+              number: 80
+          weight: 90
+        - destination:
+            host: booking-service
+            subset: v2
+            port:
+              number: 80
+          weight: 10
+      timeout: 8s

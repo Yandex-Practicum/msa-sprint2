@@ -1,0 +1,7 @@
+▶️ Проверка установки Istio...
+NAME                                    READY   STATUS    RESTARTS   AGE
+istio-egressgateway-559bd55945-j7mxn    1/1     Running   0          17h
+istio-ingressgateway-74df47f5f9-ppbrt   1/1     Running   0          17h
+istiod-85798b5866-l47jw                 1/1     Running   0          17h
+▶️ Проверка Istio инъекции в default namespace...
+"enabled"
