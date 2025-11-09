@@ -1,0 +1,43 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "Пользователь")
+Person(admin, "Администратор")
+
+System_Boundary(hotelio, "Hotelio") {
+    Container(apiGateway, "API Gateway", "Spring Cloud Gateway", "Роутинг и безопасность HTTP-запросов")
+    
+    Container(bookingService, "Booking Service", "Spring Boot", "Обработка бронирований")
+    ContainerDb(bookingDb, "Booking DB", "PostgreSQL")
+    Rel(bookingService, bookingDb, "JDBC")
+    Rel(apiGateway, bookingService, "HTTP")
+    
+    Container(hotelService, "Hotel Service", "Spring Boot", "Управление отелями")
+    ContainerDb(hotelDb, "Hotel DB", "PostgreSQL")
+    Rel(hotelService, hotelDb, "JDBC")
+    Rel(apiGateway, hotelService, "HTTP")
+    
+    Container(userService, "User Service", "Spring Boot", "Регистрация и авторизация пользователей")
+    ContainerDb(userDb, "User DB", "PostgreSQL")
+    Rel(userService, userDb, "JDBC")
+    Rel(apiGateway, userService, "HTTP")
+    
+    Container(promoService, "Promo Service", "Spring Boot", "Управление промокодами")
+    ContainerDb(promoDb, "Promo DB", "PostgreSQL")
+    Rel(promoService, promoDb, "JDBC")
+    Rel(apiGateway, promoService, "HTTP")
+    
+    Container(reviewService, "Review Service", "Spring Boot", "Работа с отзывами")
+    ContainerDb(reviewDb, "Review DB", "PostgreSQL")
+    Rel(reviewService, reviewDb, "JDBC")
+    Rel(apiGateway, reviewService, "HTTP")
+    
+    Rel(reviewService, bookingService, "HTTP")
+    Rel(hotelService, bookingService, "HTTP")
+    Rel(userService, bookingService, "HTTP")
+    Rel(promoService, bookingService, "HTTP")
+}
+
+Rel(user, apiGateway, "Запросы к API")
+Rel(admin, apiGateway, "Запросы к API")
+@enduml

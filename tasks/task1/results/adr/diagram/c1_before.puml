@@ -1,0 +1,14 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+Person(user, "Пользователь", "Взаимодействует с системой через веб или мобильное приложение")
+Person(admin, "Администратор", "Управляет контентом и данными")
+
+System_Boundary(hotelio, "Hotelio") {
+    System(system, "Hotelio", "Система бронирования отелей")
+}
+
+Rel(user, system, "Использует")
+Rel(admin, system, "Управляет")
+
+@enduml

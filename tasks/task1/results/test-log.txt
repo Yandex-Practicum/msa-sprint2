@@ -1,0 +1,105 @@
+
+  .   ____          _            __ _ _
+
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.2.5)
+
+
+2025-11-09T10:34:44.122Z  INFO 1 --- [           main] c.hotelio.monolith.MonolithApplication   : Starting MonolithApplication v1.0.0 using Java 17.0.17 with PID 1 (/app/app.jar started by root in /app)
+
+2025-11-09T10:34:44.126Z  INFO 1 --- [           main] c.hotelio.monolith.MonolithApplication   : No active profile set, falling back to 1 default profile: "default"
+
+2025-11-09T10:34:45.292Z  INFO 1 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+
+2025-11-09T10:34:45.348Z  INFO 1 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 49 ms. Found 5 JPA repository interfaces.
+
+2025-11-09T10:34:45.914Z  INFO 1 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+
+2025-11-09T10:34:45.942Z  INFO 1 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+
+2025-11-09T10:34:45.942Z  INFO 1 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.20]
+
+2025-11-09T10:34:46.009Z  INFO 1 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+
+2025-11-09T10:34:46.012Z  INFO 1 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1717 ms
+
+2025-11-09T10:34:46.196Z  INFO 1 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+
+2025-11-09T10:34:46.256Z  INFO 1 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
+
+2025-11-09T10:34:46.287Z  INFO 1 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+
+2025-11-09T10:34:46.504Z  INFO 1 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+
+2025-11-09T10:34:46.529Z  INFO 1 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+
+2025-11-09T10:34:46.711Z  INFO 1 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4c04216f
+
+2025-11-09T10:34:46.713Z  INFO 1 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+
+2025-11-09T10:34:47.755Z  INFO 1 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+
+Hibernate: drop table if exists app_user cascade
+
+Hibernate: drop table if exists booking cascade
+
+Hibernate: drop table if exists hotel cascade
+
+Hibernate: drop table if exists promo_code cascade
+
+Hibernate: drop table if exists review cascade
+
+Hibernate: create table app_user (active boolean not null, blacklisted boolean not null, city varchar(255), email varchar(255), id varchar(255) not null, name varchar(255), status varchar(255), primary key (id))
+
+Hibernate: create table booking (discount_percent float(53), price float(53) not null, created_at timestamp(6) with time zone, id bigserial not null, hotel_id varchar(255), promo_code varchar(255), user_id varchar(255), primary key (id))
+
+Hibernate: create table hotel (fully_booked boolean not null, operational boolean not null, rating float(53) not null, description varchar(1000), city varchar(255), id varchar(255) not null, primary key (id))
+
+Hibernate: create table promo_code (discount float(53) not null, expired boolean not null, valid_until date, vip_only boolean not null, code varchar(255) not null, description varchar(255), primary key (code))
+
+Hibernate: create table review (created_at date, rating integer not null, text varchar(2000), hotel_id varchar(255), id varchar(255) not null, user_id varchar(255), primary key (id))
+
+2025-11-09T10:34:47.858Z  INFO 1 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+
+2025-11-09T10:34:48.305Z  WARN 1 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+
+2025-11-09T10:34:48.747Z  INFO 1 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path ''
+
+2025-11-09T10:34:48.776Z  INFO 1 --- [           main] c.hotelio.monolith.MonolithApplication   : Started MonolithApplication in 5.258 seconds (process running for 6.482)
+
+➡️  BookingService beans:
+
+    - bookingService: class com.hotelio.monolith.service.BookingService
+
+2025-11-09T10:49:43.207Z  INFO 1 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+
+2025-11-09T10:49:43.207Z  INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+
+2025-11-09T10:49:43.208Z  INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+
+Hibernate: select au1_0.id,au1_0.active,au1_0.blacklisted,au1_0.city,au1_0.email,au1_0.name,au1_0.status from app_user au1_0 where au1_0.id=?
+
+Hibernate: select au1_0.id,au1_0.active,au1_0.blacklisted,au1_0.city,au1_0.email,au1_0.name,au1_0.status from app_user au1_0 where au1_0.id=?
+
+Hibernate: select au1_0.id,au1_0.active,au1_0.blacklisted,au1_0.city,au1_0.email,au1_0.name,au1_0.status from app_user au1_0 where au1_0.id=?
+
+Hibernate: select au1_0.id,au1_0.active,au1_0.blacklisted,au1_0.city,au1_0.email,au1_0.name,au1_0.status from app_user au1_0 where au1_0.id=?
+
+Hibernate: select au1_0.id,au1_0.active,au1_0.blacklisted,au1_0.city,au1_0.email,au1_0.name,au1_0.status from app_user au1_0 where au1_0.id=?
+
+Hibernate: select au1_0.id,au1_0.active,au1_0.blacklisted,au1_0.city,au1_0.email,au1_0.name,au1_0.status from app_user au1_0 where au1_0.id=?
+
+Hibernate: select au1_0.id,au1_0.active,au1_0.blacklisted,au1_0.city,au1_0.email,au1_0.name,au1_0.status from app_user au1_0 where au1_0.id=?
+
+Hibernate: select h1_0.id,h1_0.city,h1_0.description,h1_0.fully_booked,h1_0.operational,h1_0.rating from hotel h1_0 where h1_0.id=?
+
+Hibernate: select h1_0.id,h1_0.city,h1_0.description,h1_0.fully_booked,h1_0.operational,h1_0.rating from hotel h1_0 where h1_0.id=?
