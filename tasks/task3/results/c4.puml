@@ -1,0 +1,29 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "User", "Uses GraphQL Playground")
+
+System_Boundary(graphql_system, "Federated GraphQL System") {
+    Container(gateway, "Apollo Gateway", "Node.js", "Port 4000\nIntrospects and composes subgraphs")
+    Container(bookingSubgraph, "Booking Subgraph", "Node.js", "Port 4001\nResolves Booking entities")
+    Container(hotelSubgraph, "Hotel Subgraph", "Node.js", "Port 4002\nResolves Hotel entities")
+}
+
+Container(bookingService, "booking-service", "Spring Boot gRPC", "Port 8080\n(Task 2)")
+ContainerDb(bookingDb, "booking-db", "PostgreSQL", "Bookings table")
+
+Container(monolith, "Monolith", "Spring Boot", "Port 8084\n(Task 2)")
+ContainerDb(monolithDb, "hotelio-db", "PostgreSQL", "hotel table")
+
+Rel(user, gateway, "Queries\nbookingsByUser { hotel { name } }")
+
+Rel(gateway, bookingSubgraph, "Federation: _entities, _service")
+Rel(gateway, hotelSubgraph, "Federation: _entities, _service")
+
+Rel(bookingSubgraph, bookingService, "gRPC\nListBookings")
+Rel(bookingService, bookingDb, "Reads/Writes")
+
+Rel(hotelSubgraph, monolith, "HTTP\nGET /api/hotels/{id}")
+Rel(monolith, monolithDb, "Reads")
+
+@enduml

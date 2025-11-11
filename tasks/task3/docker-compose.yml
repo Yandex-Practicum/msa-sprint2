@@ -1,6 +1,117 @@
 version: '3.8'
 
 services:
+  monolith:
+    build:
+      context: ../monolith
+      dockerfile: Dockerfile
+    container_name: hotelio-monolith
+    ports:
+      - "8084:8080"
+    networks:
+      - hotelio-net
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://monolith-db:5432/hotelio
+      SPRING_DATASOURCE_USERNAME: hotelio
+      SPRING_DATASOURCE_PASSWORD: hotelio
+      BOOKING_SERVICE_EXTERNAL_HOST: booking-service
+      BOOKING_SERVICE_EXTERNAL_PORT: 9090
+
+  monolith-db:
+    image: postgres:15
+    container_name: hotelio-db
+    environment:
+      POSTGRES_USER: hotelio
+      POSTGRES_PASSWORD: hotelio
+      POSTGRES_DB: hotelio
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./initdb/init-fixtures.sql:/initdb/init-fixtures.sql
+      - monolith-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+
+  booking-service:
+    build:
+      context: ../task2/booking-service
+      dockerfile: Dockerfile
+    container_name: booking-service
+    ports:
+      - "9090:9090"
+    networks:
+      - hotelio-net
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://booking-service-db:5432/booking-service
+      SPRING_DATASOURCE_USERNAME: hotelio
+      SPRING_DATASOURCE_PASSWORD: hotelio
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+  booking-service-db:
+    image: postgres:15
+    container_name: booking-service-db
+    environment:
+      POSTGRES_USER: hotelio
+      POSTGRES_PASSWORD: hotelio
+      POSTGRES_DB: booking-service
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./initdb/init-fixtures-booking-service.sql:/initdb/init-fixtures-booking-service.sql
+      - booking-service-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+
+  booking-history-service:
+    build:
+      context: ../task2/booking-history-service
+      dockerfile: Dockerfile
+    container_name: booking-history-service
+    networks:
+      - hotelio-net
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://booking-history-service-db:5432/booking-history-service
+      SPRING_DATASOURCE_USERNAME: hotelio
+      SPRING_DATASOURCE_PASSWORD: hotelio
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      - booking-history-service-db
+
+  booking-history-service-db:
+    image: postgres:15
+    container_name: booking-history-service-db
+    environment:
+      POSTGRES_USER: hotelio
+      POSTGRES_PASSWORD: hotelio
+      POSTGRES_DB: booking-history-service
+    ports:
+      - "5434:5432"
+    volumes:
+      - booking-history-service-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+
+  kafka:
+    image: confluentinc/cp-kafka:7.2.1
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - hotelio-net
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.2.1
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - hotelio-net
+
   apollo-gateway:
     build: ./gateway
     ports:
@@ -8,13 +119,30 @@ services:
     depends_on:
       - booking-subgraph
       - hotel-subgraph
+    networks:
+      - hotelio-net
 
   booking-subgraph:
     build: ./booking-subgraph
+    container_name: booking-subgraph
     ports:
       - "4001:4001"
+    networks:
+      - hotelio-net
 
   hotel-subgraph:
     build: ./hotel-subgraph
+    container_name: hotel-subgraph
     ports:
       - "4002:4002"
+    networks:
+      - hotelio-net
+
+volumes:
+  monolith-db-data:
+  booking-service-db-data:
+  booking-history-service-db-data:
+
+networks:
+  hotelio-net:
+    external: true
