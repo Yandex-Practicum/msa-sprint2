@@ -30,7 +30,52 @@ services:
       - monolith-db-data:/var/lib/postgresql/data
     networks:
       - hotelio-net
+  booking-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: booking
+      POSTGRES_USER: booking
+      POSTGRES_PASSWORD: booking
+    networks: [ hotelio-net ]
 
+  booking-service:
+    build: ./booking-service
+    image: hotelio/booking-service:local
+    environment:
+      GRPC_PORT: 9090
+      DB_URL: jdbc:postgresql://booking-db:5432/booking
+      DB_USER: booking
+      DB_PASSWORD: booking
+      MONOLITH_BASE_URL: http://monolith:8080
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_TOPIC_BOOKING_CREATED: booking.created
+      BASE_PRICE: "100.0"
+      CURRENCY: EUR
+    ports:
+      - "9090:9090"
+    depends_on: [ booking-db, kafka ]
+    networks: [ hotelio-net ]
+
+  history-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: history
+      POSTGRES_USER: history
+      POSTGRES_PASSWORD: history
+    networks: [ hotelio-net ]
+
+  booking-history-service:
+    build: ./booking-history-service
+    image: hotelio/booking-history-service:local
+    environment:
+      DB_URL: jdbc:postgresql://history-db:5432/history
+      DB_USER: history
+      DB_PASSWORD: history
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_TOPIC_BOOKING_CREATED: booking.created
+      KAFKA_CONSUMER_GROUP: booking-history-service
+    depends_on: [ history-db, kafka ]
+    networks: [ hotelio-net ]
   kafka:
     image: confluentinc/cp-kafka:7.2.1
     ports:

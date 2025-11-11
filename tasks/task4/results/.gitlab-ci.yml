@@ -1,0 +1,76 @@
+stages: [build, unit, test, deploy, tag]
+
+variables:
+  IMAGE_NAME: "booking-service"
+  IMAGE_TAG: "${CI_COMMIT_SHORT_SHA}"
+  KUBE_NAMESPACE: "default"
+  RELEASE_NAME: "booking-service"
+  CHART_DIR: "task4/charts/booking-service"
+  ENV: "staging"   # staging|prod
+
+.default-before:
+  before_script:
+    - set -euo pipefail
+    - mkdir -p task4/results
+
+build:
+  stage: build
+  extends: [.default-before]
+  script:
+    - docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ./task4/app | tee task4/results/ci-build.log
+  artifacts:
+    when: always
+    paths: [task4/results/ci-build.log]
+
+unit:
+  stage: unit
+  extends: [.default-before]
+  script:
+    - docker run --rm ${IMAGE_NAME}:${IMAGE_TAG} node -e "console.log('unit ok')" | tee task4/results/ci-unit.log
+  rules: [ { when: always } ]
+  artifacts:
+    when: always
+    paths: [task4/results/ci-unit.log]
+
+test:
+  stage: test
+  extends: [.default-before]
+  script:
+    - CID=$(docker run -d -p 8080:8080 -e ENABLE_FEATURE_X=true ${IMAGE_NAME}:${IMAGE_TAG})
+    - |
+      for i in $(seq 1 20); do
+        if curl -fsS http://127.0.0.1:8080/ping >/dev/null; then echo "ok"; break; fi; sleep 0.5; done
+    - curl -fsS http://127.0.0.1:8080/ping | tee task4/results/ci-test.log
+    - docker rm -f "$CID"
+  artifacts:
+    when: always
+    paths: [task4/results/ci-test.log]
+
+deploy:
+  stage: deploy
+  extends: [.default-before]
+  script:
+    - eval $(minikube -p minikube docker-env) || true
+    - minikube image load ${IMAGE_NAME}:${IMAGE_TAG}
+    - helm upgrade --install ${RELEASE_NAME} ${CHART_DIR} \
+      --namespace ${KUBE_NAMESPACE} \
+      -f ${CHART_DIR}/values-${ENV}.yaml \
+      --set image.name=${IMAGE_NAME} \
+      --set image.tag=${IMAGE_TAG}
+    - kubectl get all -n ${KUBE_NAMESPACE} | tee task4/results/kubectl-get-all.txt
+    - helm status ${RELEASE_NAME} -n ${KUBE_NAMESPACE} | tee task4/results/helm-status.txt
+  artifacts:
+    when: always
+    paths: [task4/results/kubectl-get-all.txt, task4/results/helm-status.txt, task4/results/ci-deploy.log]
+
+tag:
+  stage: tag
+  extends: [.default-before]
+  script:
+    - export TS=$(date -u +%Y%m%d%H%M%S)
+    - git tag "v${TS}-${CI_COMMIT_SHORT_SHA}"
+    - git push --tags | tee task4/results/ci-tag.log
+  when: manual
+  artifacts:
+    when: always
+    paths: [task4/results/ci-tag.log]

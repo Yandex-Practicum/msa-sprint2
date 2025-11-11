@@ -1,0 +1,28 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: booking-feature-flag
+  namespace: default
+spec:
+  # No workloadSelector -> applies to all sidecars in this namespace (all clients calling booking-service)
+  configPatches:
+    - applyTo: HTTP_ROUTE
+      match:
+        context: SIDECAR_OUTBOUND
+        routeConfiguration:
+          name: "http.80"  # validate with istioctl proxy-config routes
+          vhost:
+            name: "booking-service.default.svc.cluster.local:80"  # validate
+            route:
+              name: "booking-feature-on"
+      patch:
+        operation: INSERT_FIRST
+        value:
+          match:
+            prefix: "/"
+            headers:
+              - name: "X-Feature-Enabled"
+                exactMatch: "true"
+          route:
+            # Send directly to subset v2 cluster
+            cluster: "outbound|80|v2|booking-service.default.svc.cluster.local"
