@@ -2,22 +2,36 @@ stages:
   - build
   - test
   - deploy
+  - tag
 
 variables:
-  IMAGE_TAG: latest
   IMAGE_NAME: booking-service
+  IMAGE_TAG: 0.0.1-SNAPSHOT
 
 build:
   stage: build
   script:
-
+    - docker build -t ${IMAGE_NAME}:${IMAGE_TAG} booking-service/
 
 test:
   stage: test
   script:
-
+    - docker run -d --name booking-test -p 8080:8080 -e ENABLE_FEATURE_X=true ${IMAGE_NAME}:${IMAGE_TAG}
+    - sleep 2
+    - curl -f http://localhost:8080/ping || (docker logs booking-test && exit 1)
+    - curl -f http://localhost:8080/feature || (docker logs booking-test && exit 1)
+    - docker stop booking-test
+    - docker rm booking-test
 
 deploy:
   stage: deploy
   script:
- 
+    - minikube image load ${IMAGE_NAME}:${IMAGE_TAG}
+    - helm upgrade --install booking-staging helm/booking-service/ --values helm/booking-service/values-staging.yaml --wait
+    - helm upgrade --install booking-prod helm/booking-service/ --values helm/booking-service/values-prod.yaml --wait
+
+tag:
+  stage: tag
+  script:
+    - git tag "release-$(date +%Y%m%d-%H%M%S)"
+    - git push origin --tags || echo "No remote 'origin' configured; tag created locally"

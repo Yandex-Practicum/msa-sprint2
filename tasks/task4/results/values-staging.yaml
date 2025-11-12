@@ -1,0 +1,10 @@
+replicaCount: 1
+
+image:
+  name: booking-service
+  tag: 0.0.1-SNAPSHOT
+  pullPolicy: IfNotPresent
+
+env:
+  - name: ENABLE_FEATURE_X
+    value: "true"
