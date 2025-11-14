@@ -1,5 +1,4 @@
-version: "3.8"
-
+version: "3.9"
 services:
   monolith:
     build:
@@ -15,7 +14,7 @@ services:
       SPRING_DATASOURCE_USERNAME: hotelio
       SPRING_DATASOURCE_PASSWORD: hotelio
       BOOKING_SERVICE_EXTERNAL_HOST: booking-service
-      BOOKING_SERVICE_EXTERNAL_PORT: 9090
+      BOOKING_SERVICE_EXTERNAL_PORT: 50051
 
   monolith-db:
     image: postgres:15
@@ -31,6 +30,38 @@ services:
     networks:
       - hotelio-net
 
+
+  db_booking:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: booking
+      POSTGRES_PASSWORD: booking
+      POSTGRES_DB: booking
+    volumes:
+      - booking-db-data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    networks:
+      - hotelio-net
+
+  booking-service:
+    build:
+      context: .
+    container_name: booking-service
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://booking:booking@db_booking:5432/booking"
+      MONOLITH_BASE: "http://monolith:8080/api"
+      GRPC_PORT: "50051"
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "50051:50051"
+    depends_on:
+      - db_booking
+      - monolith
+    command: ["python", "server_grpc.py"]   # ← запускаем только gRPC
+    networks:
+      - hotelio-net
+
   kafka:
     image: confluentinc/cp-kafka:7.2.1
     ports:
@@ -42,6 +73,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
       - hotelio-net
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.2.1
     ports:
@@ -52,8 +84,36 @@ services:
     networks:
       - hotelio-net
 
+  booking-history-service:
+    build:
+      context: ./booking-history-service
+    container_name: booking-history-service
+    environment:
+      KAFKA_BROKER: "kafka:9092"
+      TOPIC_BOOKINGS: "booking-events"
+      DATABASE_URL: "postgresql+asyncpg://history:history@history-db:5432/history"
+    depends_on:
+      - kafka
+      - history-db   # важно!
+    command: [ "python", "main.py" ]
+    networks:
+      - hotelio-net
+
+  history-db:
+    image: postgres:15
+    container_name: history-db
+    environment:
+      POSTGRES_USER: history
+      POSTGRES_PASSWORD: history
+      POSTGRES_DB: history
+    ports:
+      - "5435:5432"
+    networks:
+      - hotelio-net
+
 volumes:
   monolith-db-data:
+  booking-db-data:
 
 networks:
   hotelio-net:

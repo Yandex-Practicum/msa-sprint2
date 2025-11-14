@@ -1,0 +1,18 @@
+replicaCount: 3
+
+image:
+  name: registry.example.com/booking-service
+  tag: stable
+  pullPolicy: IfNotPresent
+
+env:
+  - name: ENABLE_FEATURE_X
+    value: "false"
+
+resources:
+  requests:
+    cpu: "200m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"

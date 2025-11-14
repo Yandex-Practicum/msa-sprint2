@@ -3,6 +3,7 @@ import { startStandaloneServer } from '@apollo/server/standalone';
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import gql from 'graphql-tag';
 
+// ======== Типы ========
 const typeDefs = gql`
   type Hotel @key(fields: "id") {
     id: ID!
@@ -16,19 +17,29 @@ const typeDefs = gql`
   }
 `;
 
+// ======== Заглушка данных ========
+const hotels = [
+  { id: 'h1', name: 'Grand Plaza', city: 'Paris', stars: 5 },
+  { id: 'h2', name: 'City Inn', city: 'Berlin', stars: 3 },
+  { id: 'h3', name: 'Sea Breeze', city: 'Barcelona', stars: 4 },
+];
+
+// ======== Резолверы ========
 const resolvers = {
   Hotel: {
     __resolveReference: async ({ id }) => {
-      // TODO: Реальный вызов к hotel-сервису или заглушка
+      // тут мог бы быть REST или gRPC вызов
+      return hotels.find((h) => h.id === id);
     },
   },
   Query: {
     hotelsByIds: async (_, { ids }) => {
-      // TODO: Заглушка или REST-запрос
+      return hotels.filter((h) => ids.includes(h.id));
     },
   },
 };
 
+// ======== Сервер ========
 const server = new ApolloServer({
   schema: buildSubgraphSchema([{ typeDefs, resolvers }]),
 });

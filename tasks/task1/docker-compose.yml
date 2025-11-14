@@ -29,6 +29,29 @@ services:
     networks:
       - hotelio-net
 
+  tester:
+    build:
+      context: ../../test
+      dockerfile: Dockerfile
+    container_name: hotelio-tester
+    environment:
+      DB_HOST: hotelio-db
+      DB_PORT: 5432
+      DB_NAME: hotelio
+      DB_USER: hotelio
+      DB_PASSWORD: hotelio
+      DB_BOOKING_HOST: hotelio-db
+      DB_BOOKING_PORT: 5432
+      DB_BOOKING_NAME: hotelio
+      DB_BOOKING_USER: hotelio
+      DB_BOOKING_PASSWORD: hotelio
+      API_URL: http://hotelio-monolith:8080
+    networks:
+      - hotelio-net
+
+
+# TODO нужно поправить тесты и фикстуры, чтобы они импортили тестовые данные в БД букинг сервиса
+
 volumes:
   monolith-db-data:
 

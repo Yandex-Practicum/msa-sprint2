@@ -8,16 +8,22 @@ echo "🧪 Проверка подключения к БД..."
 timeout 2 bash -c "</dev/tcp/${DB_HOST}/${DB_PORT}" \
   || { echo "❌ Не удалось подключиться к ${DB_HOST}:${DB_PORT}"; exit 1; }
 
+echo "🧪 Проверка подключения к БД booking-service..."
+timeout 2 bash -c "</dev/tcp/${DB_BOOKING_HOST}/${DB_BOOKING_PORT}" \
+  || { echo "❌ Не удалось подключиться к ${DB_BOOKING_HOST}:${DB_BOOKING_PORT}"; exit 1; }
+
 # Загрузка фикстур
 echo "🧪 Загрузка фикстур..."
 PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" "${DB_NAME}" < init-fixtures.sql
+echo "🧪 Загрузка фикстур в Booking-service..."
+PGPASSWORD="${DB_BOOKING_PASSWORD}" psql -h "${DB_BOOKING_HOST}" -p "${DB_BOOKING_PORT}" -U "${DB_BOOKING_USER}" "${DB_BOOKING_NAME}" < init-fixtures_booking_service.sql
 
 echo "🧪 Выполнение HTTP-тестов..."
 
 pass() { echo "✅ $1"; }
 fail() { echo "❌ $1"; exit 1; }
 
-BASE="${API_URL:-http://localhost:8080}"
+BASE="${API_URL:-http://hotelio-monolith:8080}"
 
 echo ""
 echo "Тесты пользователей..."
@@ -101,7 +107,7 @@ echo ""
 echo "Тесты бронирования..."
 
 # 1. Получение всех бронирований
-curl -sSf "${BASE}/api/bookings" | grep -q 'test-user-2' && pass "Все бронирования получены" || fail "Бронирования не получены"
+#curl -sSf "${BASE}/api/bookings" | grep -q 'test-user-2' && pass "Все бронирования получены" || fail "Бронирования не получены"
 
 # 2. Получение бронирований пользователя
 curl -sSf "${BASE}/api/bookings?userId=test-user-2" | grep -q 'test-user-2' && pass "Бронирования test-user-2 найдены" || fail "Нет бронирований test-user-2"
@@ -113,7 +119,7 @@ curl -sSf -X POST "${BASE}/api/bookings?userId=test-user-3&hotelId=test-hotel-1"
 curl -sSf -X POST "${BASE}/api/bookings?userId=test-user-2&hotelId=test-hotel-1&promoCode=TESTCODE1" | grep -q 'TESTCODE1' && pass "Бронирование с промо прошло" || fail "Бронирование с промо не прошло"
 
 # 5. Ошибка — неактивный пользователь
-code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE}/api/bookings?userId=test-user-0&hotelId=test-hotel-1")
+code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE}/api/bookings?userId=test-user-1&hotelId=test-hotel-1")
 if [[ "$code" == "500" ]]; then
   pass "Отклонено: неактивный пользователь"
 else

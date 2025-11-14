@@ -1,9 +1,11 @@
 #!/bin/bash
-
 set -e
 
-echo "▶️ Проверка установки Istio..."
-kubectl get pods -n istio-system
+mkdir -p logs
 
-echo "▶️ Проверка Istio инъекции в default namespace..."
-kubectl get namespace default -o json | jq '.metadata.labels."istio-injection"'
+LOGFILE="logs/check-istio.log"
+echo "▶️ Проверка установки Istio..." | tee "$LOGFILE"
+kubectl get pods -n istio-system | tee -a "$LOGFILE"
+
+echo "▶️ Проверка Istio инъекции в default namespace..." | tee -a "$LOGFILE"
+kubectl get namespace default -o json | jq '.metadata.labels."istio-injection"' | tee -a "$LOGFILE"

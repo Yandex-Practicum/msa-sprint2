@@ -1,0 +1,9 @@
+(venv) vvolkovskiy@vvolkovskiy-ThinkPad-E15-Gen-3:~/src/msa-sprint2/tasks/task2$ docker exec -it history-db psql -U history -d history -c "SELECT * FROM booking_history;"
+ id |   user_id   |   hotel_id   | promo_code | discount_percent | price |         created_at
+----+-------------+--------------+------------+------------------+-------+----------------------------
+ 6  | test-user-2 | test-hotel-1 |            |                0 |     0 | 2025-11-12 18:28:19.851044
+ 7  | test-user-3 | test-hotel-1 |            |                0 |     0 | 2025-11-12 18:29:36.367622
+ 8  | test-user-2 | test-hotel-1 | TESTCODE1  |                0 |     0 | 2025-11-12 18:29:36.446919
+(3 rows)
+
+(venv) vvolkovskiy@vvolkovskiy-ThinkPad-E15-Gen-3:~/src/msa-sprint2/tasks/task2$

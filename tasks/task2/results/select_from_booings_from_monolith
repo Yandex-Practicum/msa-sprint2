@@ -1,0 +1,8 @@
+(venv) vvolkovskiy@vvolkovskiy-ThinkPad-E15-Gen-3:~/src/msa-sprint2/tasks/task2$ docker exec -it hotelio-db psql -U hotelio -d hotelio -c "SELECT * FROM booking;"
+ discount_percent | price |          created_at           | id |   hotel_id   | promo_code |   user_id
+------------------+-------+-------------------------------+----+--------------+------------+-------------
+               10 |    90 | 2025-11-12 18:01:41.122483+00 |  7 | test-hotel-1 | TESTCODE1  | test-user-2
+                0 |    80 | 2025-11-12 18:01:41.122483+00 |  8 | test-hotel-1 |            | test-user-3
+(2 rows)
+
+(venv) vvolkovskiy@vvolkovskiy-ThinkPad-E15-Gen-3:~/src/msa-sprint2/tasks/task2$

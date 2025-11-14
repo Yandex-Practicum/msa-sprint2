@@ -1,0 +1,9 @@
+(venv) vvolkovskiy@vvolkovskiy-ThinkPad-E15-Gen-3:~/src/msa-sprint2/tasks/task2$ docker exec -it task2-db_booking-1 psql -U booking -d booking -c "SELECT * FROM bookings;"
+ id |   user_id   |   hotel_id   | promo_code | discount_percent | price |         created_at
+----+-------------+--------------+------------+------------------+-------+----------------------------
+  1 | test-user-2 | test-hotel-1 |            |                0 |     0 | 2025-11-12 18:01:36.287051
+  2 | test-user-3 | test-hotel-1 |            |                0 |     0 | 2025-11-12 18:01:41.496503
+  3 | test-user-2 | test-hotel-1 | TESTCODE1  |                0 |     0 | 2025-11-12 18:01:41.571163
+(3 rows)
+
+(venv) vvolkovskiy@vvolkovskiy-ThinkPad-E15-Gen-3:~/src/msa-sprint2/tasks/task2$

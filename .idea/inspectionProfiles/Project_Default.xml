@@ -1,0 +1,59 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Project Files" level="WARNING" enabled="true">
+        <option name="ignoredPackages">
+          <list>
+            <option value="api-client" />
+            <option value="beautifulsoup4" />
+            <option value="ConfigORM" />
+            <option value="fabric" />
+            <option value="Flask" />
+            <option value="flask_login" />
+            <option value="flask_restx" />
+            <option value="flask_socketio" />
+            <option value="gevent" />
+            <option value="invoke" />
+            <option value="ObjDict" />
+            <option value="peewee" />
+            <option value="PeeweeExtraFields" />
+            <option value="psycopg2-binary" />
+            <option value="py-healthcheck" />
+            <option value="pydantic" />
+            <option value="pyserial" />
+            <option value="scp" />
+            <option value="werkzeug" />
+            <option value="configorm" />
+            <option value="database_package_peewee" />
+            <option value="flask" />
+            <option value="Flask-Cors" />
+            <option value="flask-login" />
+            <option value="flask-restx" />
+            <option value="flask-socketio" />
+            <option value="packaging" />
+            <option value="paramiko" />
+            <option value="Paste" />
+            <option value="pydantic_core" />
+            <option value="pyJwt" />
+            <option value="pytest" />
+            <option value="python-socketio" />
+            <option value="PyYAML" />
+            <option value="requests" />
+            <option value="sentry-sdk" />
+            <option value="urllib3" />
+            <option value="waitress" />
+          </list>
+        </option>
+      </scope>
+    </inspection_tool>
+    <inspection_tool class="PyStubPackagesAdvertiser" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="pika-stubs==0.1.3" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

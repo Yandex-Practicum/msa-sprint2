@@ -1,8 +1,8 @@
 #!/bin/bash
-
 set -e
 
-echo "▶️ Проверка Feature Flag (X-Feature-Enabled: true)..."
+mkdir -p logs
+LOGFILE="logs/check-feature-flag.log"
+echo "▶️ Проверка Feature Flag (X-Feature-Enabled: true)..." | tee "$LOGFILE"
 
-# Отправляем запрос с заголовком, чтобы маршрутизировать трафик на `v2`
-curl -H "X-Feature-Enabled: true" http://localhost:9090/ping
+curl -H "X-Feature-Enabled: true" http://localhost:9090/ping | tee -a "$LOGFILE"

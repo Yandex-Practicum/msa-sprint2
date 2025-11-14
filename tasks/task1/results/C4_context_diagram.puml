@@ -1,0 +1,17 @@
+@startuml
+!include C4_Context.puml
+
+Person(user, "User")
+
+System_Boundary(hotelio, "Hotelio System") {
+    System(apiGateway, "API Gateway", "Маршрутизация API")
+    System(monolith, "Monolith", "Старое приложение")
+    System(bookingMS, "Booking Service", "Новый сервис")
+}
+
+Rel(user, apiGateway, "HTTP/REST")
+Rel(apiGateway, monolith, "Запросы, не перенесённые в микросервисы")
+Rel(apiGateway, bookingMS, "Запросы на бронирование")
+@enduml
+
+@enduml

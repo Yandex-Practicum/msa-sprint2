@@ -1,0 +1,34 @@
+@startuml
+!include C4_Container.puml
+
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+
+Person(user, "User", "Пользователь системы")
+
+Container(apiGateway, "API Gateway", "Nginx", "Маршрутизация API")
+
+Container_Boundary(monolith_boundary, "Legacy Monolith Domain") {
+    Container(monolith, "Hotelio Monolith", "Spring Boot", "Легаси-приложение, содержащее оставшиеся сервисы")
+
+    ContainerDb(monolithDB, "Monolith Database", "PostgreSQL", "Хранит пользователей, отели, отзывы и промокоды")
+}
+
+Container_Boundary(booking_boundary, "Booking Microservice Domain") {
+    Container(bookingMS, "Booking Service", "Spring Boot", "Новый микросервис обработки бронирований")
+
+    ContainerDb(bookingDB, "Booking Database", "PostgreSQL", "Хранит данные о бронированиях")
+}
+
+Rel(user, apiGateway, "HTTP запросы", "HTTPS/REST")
+Rel(apiGateway, monolith, "Маршрутизация старых endpoint'ов", "REST/JSON")
+Rel(apiGateway, bookingMS, "Маршрутизация /bookings endpoint'а", "REST/JSON")
+
+Rel(monolith, monolithDB, "Чтение/запись", "SQL")
+Rel(bookingMS, bookingDB, "Чтение/запись", "SQL")
+
+' Временная интеграция на период миграции
+Rel(bookingMS, monolith, "Получение пользователей, отелей, промокодов", "REST/JSON")
+
+@enduml

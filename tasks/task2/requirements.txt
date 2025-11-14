@@ -1,0 +1,11 @@
+uvicorn[standard]
+grpcio>=1.60.0
+grpcio-tools>=1.60.0
+protobuf>=4.23.0
+sqlalchemy>=2.0.0
+asyncpg
+alembic
+websockets==10.4
+httpx
+aiokafka
+pydantic

@@ -1,0 +1,55 @@
+1. Сервис booking-subgraph
+
+Добавлено поле hotel в тип Booking для федерации с Hotel:
+type Booking @key(fields: "id") {
+  id: ID!
+  userId: String!
+  hotelId: String!
+  promoCode: String
+  discountPercent: Int
+  hotel: Hotel
+}
+
+
+Добавлено расширение типа Hotel:
+extend type Hotel @key(fields: "id") {
+  id: ID! @external
+}
+
+
+Добавлена реализация запроса bookingsByUser с ACL:
+if (!user || user.id !== userId) {
+  throw new Error('Access denied: you can only view your own bookings');
+}
+
+
+Добавлен resolver hotel для связи с подграфом отелей:
+Booking: {
+  hotel: (booking) => ({ __typename: "Hotel", id: booking.hotelId }),
+},
+
+
+
+2. Сервис hotel-subgraph
+
+Определён тип Hotel с @key(fields: "id").
+
+Добавлен метод __resolveReference для федерации:
+__resolveReference: async ({ id }) => hotels.find((h) => h.id === id),
+
+Добавлен запрос hotelsByIds для прямого получения отелей по списку ID.
+
+
+3. Сервис apollo-gateway
+
+Настроена федерация через ApolloGateway:
+const gateway = new ApolloGateway({
+  serviceList: [
+    { name: 'booking', url: 'http://booking-subgraph:4001' },
+    { name: 'hotel', url: 'http://hotel-subgraph:4002' }
+  ]
+});
+
+
+Добавлена передача контекста (заголовков авторизации) в подграфы:
+context: async ({ req }) => ({ req }),

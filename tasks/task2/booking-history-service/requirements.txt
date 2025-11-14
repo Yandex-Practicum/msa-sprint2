@@ -1,0 +1,3 @@
+aiokafka
+sqlalchemy
+asyncpg

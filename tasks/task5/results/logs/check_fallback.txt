@@ -1,0 +1,22 @@
+vvolkovskiy@vvolkovskiy-ThinkPad-E15-Gen-3:~/src/msa-sprint2/tasks/task5$ kubectl delete pod -l app=booking-service,version=v1 -n staging
+pod "booking-service-v1-booking-service-v1-59d5766cf7-7s4sv" deleted from staging namespace
+pod "booking-service-v1-booking-service-v1-59d5766cf7-8msk4" deleted from staging namespace
+vvolkovskiy@vvolkovskiy-ThinkPad-E15-Gen-3:~/src/msa-sprint2/tasks/task5$ kubectl get pods -n staging -l app=booking-service,version=v1
+NAME                                                     READY   STATUS     RESTARTS   AGE
+booking-service-v1-booking-service-v1-59d5766cf7-lh65m   0/2     Init:1/2   0          7s
+booking-service-v1-booking-service-v1-59d5766cf7-pgt67   0/2     Init:1/2   0          7s
+
+
+(venv) vvolkovskiy@vvolkovskiy-ThinkPad-E15-Gen-3:~/src/msa-sprint2/tasks/task5$ bash check-fallback.sh
+▶️ Проверка fallback маршрута...
+1: fallback to v2 ({"status":"ok","feature_x":"true"})
+2: fallback to v2 ({"status":"ok","feature_x":"true"})
+3: fallback to v2 ({"status":"ok","feature_x":"true"})
+4: fallback to v2 ({"status":"ok","feature_x":"true"})
+5: fallback to v2 ({"status":"ok","feature_x":"true"})
+6: fallback to v2 ({"status":"ok","feature_x":"true"})
+7: fallback to v2 ({"status":"ok","feature_x":"true"})
+8: fallback to v2 ({"status":"ok","feature_x":"true"})
+9: fallback to v2 ({"status":"ok","feature_x":"true"})
+10: fallback to v2 ({"status":"ok","feature_x":"true"})
+(venv) vvolkovskiy@vvolkovskiy-ThinkPad-E15-Gen-3:~/src/msa-sprint2/tasks/task5$

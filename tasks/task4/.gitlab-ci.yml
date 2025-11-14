@@ -2,22 +2,34 @@ stages:
   - build
   - test
   - deploy
+  - tag
 
 variables:
-  IMAGE_TAG: latest
   IMAGE_NAME: booking-service
+  IMAGE_TAG: $CI_COMMIT_SHORT_SHA
 
 build:
   stage: build
   script:
-
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG ./booking-service
 
 test:
   stage: test
   script:
-
+    - docker run -d -p 8080:8080 --name booking-test $IMAGE_NAME:$IMAGE_TAG
+    - sleep 5
+    - curl -f http://localhost:8080/ping
+    - curl -f http://localhost:8080/ready
+    - docker rm -f booking-test
 
 deploy:
   stage: deploy
   script:
- 
+    - minikube image load $IMAGE_NAME:$IMAGE_TAG
+    - helm upgrade --install booking-service ./helm/booking-service -f ./helm/booking-service/values-staging.yaml
+
+tag:
+  stage: tag
+  script:
+    - git tag "deploy-$(date +%Y%m%d%H%M)"
+    - git push origin --tags
