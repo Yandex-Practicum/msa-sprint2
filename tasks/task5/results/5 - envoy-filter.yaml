@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: booking-feature-flag-cookie
+  namespace: default
+spec:
+  workloadSelector:
+    labels:
+      app: booking-service
+  configPatches:
+    - applyTo: HTTP_FILTER
+      match:
+        context: SIDECAR_INBOUND
+        listener:
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.http.lua
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+            inlineCode: |
+              local function has_feature_cookie(cookie_header)
+                if cookie_header == nil then return false end
+                return string.find(cookie_header, "Feature%-Enabled=true", 1, true) ~= nil
+              end
+
+              function envoy_on_request(handle)
+                local cookies = handle:headers():get("cookie")
+                if has_feature_cookie(cookies) then
+                  handle:headers():add("x-feature-enabled", "true")
+                end
+              end

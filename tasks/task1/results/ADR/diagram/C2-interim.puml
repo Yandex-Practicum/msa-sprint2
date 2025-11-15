@@ -1,0 +1,28 @@
+@startuml C2-Interim
+!include <C4/C4_Container.puml>
+
+Person(user, "User")
+
+System_Boundary(hotelio, "Hotelio") {
+  Container(gateway, "API Gateway", "nginx/Traefik/Kong", "Edge маршрутизация, логирование")
+  Container(monolith, "Monolith", "Spring Boot", "Booking/Promo/Review")
+  Container(usersvc, "User Service", "Spring Boot", "Статусы/blacklist/профиль")
+  Container(hotelsvc, "Hotel Service", "Spring Boot", "Данные отелей, выборки")
+  ContainerDb(monodb, "Monolith DB", "PostgreSQL", "Источник истины (фаза 1)")
+  ContainerDb(userdb, "User DB", "PostgreSQL", "Фаза 2")
+  ContainerDb(hoteldb, "Hotel DB", "PostgreSQL", "Фаза 2")
+}
+
+Rel(user, gateway, "HTTP/REST")
+Rel(gateway, usersvc, "/api/users/**")
+Rel(gateway, hotelsvc, "/api/hotels/**")
+Rel(gateway, monolith, "Остальные пути")
+
+Rel(monolith, usersvc, "REST-клиент: статус/active")
+Rel(monolith, hotelsvc, "REST-клиент: данные отеля")
+
+Rel(usersvc, monodb, "READ (фаза 1)")
+Rel(hotelsvc, monodb, "READ (фаза 1)")
+Rel(usersvc, userdb, "RW (фаза 2)")
+Rel(hotelsvc, hoteldb, "RW (фаза 2)")
+@enduml

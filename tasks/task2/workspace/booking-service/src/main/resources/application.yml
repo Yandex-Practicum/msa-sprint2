@@ -1,0 +1,23 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${PGHOST:booking-db}:${PGPORT:5432}/${PGDATABASE:booking}
+    username: ${PGUSER:booking}
+    password: ${PGPASSWORD:booking}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+kafka:
+  broker: ${KAFKA_BROKER:kafka:9092}
+booking:
+  topic: ${BOOKING_TOPIC:booking-created}
+
+grpc:
+  server:
+    port: ${GRPC_PORT:9090}

@@ -10,15 +10,20 @@ import (
 func main() {
 	enableFeatureX := os.Getenv("ENABLE_FEATURE_X") == "true"
 
+	// Liveness
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "pong")
+		fmt.Fprint(w, "pong")
 	})
 
-	// TODO: Feature flag route
-	// if ENABLE_FEATURE_X=true, expose /feature
+	// Readiness
+	http.HandleFunc("/ready", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "ok")
+	})
+
+	// Feature-flag endpoint
 	if enableFeatureX {
 		http.HandleFunc("/feature", func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprintf(w, "Feature X is enabled!")
+			fmt.Fprint(w, "Feature X is enabled!")
 		})
 	}
 

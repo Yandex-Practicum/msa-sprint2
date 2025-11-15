@@ -16,15 +16,22 @@ const typeDefs = gql`
   }
 `;
 
+const STUB_HOTELS = new Map([
+  ['hotel-777', { id: 'hotel-777', name: 'Grand Hotel', city: 'Prague', stars: 4 }],
+  ['hotel-888', { id: 'hotel-888', name: 'City Inn', city: 'Rome', stars: 3 }],
+  ['hotel-001', { id: 'hotel-001', name: 'Nice Place', city: 'Paris', stars: 5 }]
+]);
+
+// решил использовать заглушку, т.к. время поджимало
 const resolvers = {
   Hotel: {
-    __resolveReference: async ({ id }) => {
-      // TODO: Реальный вызов к hotel-сервису или заглушка
+    __resolveReference: ({ id }) => {
+        return STUB_HOTELS.get(id) ?? { id, name: null, city: null, stars: null };
     },
   },
   Query: {
-    hotelsByIds: async (_, { ids }) => {
-      // TODO: Заглушка или REST-запрос
+    hotelsByIds: (_, { ids }) => {
+        return ids.map((id) => getHotel(id));
     },
   },
 };

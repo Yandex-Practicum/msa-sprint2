@@ -1,0 +1,21 @@
+$results = Join-Path (Resolve-Path .) "results"
+New-Item -ItemType Directory -Force -Path $results | Out-Null
+$log = Join-Path $results "test-log.txt"
+$nl = [Environment]::NewLine
+
+Set-Content -Encoding UTF8 -Path $log -Value "== DATE ==$nl$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')$nl"
+
+Add-Content $log "$nl== DOCKER PS =="
+docker ps | Out-String | Add-Content $log
+
+Add-Content $log "$nl== COMPOSE CONFIG (tasks\task1) =="
+docker compose -f docker-compose.yml config | Out-String | Add-Content $log
+
+Add-Content $log "$nl== MONOLITH LOGS (last 200) =="
+docker logs --tail=200 hotelio-monolith | Out-String | Add-Content $log
+
+Add-Content $log "$nl== POST /api/bookings =="
+try { curl.exe -i -X POST "http://localhost:8084/api/bookings?userId=maxim-1&hotelId=hotel-777&promoCode=SUMMER2024" | Out-String | Add-Content $log } catch { Add-Content $log $_.ToString() }
+
+Add-Content $log "$nl== GET /api/bookings =="
+try { curl.exe -i "http://localhost:8084/api/bookings" | Out-String | Add-Content $log } catch { Add-Content $log $_.ToString() }

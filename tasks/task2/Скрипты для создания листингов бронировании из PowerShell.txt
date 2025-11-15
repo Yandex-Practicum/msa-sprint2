@@ -1,0 +1,5 @@
+REST:
+curl.exe -s "http://localhost:8084/api/bookings?userId=user-001" | Tee-Object -FilePath "results/list-rest.json"
+
+gRPC:
+'{"user_id":"user-001"}' | docker run -i --rm --network hotelio-net -v "$((Get-Location).Path):/work" fullstorydev/grpcurl:latest -plaintext -import-path /work -proto /work/booking.proto -d `@ booking-service:9090 booking.BookingService/ListBookings | Set-Content -Encoding utf8 "results/list-grpc.json"

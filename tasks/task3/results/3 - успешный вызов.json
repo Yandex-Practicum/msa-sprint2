@@ -1,0 +1,30 @@
+﻿{
+    "data":  {
+                 "bookingsByUser":  [
+                                        {
+                                            "id":  "b1",
+                                            "userId":  "user-001",
+                                            "hotelId":  "hotel-777",
+                                            "promoCode":  null,
+                                            "discountPercent":  0,
+                                            "hotel":  {
+                                                          "id":  "hotel-777",
+                                                          "name":  "Grand Hotel",
+                                                          "city":  "Prague"
+                                                      }
+                                        },
+                                        {
+                                            "id":  "b2",
+                                            "userId":  "user-001",
+                                            "hotelId":  "hotel-777",
+                                            "promoCode":  "SUMMER",
+                                            "discountPercent":  20,
+                                            "hotel":  {
+                                                          "id":  "hotel-777",
+                                                          "name":  "Grand Hotel",
+                                                          "city":  "Prague"
+                                                      }
+                                        }
+                                    ]
+             }
+}

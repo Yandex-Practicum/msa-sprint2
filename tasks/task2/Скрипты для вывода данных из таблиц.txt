@@ -1,0 +1,8 @@
+Новый сервис (booking-db) — все брони:
+docker exec -i task2-booking-db-1 psql -U booking -d booking -c "select * from public.bookings order by created_at desc;" | Out-File -Encoding utf8 "results/4.1 - select_from_new_bookings.txt"
+
+Старый монолит (hotelio-db) — все брони (должно быть пусто, т.к. тестовые бронирования были сделаны уже после проксирования):
+docker exec -i hotelio-db psql -U hotelio -d hotelio -c "select * from public.booking order by created_at desc;" | Out-File -Encoding utf8 "results/4.2 - select_from_old_booking.txt"
+
+История/статистика из booking-history (booking_history-db):
+docker exec -i task2-booking-history-db-1 psql -U booking_history -d booking_history -c "select * from public.booking_stats order by user_id;" | Out-File -Encoding utf8 "results/7 - booking_history_stats.txt"

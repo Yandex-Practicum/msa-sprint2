@@ -1,0 +1,18 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${PGHOST:booking-history-db}:${PGPORT:5432}/${PGDATABASE:booking_history}
+    username: ${PGUSER:booking_history}
+    password: ${PGPASSWORD:booking_history}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+kafka:
+  broker: ${KAFKA_BROKER:kafka:9092}
+  topic: ${BOOKING_TOPIC:booking-created}

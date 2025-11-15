@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: booking-service
+spec:
+  hosts:
+    - booking-service
+  http:
+    # если есть заголовок X-Feature-Enabled: true, то 100% в v2
+    - match:
+        - headers:
+            x-feature-enabled:
+              exact: "true"
+      route:
+        - destination:
+            host: booking-service
+            subset: v2
+          weight: 100
+
+    # 90% в v1, 10% в v2
+    - route:
+        - destination:
+            host: booking-service
+            subset: v1
+          weight: 90
+        - destination:
+            host: booking-service
+            subset: v2
+          weight: 10
+      retries:
+        attempts: 2
+        perTryTimeout: 1s

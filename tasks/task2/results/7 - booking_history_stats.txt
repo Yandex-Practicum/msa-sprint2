@@ -1,0 +1,5 @@
+﻿ user_id  | total_bookings 
+----------+----------------
+ user-001 |              3
+(1 row)
+

@@ -2,6 +2,9 @@
   "name": "booking-subgraph",
   "version": "1.0.0",
   "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "@apollo/server": "^4.8.1",
     "@apollo/subgraph": "^2.4.0",

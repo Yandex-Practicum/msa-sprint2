@@ -1,0 +1,25 @@
+@startuml C1-Interim
+!include <C4/C4_Context.puml>
+
+Person(user, "User", "Ищет и бронирует отели")
+
+System_Boundary(hotelio, "Hotelio Platform") {
+  System_Ext(gateway, "API Gateway", "Маршрутизация/Strangler")
+  System(monolith, "Monolith", "Booking/Promo/Review")
+  System(usersvc, "User Service", "/api/users/**")
+  System(hotelsvc, "Hotel Service", "/api/hotels/**")
+  SystemDb(monodb, "Monolith DB", "PostgreSQL")
+  SystemDb(userdb, "User DB", "PostgreSQL (фаза 2)")
+  SystemDb(hoteldb, "Hotel DB", "PostgreSQL (фаза 2)")
+}
+
+Rel(user, gateway, "REST")
+Rel(gateway, usersvc, "Маршрут /api/users/**")
+Rel(gateway, hotelsvc, "Маршрут /api/hotels/**")
+Rel(gateway, monolith, "Остальные пути (/api/bookings и т.д.)")
+
+Rel(usersvc, monodb, "READ (фаза 1)")
+Rel(hotelsvc, monodb, "READ (фаза 1)")
+Rel(usersvc, userdb, "RW (фаза 2)")
+Rel(hotelsvc, hoteldb, "RW (фаза 2)")
+@enduml

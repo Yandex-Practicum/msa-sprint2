@@ -1,0 +1,17 @@
+﻿{
+    "errors":  [
+                   {
+                       "message":  "Unauthorized",
+                       "path":  [
+                                    "bookingsByUser"
+                                ],
+                       "extensions":  {
+                                          "code":  "UNAUTHENTICATED",
+                                          "serviceName":  "booking"
+                                      }
+                   }
+               ],
+    "data":  {
+                 "bookingsByUser":  null
+             }
+}

@@ -16,6 +16,10 @@ services:
       SPRING_DATASOURCE_PASSWORD: hotelio
       BOOKING_SERVICE_EXTERNAL_HOST: booking-service
       BOOKING_SERVICE_EXTERNAL_PORT: 9090
+    depends_on:
+      monolith-db:
+        condition: service_healthy
+    restart: unless-stopped
 
   monolith-db:
     image: postgres:15
@@ -30,6 +34,74 @@ services:
       - monolith-db-data:/var/lib/postgresql/data
     networks:
       - hotelio-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hotelio -d hotelio"]
+      interval: 2s
+      timeout: 1s
+      retries: 30
+
+  monolith-db-seed:
+    image: postgres:15
+    depends_on:
+      - monolith-db
+      - monolith
+    environment:
+      PGPASSWORD: hotelio
+    volumes:
+      - ./seed/monolith:/seed:ro
+    entrypoint: [ "bash","-lc","/seed/wait-and-seed.sh" ]
+    networks:
+      - hotelio-net
+    restart: "no"
+
+  booking-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: booking
+      POSTGRES_USER: booking
+      POSTGRES_PASSWORD: booking
+    networks:
+      - hotelio-net
+
+  booking-service:
+    build: ./workspace/booking-service
+    environment:
+      PGHOST: booking-db
+      PGDATABASE: booking
+      PGUSER: booking
+      PGPASSWORD: booking
+      KAFKA_BROKER: kafka:9092
+      BOOKING_TOPIC: booking-created
+      GRPC_PORT: 9090
+    depends_on:
+      - booking-db
+      - kafka
+    networks:
+      - hotelio-net
+
+  booking-history-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: booking_history
+      POSTGRES_USER: booking_history
+      POSTGRES_PASSWORD: booking_history
+    networks:
+      - hotelio-net
+
+  booking-history-service:
+    build: ./workspace/booking-history-service
+    environment:
+      PGHOST: booking-history-db
+      PGDATABASE: booking_history
+      PGUSER: booking_history
+      PGPASSWORD: booking_history
+      KAFKA_BROKER: kafka:9092
+      BOOKING_TOPIC: booking-created
+    depends_on:
+      - booking-history-db
+      - kafka
+    networks:
+      - hotelio-net
 
   kafka:
     image: confluentinc/cp-kafka:7.2.1
@@ -42,6 +114,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
       - hotelio-net
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.2.1
     ports:

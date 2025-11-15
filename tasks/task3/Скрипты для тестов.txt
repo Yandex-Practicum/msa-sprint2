@@ -1,0 +1,8 @@
+Успешный запрос (user-001 видит свои брони):
+$b = @{ query = 'query ($uid: String!){ bookingsByUser(userId:$uid){ id userId hotelId promoCode discountPercent hotel{ id name city } } }'; variables = @{ uid = 'user-001' } } | ConvertTo-Json -Depth 5; Invoke-RestMethod -Method POST -Uri 'http://localhost:4000/graphql' -ContentType 'application/json' -Headers @{ userid = 'user-001' } -Body $b | ConvertTo-Json -Depth 10 | Set-Content -Encoding UTF8 'results\3 - успешный вызов.json'
+
+Проверка ACL (user-999 запрашивает брони user-001):
+$b = @{ query = 'query ($uid: String!){ bookingsByUser(userId:$uid){ id userId hotelId promoCode discountPercent hotel{ id name city } } }'; variables = @{ uid = 'user-001' } } | ConvertTo-Json -Depth 5; Invoke-RestMethod -Method POST -Uri 'http://localhost:4000/graphql' -ContentType 'application/json' -Headers @{ userid = 'user-999' } -Body $b | ConvertTo-Json -Depth 10 | Set-Content -Encoding UTF8 'results\4.1 - deny по acl.json'
+
+Нет заголовка userid (неавторизован):
+$b = @{ query = 'query ($uid: String!){ bookingsByUser(userId:$uid){ id userId hotelId promoCode discountPercent hotel{ id name city } } }'; variables = @{ uid = 'user-001' } } | ConvertTo-Json -Depth 5; Invoke-RestMethod -Method POST -Uri 'http://localhost:4000/graphql' -ContentType 'application/json' -Body $b | ConvertTo-Json -Depth 10 | Set-Content -Encoding UTF8 'results\4.2 - неавторизован.json'

@@ -3,6 +3,8 @@ version: '3.8'
 services:
   apollo-gateway:
     build: ./gateway
+    environment:
+      NODE_ENV: production
     ports:
       - "4000:4000"
     depends_on:
@@ -11,10 +13,16 @@ services:
 
   booking-subgraph:
     build: ./booking-subgraph
+    environment:
+      NODE_ENV: production
+      PORT: 4001
     ports:
       - "4001:4001"
 
   hotel-subgraph:
     build: ./hotel-subgraph
+    environment:
+      NODE_ENV: production
+      PORT: 4002
     ports:
       - "4002:4002"

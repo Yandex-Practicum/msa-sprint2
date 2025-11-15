@@ -4,20 +4,35 @@ stages:
   - deploy
 
 variables:
-  IMAGE_TAG: latest
   IMAGE_NAME: booking-service
+  IMAGE_TAG: latest
+  CHART_DIR: ./helm/booking-service
+  VALUES_STAGING: ./helm/booking-service/values-staging.yaml
 
+# Сборка образа
 build:
   stage: build
   script:
+    - chmod +x ./check-status.sh ./check-dns.sh
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG -f booking-service/Dockerfile .
+    - docker image ls | grep "$IMAGE_NAME" || true
 
-
+# Локальный тест контейнера
 test:
   stage: test
   script:
+    - CID=$(docker run -d -p 8080:8080 $IMAGE_NAME:$IMAGE_TAG)
+    - 'curl -fsS http://localhost:8080/ping && echo "Ping OK" || (echo "Ping FAILED" && exit 1)'
+    - docker rm -f "$CID"
 
-
+# Деплой в Minikube через Helm
 deploy:
   stage: deploy
   script:
- 
+    - minikube image load $IMAGE_NAME:$IMAGE_TAG
+    - helm upgrade --install booking-service "$CHART_DIR" \
+      -f "$VALUES_STAGING" \
+      --set image.name="$IMAGE_NAME" \
+      --set image.tag="$IMAGE_TAG"
+    - ./check-status.sh
+    - ./check-dns.sh

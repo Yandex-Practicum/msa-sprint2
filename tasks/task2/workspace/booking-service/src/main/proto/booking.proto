@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package booking;
+
+option java_multiple_files = true;
+option java_package = "com.hotelio.proto.booking";
+option java_outer_classname = "BookingProto";
+
+message BookingRequest {
+  string user_id = 1;
+  string hotel_id = 2;
+  string promo_code = 3;
+}
+
+message BookingResponse {
+  string id = 1;
+  string user_id = 2;
+  string hotel_id = 3;
+  string promo_code = 4;
+  double discount_percent = 5;
+  double price = 6;
+  string created_at = 7;
+}
+
+message BookingListRequest {
+  string user_id = 1;
+}
+
+message BookingListResponse {
+  repeated BookingResponse bookings = 1;
+}
+
+service BookingService {
+  rpc CreateBooking(BookingRequest) returns (BookingResponse);
+  rpc ListBookings(BookingListRequest) returns (BookingListResponse);
+}
