@@ -1,0 +1,19 @@
+❯ /bin/bash /home/andrey/dev/edu/yandex.practicum.microservices/msa-sprint2/tasks/task4/check-status.sh
+▶️ Checking booking-service deployment...
+NAME                               READY   STATUS    RESTARTS   AGE
+booking-service-54ccc9d957-4rpp8   1/1     Running   0          11m
+
+▶️ Checking service...
+NAME              TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+booking-service   ClusterIP   10.108.119.78   <none>        80/TCP    11m
+
+▶️ Helm release:
+booking-service default         1               2025-11-21 21:39:47.290440914 +0700 +07 deployed        booking-service-0.1.0   1.0
+
+▶️ Port-forward to test service locally:
+  kubectl port-forward svc/booking-service 8080:80
+  Then in another terminal:
+    curl http://localhost:8080/ping
+
+▶️ Quick curl (if port-forward already running):
+"pong"✅ Reachable

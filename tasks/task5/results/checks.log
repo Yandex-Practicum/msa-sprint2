@@ -1,0 +1,17 @@
+❯ bash ./check-canary.sh
+▶️ Checking canary release (90% v1, 10% v2)...
+"v1""v1""v1""v2""v1""v2""v1""v1""v1""v1""v1""v2""v1""v1""v2""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v2""v1""v1""v2""v2""v1""v1""v2""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v2""v1""v1""v1""v1""v1""v1""v1""v1""v1""v1""v2""v1""v1""v1""v1""v1"⏎                                                                 andrey@hp ~/dev/edu/yandex.practicum.microservices/msa-sprint2/tasks/task5 (sprint2)
+❯ bash ./check-fallback.sh
+▶️ Testing fallback route...
+"v1"⏎                                                                                                                                                                                                                                    andrey@hp ~/dev/edu/yandex.practicum.microservices/msa-sprint2/tasks/task5 (sprint2)
+❯ bash ./check-feature-flag.sh
+▶️ Проверка Feature Flag (X-Feature-Enabled: true)...
+"v2"⏎                                                                                                                                                                                                                                    andrey@hp ~/dev/edu/yandex.practicum.microservices/msa-sprint2/tasks/task5 (sprint2)
+❯ bash ./check-istio.sh
+▶️ Проверка установки Istio...
+NAME                                    READY   STATUS    RESTARTS   AGE
+istio-egressgateway-69b8465445-67cxp    1/1     Running   0          147m
+istio-ingressgateway-7f588bb97f-cttbq   1/1     Running   0          29m
+istiod-697fd87b4d-92k7f                 1/1     Running   0          29m
+▶️ Проверка Istio инъекции в default namespace...
+"enabled"

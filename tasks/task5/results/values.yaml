@@ -1,0 +1,26 @@
+replicaCount: 1
+
+image:
+  pullPolicy: Never
+  v1:
+    name: booking
+    tag: v1
+  v2:
+    name: booking
+    tag:  v2
+
+service:
+  name: booking
+  port: 8080
+
+ingressGateway:
+  name: istio-ingressgateway
+  namespace: istio-system
+
+virtualService:
+  weightV1: 90
+  weightV2: 10
+
+envoyFilter:
+  enabled: true
+

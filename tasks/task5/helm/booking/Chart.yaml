@@ -1,0 +1,5 @@
+apiVersion: v2
+name: booking
+description: Helm chart для деплоя сервиса booking с Istio маршрутизацией
+version: 0.1.0
+appVersion: "1.0"

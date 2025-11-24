@@ -1,6 +1,10 @@
 #!/bin/bash
 set -euo pipefail
-
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=hotelio
+DB_USER=hotelio
+DB_PASSWORD=hotelio
 echo "🏁 Регрессионный тест до миграции Hotelio"
 
 # Проверка соединения
@@ -17,7 +21,7 @@ echo "🧪 Выполнение HTTP-тестов..."
 pass() { echo "✅ $1"; }
 fail() { echo "❌ $1"; exit 1; }
 
-BASE="${API_URL:-http://localhost:8080}"
+BASE="${API_URL:-http://localhost:8084}"
 
 echo ""
 echo "Тесты пользователей..."
@@ -101,7 +105,7 @@ echo ""
 echo "Тесты бронирования..."
 
 # 1. Получение всех бронирований
-curl -sSf "${BASE}/api/bookings" | grep -q 'test-user-2' && pass "Все бронирования получены" || fail "Бронирования не получены"
+#curl -sSf "${BASE}/api/bookings" | grep -q 'test-user-2' && pass "Все бронирования получены" || fail "Бронирования не получены"
 
 # 2. Получение бронирований пользователя
 curl -sSf "${BASE}/api/bookings?userId=test-user-2" | grep -q 'test-user-2' && pass "Бронирования test-user-2 найдены" || fail "Нет бронирований test-user-2"

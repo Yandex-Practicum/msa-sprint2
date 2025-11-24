@@ -1,0 +1,5 @@
+andrey@hp ~/dev/edu/yandex.practicum.microservices/msa-sprint2/tasks/task4 (sprint2)
+❯ bash check-dns.sh
+▶️ Running in-cluster DNS test...
+"pong"pod "dns-test" deleted
+✅ Success
