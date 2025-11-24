@@ -1,0 +1,10 @@
+andrey@hp ~/dev/edu/yandex.practicum.microservices/msa-sprint2/tasks/task2 (sprint2)
+❯ docker ps
+CONTAINER ID   IMAGE                             COMMAND                  CREATED          STATUS          PORTS                                                                                  NAMES
+959bd1e98dc9   task2_booking-service             "/start.sh"              25 seconds ago   Up 20 seconds   0.0.0.0:9090->9090/tcp, :::9090->9090/tcp, 0.0.0.0:8085->8080/tcp, :::8085->8080/tcp   booking-service
+6ce369818ac6   confluentinc/cp-kafka:7.2.1       "/etc/confluent/dock…"   25 seconds ago   Up 22 seconds   0.0.0.0:9092->9092/tcp, :::9092->9092/tcp                                              kafka
+f3092f3d5a0f   confluentinc/cp-zookeeper:7.2.1   "/etc/confluent/dock…"   25 seconds ago   Up 23 seconds   2888/tcp, 0.0.0.0:2181->2181/tcp, :::2181->2181/tcp, 3888/tcp                          zookeeper
+ae3e81c3b252   postgres:15                       "docker-entrypoint.s…"   25 seconds ago   Up 23 seconds   0.0.0.0:9998->5432/tcp, :::9998->5432/tcp                                              booking-history-db
+c8e94deace90   postgres:15                       "docker-entrypoint.s…"   25 seconds ago   Up 23 seconds   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp                                              hotelio-db
+d40b2449d1c0   task2_monolith                    "java -jar app.jar"      25 seconds ago   Up 23 seconds   0.0.0.0:8084->8080/tcp, :::8084->8080/tcp                                              hotelio-monolith
+78aff4818cad   postgres:15                       "docker-entrypoint.s…"   25 seconds ago   Up 23 seconds   0.0.0.0:9999->5432/tcp, :::9999->5432/tcp                                              booking-db

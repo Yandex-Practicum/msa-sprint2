@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "booking.fullname" . }}-v1
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "booking.name" . }}
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: {{ include "booking.name" . }}
+        version: v1
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.v1.name }}:{{ .Values.image.v1.tag}}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: ENABLE_FEATURE_X
+              value: "false"
+          ports:
+            - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "booking.fullname" . }}-v2
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "booking.name" . }}
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: {{ include "booking.name" . }}
+        version: v2
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.v1.name }}:{{ .Values.image.v1.tag}}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: ENABLE_FEATURE_X
+              value: "true"
+          ports:
+            - containerPort: 8080

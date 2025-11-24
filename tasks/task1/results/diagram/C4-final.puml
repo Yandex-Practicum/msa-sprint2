@@ -1,0 +1,82 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+Component(APIGateway, "API Gateway", "--", "From Proxy")
+
+System_Boundary(MSBooking, "Booking MS") {
+    Component(bookingRestController, "BookingController", "REST API", "/api/bookings")
+    Component(bookingGrpcProxy, "User gRPC proxy", "", "")
+    Component(hotelGrpcProxy, "Hotel gRPC proxy", "", "")
+    Component(promoGrpcProxy, "Promo gRPC proxy", "", "")
+    Component(reviewGrpcProxy, "Review gRPC proxy", "", "")
+    Component(MSBookingService, "BookingService", "Java Service", "Validates and creates bookings")
+    ComponentDb(bookingDb, "Bookings DB", "PostgreSQL", "Stores bookings")
+
+    Rel(bookingRestController, MSBookingService, "Uses")
+    Rel(MSBookingService, bookingGrpcProxy, "Calls")
+    Rel(MSBookingService, hotelGrpcProxy, "Calls")
+    Rel(MSBookingService, promoGrpcProxy, "Calls")
+    Rel(MSBookingService, reviewGrpcProxy, "Calls")
+    Rel(MSBookingService, bookingDb, "Reads/Writes")
+}
+
+System_Boundary(MSUser, "User MS") {
+    Component(userGrpcServer, "gRPC Server", "Receives", "From Proxy")
+    Component(userRestController, "UserController", "REST API", "/api/users")
+    Component(MSUserService, "UserService", "Python", "Validates user status and blacklist")
+    ComponentDb(userDb, "Users DB", "PostgreSQL", "Stores users")
+
+    Rel(userRestController, MSUserService, "Uses")
+    Rel(userGrpcServer, MSUserService, "Uses")
+}
+
+System_Boundary(MSHotel, "Hotel MS") {
+    Component(hotelGrpcServer, "gRPC Server", "Receives", "From Proxy")
+    Component(hotelRestController, "HotelController", "REST API", "/api/hotels")
+    Component(MSHotelService, "HotelService", "Python", "Retrieves hotel details")
+    ComponentDb(hotelDb, "Hotels DB", "PostgreSQL", "Stores hotels")
+
+    Rel(hotelRestController, MSHotelService, "Uses")
+    Rel(hotelGrpcServer, MSHotelService, "Uses")
+}
+
+System_Boundary(MSPromo, "Promo MS") {
+    Component(promoGrpcServer, "gRPC Server", "Receives", "From Proxy")
+    Component(promoRestController, "PromoController", "REST API", "/api/promos")
+    Component(MSPromoService, "PromoCodeService", "Python", "Applies discounts and rules")
+    ComponentDb(promoDb, "Promos DB", "PostgreSQL", "Stores promo codes")
+
+    Rel(promoRestController, MSPromoService, "Uses")
+    Rel(promoGrpcServer, MSPromoService, "Uses")
+}
+
+System_Boundary(MSReview, "Review MS") {
+    Component(reviewGrpcServer, "gRPC Server", "Receives", "From Proxy")
+    Component(reviewRestController, "ReviewController", "REST API", "/api/reviews")
+    Component(MSReviewService, "ReviewService", "Python", "Manages hotel reviews")
+    ComponentDb(reviewDb, "Reviews DB", "PostgreSQL", "Stores reviews")
+
+    Rel(reviewRestController, MSReviewService, "Uses")
+    Rel(reviewGrpcServer, MSReviewService, "Uses")
+}
+
+Person(user, "User", "Interacts with frontend")
+Rel(user, APIGateway, "Uses")
+Rel(APIGateway, bookingRestController, "Routes")
+Rel(APIGateway, userRestController, "Routes")
+Rel(APIGateway, hotelRestController, "Routes")
+Rel(APIGateway, promoRestController, "Routes")
+Rel(APIGateway, reviewRestController, "Routes")
+
+Rel(bookingGrpcProxy, userGrpcServer, "Connects to gRPC")
+Rel(hotelGrpcProxy, hotelGrpcServer, "Connects to gRPC")
+Rel(promoGrpcProxy, promoGrpcServer, "Connects to gRPC")
+Rel(reviewGrpcProxy, reviewGrpcServer, "Connects to gRPC")
+
+Rel(MSUserService, userDb, "Reads/Writes")
+Rel(MSHotelService, hotelDb, "Reads/Writes")
+Rel(MSPromoService, promoDb, "Reads/Writes")
+Rel(MSReviewService, reviewDb, "Reads/Writes")
+@enduml

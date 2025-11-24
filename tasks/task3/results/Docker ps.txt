@@ -1,0 +1,13 @@
+❯ docker ps
+CONTAINER ID   IMAGE                             COMMAND                  CREATED          STATUS          PORTS                                                                                  NAMES
+dc74522a0985   task3_apollo-gateway              "docker-entrypoint.s…"   7 seconds ago    Up 6 seconds    0.0.0.0:4000->4000/tcp, :::4000->4000/tcp                                              apollo-gateway
+5b3a1da5f999   task3_hotel-subgraph              "docker-entrypoint.s…"   7 seconds ago    Up 7 seconds    0.0.0.0:4002->4002/tcp, :::4002->4002/tcp                                              hotel-subgraph
+69dfc80afadf   task3_booking-subgraph            "docker-entrypoint.s…"   7 seconds ago    Up 7 seconds    0.0.0.0:4001->4001/tcp, :::4001->4001/tcp                                              booking-subgraph
+b98fb5970395   task2_booking-service             "./entrypoint.sh"        29 minutes ago   Up 29 minutes   0.0.0.0:9090->9090/tcp, :::9090->9090/tcp, 0.0.0.0:8085->5000/tcp, :::8085->5000/tcp   booking-service
+2316dce22dad   task2_booking-history-service     "python main.py"         32 minutes ago   Up 31 minutes                                                                                          booking-history-service
+bbce4ec6b6eb   postgres:15                       "docker-entrypoint.s…"   12 hours ago     Up 43 minutes   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp                                              hotelio-db
+5efc30725242   task2_monolith                    "java -jar app.jar"      12 hours ago     Up 43 minutes   0.0.0.0:8084->8080/tcp, :::8084->8080/tcp                                              hotelio-monolith
+31bf40fa987e   confluentinc/cp-kafka:7.2.1       "/etc/confluent/dock…"   13 hours ago     Up 41 minutes   0.0.0.0:9092->9092/tcp, :::9092->9092/tcp                                              kafka
+8d32c38281cd   confluentinc/cp-zookeeper:7.2.1   "/etc/confluent/dock…"   13 hours ago     Up 43 minutes   2888/tcp, 0.0.0.0:2181->2181/tcp, :::2181->2181/tcp, 3888/tcp                          zookeeper
+a2f3277545cd   postgres:15                       "docker-entrypoint.s…"   13 hours ago     Up 43 minutes   0.0.0.0:9998->5432/tcp, :::9998->5432/tcp                                              booking-history-db
+2f36ddbacd68   postgres:15                       "docker-entrypoint.s…"   13 hours ago     Up 43 minutes   0.0.0.0:9999->5432/tcp, :::9999->5432/tcp

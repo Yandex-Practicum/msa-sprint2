@@ -19,12 +19,22 @@ const typeDefs = gql`
 const resolvers = {
   Hotel: {
     __resolveReference: async ({ id }) => {
-      // TODO: Реальный вызов к hotel-сервису или заглушка
+      console.log(`Hotel subgraph. __resolveReference called for hotel id: ${id}`);
+
+      const hotel = await getHotelById(id);
+      console.log('Hotel subgraph. Fetched hotel:', hotel);
+      return hotel;
     },
   },
+
   Query: {
-    hotelsByIds: async (_, { ids }) => {
-      // TODO: Заглушка или REST-запрос
+    hotelsByIds: async (_, { ids }, { req }) => {
+      console.log('Hotel subgraph. Query hotelsByIds called with ids:', ids);
+
+      const hotels = await Promise.all(ids.map(id => getHotelById(id)));
+
+      console.log('Hotel subgraph. Got hotels:', hotels);
+      return hotels;
     },
   },
 };
@@ -38,3 +48,20 @@ startStandaloneServer(server, {
 }).then(() => {
   console.log('✅ Hotel subgraph ready at http://localhost:4002/');
 });
+
+async function getHotelById(id) {
+  const url = process.env.MONOLITH_URL ?? 'http://localhost:8084';
+  console.log(`Hotel subgraph. Fetching hotel from ${url}/api/hotels/${id}`);
+
+  try {
+    const response = await fetch(`${url}/api/hotels/${id}`);
+    if (response.ok) {
+      return await response.json();
+    } else {
+      console.error(`Error fetching hotel: ${response.status} ${response.statusText}`);
+    }
+  } catch (e) {
+    console.error(`Hotel subgraph. Error fetching hotel: ${e.message}`);
+    throw new Error(`Error while fetching hotel: ${e.message}`);
+  }
+}

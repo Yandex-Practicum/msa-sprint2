@@ -1,0 +1,267 @@
+andrey@hp ~/dev/edu/yandex.practicum.microservices/msa-sprint2/tasks/task4 (sprint2)
+❯ helm uninstall booking-service-stage
+release "booking-service-stage" uninstalled
+andrey@hp ~/dev/edu/yandex.practicum.microservices/msa-sprint2/tasks/task4 (sprint2)
+❯ helm uninstall booking-service-stage
+Error: uninstall: Release not loaded: booking-service-stage: release: not found
+andrey@hp ~/dev/edu/yandex.practicum.microservices/msa-sprint2/tasks/task4 (sprint2) [1]
+❯ helm uninstall booking-service
+release "booking-service" uninstalled
+andrey@hp ~/dev/edu/yandex.practicum.microservices/msa-sprint2/tasks/task4 (sprint2)
+❯ gitlab-ci-local build test deploy_stage tag
+parsing and downloads finished in 57 ms.
+json schema validated in 251 ms
+build        starting shell (build)
+build        $ docker build -t $IMAGE_NAME:$IMAGE_TAG ./booking-service
+build        > Sending build context to Docker daemon   78.9MB
+build        > Step 1/8 : FROM python:3.11-slim
+build        >  ---> 040af88f5bce
+build        > Step 2/8 : WORKDIR /booking_service
+build        >  ---> Running in ae4f3a7c7508
+build        > Removing intermediate container ae4f3a7c7508
+build        >  ---> cee82756cfa8
+build        > Step 3/8 : COPY requirements.txt .
+build        >  ---> 29145f5e6e9a
+build        > Step 4/8 : RUN pip install --no-cache-dir -r requirements.txt
+build        >  ---> Running in 84746beb81ba
+build        > Collecting fastapi (from -r requirements.txt (line 1))
+build        >   Downloading fastapi-0.121.3-py3-none-any.whl.metadata (30 kB)
+build        > Collecting uvicorn (from -r requirements.txt (line 2))
+build        >   Downloading uvicorn-0.38.0-py3-none-any.whl.metadata (6.8 kB)
+build        > Collecting starlette<0.51.0,>=0.40.0 (from fastapi->-r requirements.txt (line 1))
+build        >   Downloading starlette-0.50.0-py3-none-any.whl.metadata (6.3 kB)
+build        > Collecting pydantic!=1.8,!=1.8.1,!=2.0.0,!=2.0.1,!=2.1.0,<3.0.0,>=1.7.4 (from fastapi->-r requirements.txt (line 1))
+build        >   Downloading pydantic-2.12.4-py3-none-any.whl.metadata (89 kB)
+build        >      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 89.9/89.9 kB 842.4 kB/s eta 0:00:00
+build        > Collecting typing-extensions>=4.8.0 (from fastapi->-r requirements.txt (line 1))
+build        >   Downloading typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+build        > Collecting annotated-doc>=0.0.2 (from fastapi->-r requirements.txt (line 1))
+build        >   Downloading annotated_doc-0.0.4-py3-none-any.whl.metadata (6.6 kB)
+build        > Collecting click>=7.0 (from uvicorn->-r requirements.txt (line 2))
+build        >   Downloading click-8.3.1-py3-none-any.whl.metadata (2.6 kB)
+build        > Collecting h11>=0.8 (from uvicorn->-r requirements.txt (line 2))
+build        >   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+build        > Collecting annotated-types>=0.6.0 (from pydantic!=1.8,!=1.8.1,!=2.0.0,!=2.0.1,!=2.1.0,<3.0.0,>=1.7.4->fastapi->-r requirements.txt (line 1))
+build        >   Downloading annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+build        > Collecting pydantic-core==2.41.5 (from pydantic!=1.8,!=1.8.1,!=2.0.0,!=2.0.1,!=2.1.0,<3.0.0,>=1.7.4->fastapi->-r requirements.txt (line 1))
+build        >   Downloading pydantic_core-2.41.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (7.3 kB)
+build        > Collecting typing-inspection>=0.4.2 (from pydantic!=1.8,!=1.8.1,!=2.0.0,!=2.0.1,!=2.1.0,<3.0.0,>=1.7.4->fastapi->-r requirements.txt (line 1))
+build        >   Downloading typing_inspection-0.4.2-py3-none-any.whl.metadata (2.6 kB)
+build        > Collecting anyio<5,>=3.6.2 (from starlette<0.51.0,>=0.40.0->fastapi->-r requirements.txt (line 1))
+build        >   Downloading anyio-4.11.0-py3-none-any.whl.metadata (4.1 kB)
+build        > Collecting idna>=2.8 (from anyio<5,>=3.6.2->starlette<0.51.0,>=0.40.0->fastapi->-r requirements.txt (line 1))
+build        >   Downloading idna-3.11-py3-none-any.whl.metadata (8.4 kB)
+build        > Collecting sniffio>=1.1 (from anyio<5,>=3.6.2->starlette<0.51.0,>=0.40.0->fastapi->-r requirements.txt (line 1))
+build        >   Downloading sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+build        > Downloading fastapi-0.121.3-py3-none-any.whl (109 kB)
+build        >    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 109.8/109.8 kB 3.9 MB/s eta 0:00:00
+build        > Downloading uvicorn-0.38.0-py3-none-any.whl (68 kB)
+build        >    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 68.1/68.1 kB 6.3 MB/s eta 0:00:00
+build        > Downloading annotated_doc-0.0.4-py3-none-any.whl (5.3 kB)
+build        > Downloading click-8.3.1-py3-none-any.whl (108 kB)
+build        >    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 108.3/108.3 kB 5.6 MB/s eta 0:00:00
+build        > Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+build        > Downloading pydantic-2.12.4-py3-none-any.whl (463 kB)
+build        >    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 463.4/463.4 kB 3.9 MB/s eta 0:00:00
+build        > Downloading pydantic_core-2.41.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+build        >    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 12.2 MB/s eta 0:00:00
+build        > Downloading starlette-0.50.0-py3-none-any.whl (74 kB)
+build        >    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 74.0/74.0 kB 256.0 MB/s eta 0:00:00
+build        > Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+build        >    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 44.6/44.6 kB 194.5 MB/s eta 0:00:00
+build        > Downloading annotated_types-0.7.0-py3-none-any.whl (13 kB)
+build        > Downloading anyio-4.11.0-py3-none-any.whl (109 kB)
+build        >    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 109.1/109.1 kB 212.6 MB/s eta 0:00:00
+build        > Downloading typing_inspection-0.4.2-py3-none-any.whl (14 kB)
+build        > Downloading idna-3.11-py3-none-any.whl (71 kB)
+build        >    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 71.0/71.0 kB 142.6 MB/s eta 0:00:00
+build        > Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+build        > Installing collected packages: typing-extensions, sniffio, idna, h11, click, annotated-types, annotated-doc, uvicorn, typing-inspection, pydantic-core, anyio, starlette, pydantic, fastapi
+build        > Successfully installed annotated-doc-0.0.4 annotated-types-0.7.0 anyio-4.11.0 click-8.3.1 fastapi-0.121.3 h11-0.16.0 idna-3.11 pydantic-2.12.4 pydantic-core-2.41.5 sniffio-1.3.1 starlette-0.50.0 typing-extensions-4.15.0 typing-inspection-0.4.2 uvicorn-0.38.0
+build        > WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+build        >
+build        > [notice] A new release of pip is available: 24.0 -> 25.3
+build        > [notice] To update, run: pip install --upgrade pip
+build        > Removing intermediate container 84746beb81ba
+build        >  ---> 1c2fb3ceedfd
+build        > Step 5/8 : COPY . .
+build        >  ---> eb5e94f71e33
+build        > Step 6/8 : RUN chmod +x ./entrypoint.sh
+build        >  ---> Running in 38dc68915581
+build        > Removing intermediate container 38dc68915581
+build        >  ---> c81823d453d5
+build        > Step 7/8 : EXPOSE 8080
+build        >  ---> Running in 80143aa6a92a
+build        > Removing intermediate container 80143aa6a92a
+build        >  ---> 4f459c9309bc
+build        > Step 8/8 : ENTRYPOINT ["./entrypoint.sh"]
+build        >  ---> Running in d7956871a164
+build        > Removing intermediate container d7956871a164
+build        >  ---> f019962aca40
+build        > Successfully built f019962aca40
+build        > Successfully tagged booking-service:latest
+build        finished in 15 s
+test         starting shell (test)
+test         $ docker run -d --name tmp-test -p 8080:8080 $IMAGE_NAME:$IMAGE_TAG
+test         > 9b658d6f625b4f15a4397f03f706c8169a560d4a66a0b59153792f5f3fbe4f13
+test         $ sleep 5
+test         $ curl -f http://localhost:8080/ping
+test         >   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+test         >                                  Dload  Upload   Total   Spent    Left  Speed
+100     6  100     6    0     0    834      0 --:--:-- --:--:-- --:--:--   857
+test         > "pong"<gclShellPromptPlaceholder> docker rm -f tmp-test
+test         > tmp-test
+test         finished in 5.59 s
+deploy_stage starting shell (deploy)
+deploy_stage $ minikube image load $IMAGE_NAME:$IMAGE_TAG
+deploy_stage > still running...
+deploy_stage $ helm upgrade --install booking-service helm/booking-service -f helm/booking-service/values-stage.yaml
+deploy_stage > Release "booking-service" does not exist. Installing it now.
+deploy_stage > NAME: booking-service
+deploy_stage > LAST DEPLOYED: Fri Nov 21 23:57:06 2025
+deploy_stage > NAMESPACE: default
+deploy_stage > STATUS: deployed
+deploy_stage > REVISION: 1
+deploy_stage > TEST SUITE: None
+deploy_stage finished in 16 s
+tag          starting shell (tag)
+tag          $ TIMESTAMP=$(date +%Y%m%d%H%M%S)
+tag          $ git tag v$TIMESTAMP
+tag          finished in 24 ms
+
+ PASS  build
+ PASS  test
+ PASS  deploy_stage
+ PASS  tag
+andrey@hp ~/dev/edu/yandex.practicum.microservices/msa-sprint2/tasks/task4 (sprint2)
+❯ helm uninstall booking-service
+release "booking-service" uninstalled
+andrey@hp ~/dev/edu/yandex.practicum.microservices/msa-sprint2/tasks/task4 (sprint2)
+❯ helm uninstall booking-service
+Error: uninstall: Release not loaded: booking-service: release: not found
+andrey@hp ~/dev/edu/yandex.practicum.microservices/msa-sprint2/tasks/task4 (sprint2) [1]
+❯ gitlab-ci-local build test deploy_stage tag
+parsing and downloads finished in 58 ms.
+json schema validated in 243 ms
+build        starting shell (build)
+build        $ docker build -t $IMAGE_NAME:$IMAGE_TAG ./booking-service
+build        > Sending build context to Docker daemon   78.9MB
+build        > Step 1/8 : FROM python:3.11-slim
+build        >  ---> 040af88f5bce
+build        > Step 2/8 : WORKDIR /booking_service
+build        >  ---> Running in 2d7b03df5ecf
+build        > Removing intermediate container 2d7b03df5ecf
+build        >  ---> 75eaf4dfefe4
+build        > Step 3/8 : COPY requirements.txt .
+build        >  ---> 7393a5a4e5f6
+build        > Step 4/8 : RUN pip install --no-cache-dir -r requirements.txt
+build        >  ---> Running in 31b7bdc6b6dc
+build        > Collecting fastapi (from -r requirements.txt (line 1))
+build        >   Downloading fastapi-0.121.3-py3-none-any.whl.metadata (30 kB)
+build        > Collecting uvicorn (from -r requirements.txt (line 2))
+build        >   Downloading uvicorn-0.38.0-py3-none-any.whl.metadata (6.8 kB)
+build        > Collecting starlette<0.51.0,>=0.40.0 (from fastapi->-r requirements.txt (line 1))
+build        >   Downloading starlette-0.50.0-py3-none-any.whl.metadata (6.3 kB)
+build        > Collecting pydantic!=1.8,!=1.8.1,!=2.0.0,!=2.0.1,!=2.1.0,<3.0.0,>=1.7.4 (from fastapi->-r requirements.txt (line 1))
+build        >   Downloading pydantic-2.12.4-py3-none-any.whl.metadata (89 kB)
+build        >      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 89.9/89.9 kB 879.9 kB/s eta 0:00:00
+build        > Collecting typing-extensions>=4.8.0 (from fastapi->-r requirements.txt (line 1))
+build        >   Downloading typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+build        > Collecting annotated-doc>=0.0.2 (from fastapi->-r requirements.txt (line 1))
+build        >   Downloading annotated_doc-0.0.4-py3-none-any.whl.metadata (6.6 kB)
+build        > Collecting click>=7.0 (from uvicorn->-r requirements.txt (line 2))
+build        >   Downloading click-8.3.1-py3-none-any.whl.metadata (2.6 kB)
+build        > Collecting h11>=0.8 (from uvicorn->-r requirements.txt (line 2))
+build        >   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+build        > Collecting annotated-types>=0.6.0 (from pydantic!=1.8,!=1.8.1,!=2.0.0,!=2.0.1,!=2.1.0,<3.0.0,>=1.7.4->fastapi->-r requirements.txt (line 1))
+build        >   Downloading annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+build        > Collecting pydantic-core==2.41.5 (from pydantic!=1.8,!=1.8.1,!=2.0.0,!=2.0.1,!=2.1.0,<3.0.0,>=1.7.4->fastapi->-r requirements.txt (line 1))
+build        >   Downloading pydantic_core-2.41.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (7.3 kB)
+build        > Collecting typing-inspection>=0.4.2 (from pydantic!=1.8,!=1.8.1,!=2.0.0,!=2.0.1,!=2.1.0,<3.0.0,>=1.7.4->fastapi->-r requirements.txt (line 1))
+build        >   Downloading typing_inspection-0.4.2-py3-none-any.whl.metadata (2.6 kB)
+build        > Collecting anyio<5,>=3.6.2 (from starlette<0.51.0,>=0.40.0->fastapi->-r requirements.txt (line 1))
+build        >   Downloading anyio-4.11.0-py3-none-any.whl.metadata (4.1 kB)
+build        > Collecting idna>=2.8 (from anyio<5,>=3.6.2->starlette<0.51.0,>=0.40.0->fastapi->-r requirements.txt (line 1))
+build        >   Downloading idna-3.11-py3-none-any.whl.metadata (8.4 kB)
+build        > Collecting sniffio>=1.1 (from anyio<5,>=3.6.2->starlette<0.51.0,>=0.40.0->fastapi->-r requirements.txt (line 1))
+build        >   Downloading sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+build        > Downloading fastapi-0.121.3-py3-none-any.whl (109 kB)
+build        >    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 109.8/109.8 kB 4.1 MB/s eta 0:00:00
+build        > Downloading uvicorn-0.38.0-py3-none-any.whl (68 kB)
+build        >    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 68.1/68.1 kB 6.1 MB/s eta 0:00:00
+build        > Downloading annotated_doc-0.0.4-py3-none-any.whl (5.3 kB)
+build        > Downloading click-8.3.1-py3-none-any.whl (108 kB)
+build        >    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 108.3/108.3 kB 5.9 MB/s eta 0:00:00
+build        > Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+build        > Downloading pydantic-2.12.4-py3-none-any.whl (463 kB)
+build        >    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 463.4/463.4 kB 2.9 MB/s eta 0:00:00
+build        > Downloading pydantic_core-2.41.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+build        >    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 3.5 MB/s eta 0:00:00
+build        > Downloading starlette-0.50.0-py3-none-any.whl (74 kB)
+build        >    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 74.0/74.0 kB 5.5 MB/s eta 0:00:00
+build        > Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+build        >    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 44.6/44.6 kB 6.6 MB/s eta 0:00:00
+build        > Downloading annotated_types-0.7.0-py3-none-any.whl (13 kB)
+build        > Downloading anyio-4.11.0-py3-none-any.whl (109 kB)
+build        >    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 109.1/109.1 kB 5.4 MB/s eta 0:00:00
+build        > Downloading typing_inspection-0.4.2-py3-none-any.whl (14 kB)
+build        > Downloading idna-3.11-py3-none-any.whl (71 kB)
+build        >    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 71.0/71.0 kB 5.8 MB/s eta 0:00:00
+build        > Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+build        > Installing collected packages: typing-extensions, sniffio, idna, h11, click, annotated-types, annotated-doc, uvicorn, typing-inspection, pydantic-core, anyio, starlette, pydantic, fastapi
+build        > Successfully installed annotated-doc-0.0.4 annotated-types-0.7.0 anyio-4.11.0 click-8.3.1 fastapi-0.121.3 h11-0.16.0 idna-3.11 pydantic-2.12.4 pydantic-core-2.41.5 sniffio-1.3.1 starlette-0.50.0 typing-extensions-4.15.0 typing-inspection-0.4.2 uvicorn-0.38.0
+build        > WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+build        >
+build        > [notice] A new release of pip is available: 24.0 -> 25.3
+build        > [notice] To update, run: pip install --upgrade pip
+build        > Removing intermediate container 31b7bdc6b6dc
+build        >  ---> f28382eedc86
+build        > Step 5/8 : COPY . .
+build        >  ---> 757cf47a6ea3
+build        > Step 6/8 : RUN chmod +x ./entrypoint.sh
+build        >  ---> Running in 70408cb63e1f
+build        > Removing intermediate container 70408cb63e1f
+build        >  ---> 6f5bd183f9d9
+build        > Step 7/8 : EXPOSE 8080
+build        >  ---> Running in 867bd197a736
+build        > Removing intermediate container 867bd197a736
+build        >  ---> 81d7f84687e7
+build        > Step 8/8 : ENTRYPOINT ["./entrypoint.sh"]
+build        >  ---> Running in 25b80ebdca8e
+build        > Removing intermediate container 25b80ebdca8e
+build        >  ---> 3f8808f19935
+build        > Successfully built 3f8808f19935
+build        > Successfully tagged booking-service:latest
+build        finished in 16 s
+test         starting shell (test)
+test         $ docker run -d --name tmp-test -p 8080:8080 $IMAGE_NAME:$IMAGE_TAG
+test         > c2ebf3197c70f318947f4e466992b230247d8c733e1bd23154ab41cee43f3016
+test         $ sleep 5
+test         $ curl -f http://localhost:8080/ping
+test         >   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+test         >                                  Dload  Upload   Total   Spent    Left  Speed
+100     6  100     6    0     0   1003      0 --:--:-- --:--:-- --:--:--  1200
+test         > "pong"<gclShellPromptPlaceholder> docker rm -f tmp-test
+test         > tmp-test
+test         finished in 5.56 s
+deploy_stage starting shell (deploy)
+deploy_stage $ minikube image load $IMAGE_NAME:$IMAGE_TAG
+deploy_stage > still running...
+deploy_stage $ helm upgrade --install booking-service helm/booking-service -f helm/booking-service/values-staging.yaml
+deploy_stage > Release "booking-service" does not exist. Installing it now.
+deploy_stage > NAME: booking-service
+deploy_stage > LAST DEPLOYED: Fri Nov 21 23:59:56 2025
+deploy_stage > NAMESPACE: default
+deploy_stage > STATUS: deployed
+deploy_stage > REVISION: 1
+deploy_stage > TEST SUITE: None
+deploy_stage finished in 16 s
+tag          starting shell (tag)
+tag          $ TIMESTAMP=$(date +%Y%m%d%H%M%S)
+tag          $ git tag v$TIMESTAMP
+tag          finished in 19 ms
+
+ PASS  build
+ PASS  test
+ PASS  deploy_stage
+ PASS  tag

@@ -1,0 +1,17 @@
+❯ kubectl get pods,svc,virtualservice,destinationrule,gateways -n default
+NAME                              READY   STATUS    RESTARTS   AGE
+pod/booking-v1-7df7dcfc65-z26vj   2/2     Running   0          43m
+pod/booking-v2-664d99b49c-xbr7z   2/2     Running   0          43m
+
+NAME                 TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+service/booking      LoadBalancer   10.110.59.112   <pending>     8080:31123/TCP   95m
+service/kubernetes   ClusterIP      10.96.0.1       <none>        443/TCP          152m
+
+NAME                                         GATEWAYS              HOSTS   AGE
+virtualservice.networking.istio.io/booking   ["booking-gateway"]   ["*"]   36m
+
+NAME                                          HOST      AGE
+destinationrule.networking.istio.io/booking   booking   95m
+
+NAME                                          AGE
+gateway.networking.istio.io/booking-gateway   72m

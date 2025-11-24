@@ -1,0 +1,10 @@
+root@8240fa784c38:/# psql -U hotelio -d hotelio
+psql (15.15 (Debian 15.15-1.pgdg13+1))
+Type "help" for help.
+
+hotelio=# SELECT * FROM booking;
+ discount_percent | price | created_at | id | hotel_id | promo_code | user_id
+------------------+-------+------------+----+----------+------------+---------
+(0 rows)
+
+hotelio=#

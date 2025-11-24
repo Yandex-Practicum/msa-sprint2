@@ -33,6 +33,7 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:7.2.1
+    container_name: kafka
     ports:
       - "9092:9092"
     environment:
@@ -42,8 +43,12 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
       - hotelio-net
+    depends_on:
+      - zookeeper
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.2.1
+    container_name: zookeeper
     ports:
       - "2181:2181"
     environment:
@@ -52,8 +57,66 @@ services:
     networks:
       - hotelio-net
 
+  booking-service:
+    build:
+      context: ./microservices/booking-service
+      dockerfile: Dockerfile
+    container_name: booking-service
+    ports:
+      - "9090:9090"
+      - "8085:5000"
+    depends_on:
+      - kafka
+      - booking-db
+      - booking-history-service
+    networks:
+      - hotelio-net
+
+  booking-db:
+    image: postgres:15
+    container_name: booking-db
+    environment:
+      POSTGRES_USER: hotelio
+      POSTGRES_PASSWORD: hotelio
+      POSTGRES_DB: booking
+    ports:
+      - "9999:5432"
+    volumes:
+      - booking-db-data:/var/lib/postgresql/data
+      - ./sql/booking.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - hotelio-net
+
+  booking-history-service:
+    build:
+      context: ./microservices/booking-history-service
+      dockerfile: Dockerfile
+    container_name: booking-history-service
+    depends_on:
+      - kafka
+      - booking-history-db
+    networks:
+      - hotelio-net
+
+  booking-history-db:
+    image: postgres:15
+    container_name: booking-history-db
+    environment:
+      POSTGRES_USER: hotelio
+      POSTGRES_PASSWORD: hotelio
+      POSTGRES_DB: booking_history
+    ports:
+      - "9998:5432"
+    volumes:
+      - booking-history-db-data:/var/lib/postgresql/data
+      - ./sql/booking-history.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - hotelio-net
+
 volumes:
   monolith-db-data:
+  booking-db-data:
+  booking-history-db-data:
 
 networks:
   hotelio-net:

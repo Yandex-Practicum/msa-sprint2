@@ -1,0 +1,14 @@
+root@243152afac03:/# psql -U hotelio -d booking
+psql (15.15 (Debian 15.15-1.pgdg13+1))
+Type "help" for help.
+
+booking=# SELECT * FROM bookings;
+ id |   user_id   |   hotel_id   | promo_code | discount_percent | price |         created_at
+----+-------------+--------------+------------+------------------+-------+----------------------------
+  1 | test-user-2 | test-hotel-1 | TESTCODE1  |               10 |    90 | 2025-11-18 23:22:46.892543
+  2 | test-user-3 | test-hotel-1 |            |                0 |    80 | 2025-11-18 23:22:46.892543
+  3 | test-user-3 | test-hotel-1 |            |                0 |   100 | 2025-11-18 23:23:00.93313
+  4 | test-user-2 | test-hotel-1 | TESTCODE1  |                0 |   100 | 2025-11-18 23:23:00.972552
+(4 rows)
+
+booking=#

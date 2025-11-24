@@ -1,0 +1,117 @@
+andrey@hp ~/dev/edu/yandex.practicum.microservices/msa-sprint2/tasks/task3 (sprint2)
+❯ docker-compose up
+Creating hotel-subgraph   ... done
+Creating booking-subgraph ... done
+Creating apollo-gateway   ... done
+Attaching to booking-subgraph, hotel-subgraph, apollo-gateway
+booking-subgraph    | Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+booking-subgraph    | ✅ Booking subgraph ready at http://localhost:4001/
+hotel-subgraph      | Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+hotel-subgraph      | ✅ Hotel subgraph ready at http://localhost:4002/
+apollo-gateway      | The `serviceList` option is deprecated and will be removed in a future version of `@apollo/gateway`. Please migrate to its replacement `IntrospectAndCompose`. More information on `IntrospectAndCompose` can be found in the documentation.
+apollo-gateway      | 🚀 Gateway ready at http://localhost:4000/
+booking-subgraph    | Booking subgraph. Fetching bookings from http://booking-service:5000/api/bookings?userId=test-user-2...
+booking-subgraph    | Booking subgraph. Got bookings: [
+booking-subgraph    |   {
+booking-subgraph    |     id: 26,
+booking-subgraph    |     user_id: 'test-user-2',
+booking-subgraph    |     hotel_id: 'test-hotel-1',
+booking-subgraph    |     promo_code: 'TESTCODE1',
+booking-subgraph    |     discount_percent: 10,
+booking-subgraph    |     price: 90,
+booking-subgraph    |     created_at: '2025-11-21T05:55:29.444Z'
+booking-subgraph    |   },
+booking-subgraph    |   {
+booking-subgraph    |     id: 27,
+booking-subgraph    |     user_id: 'test-user-3',
+booking-subgraph    |     hotel_id: 'test-hotel-1',
+booking-subgraph    |     promo_code: '',
+booking-subgraph    |     discount_percent: 0,
+booking-subgraph    |     price: 80,
+booking-subgraph    |     created_at: '2025-11-21T05:55:29.444Z'
+booking-subgraph    |   },
+booking-subgraph    |   {
+booking-subgraph    |     id: 28,
+booking-subgraph    |     user_id: 'test-user-3',
+booking-subgraph    |     hotel_id: 'test-hotel-1',
+booking-subgraph    |     promo_code: '',
+booking-subgraph    |     discount_percent: 0,
+booking-subgraph    |     price: 100,
+booking-subgraph    |     created_at: '2025-11-21T05:55:30.271Z'
+booking-subgraph    |   },
+booking-subgraph    |   {
+booking-subgraph    |     id: 29,
+booking-subgraph    |     user_id: 'test-user-2',
+booking-subgraph    |     hotel_id: 'test-hotel-1',
+booking-subgraph    |     promo_code: 'TESTCODE1',
+booking-subgraph    |     discount_percent: 0,
+booking-subgraph    |     price: 100,
+booking-subgraph    |     created_at: '2025-11-21T05:55:30.344Z'
+booking-subgraph    |   }
+booking-subgraph    | ]
+booking-subgraph    | Booking subgraph. Getting hotel for booking: test-hotel-1...
+booking-subgraph    | Booking subgraph. Getting hotel for booking: test-hotel-1...
+booking-subgraph    | Booking subgraph. Getting hotel for booking: test-hotel-1...
+booking-subgraph    | Booking subgraph. Getting hotel for booking: test-hotel-1...
+hotel-subgraph      | Hotel subgraph. __resolveReference called for hotel id: test-hotel-1
+hotel-subgraph      | Hotel subgraph. Fetching hotel from http://monolith:8080/api/hotels/test-hotel-1
+hotel-subgraph      | Hotel subgraph. __resolveReference called for hotel id: test-hotel-1
+hotel-subgraph      | Hotel subgraph. Fetching hotel from http://monolith:8080/api/hotels/test-hotel-1
+hotel-subgraph      | Hotel subgraph. __resolveReference called for hotel id: test-hotel-1
+hotel-subgraph      | Hotel subgraph. Fetching hotel from http://monolith:8080/api/hotels/test-hotel-1
+hotel-subgraph      | Hotel subgraph. __resolveReference called for hotel id: test-hotel-1
+hotel-subgraph      | Hotel subgraph. Fetching hotel from http://monolith:8080/api/hotels/test-hotel-1
+hotel-subgraph      | Hotel subgraph. Fetched hotel: {
+hotel-subgraph      |   id: 'test-hotel-1',
+hotel-subgraph      |   operational: true,
+hotel-subgraph      |   fullyBooked: false,
+hotel-subgraph      |   city: 'Seoul',
+hotel-subgraph      |   rating: 4.7,
+hotel-subgraph      |   description: 'Modern hotel in Seoul downtown with spa and skybar.'
+hotel-subgraph      | }
+hotel-subgraph      | Hotel subgraph. Fetched hotel: {
+hotel-subgraph      |   id: 'test-hotel-1',
+hotel-subgraph      |   operational: true,
+hotel-subgraph      |   fullyBooked: false,
+hotel-subgraph      |   city: 'Seoul',
+hotel-subgraph      |   rating: 4.7,
+hotel-subgraph      |   description: 'Modern hotel in Seoul downtown with spa and skybar.'
+hotel-subgraph      | }
+hotel-subgraph      | Hotel subgraph. Fetched hotel: {
+hotel-subgraph      |   id: 'test-hotel-1',
+hotel-subgraph      |   operational: true,
+hotel-subgraph      |   fullyBooked: false,
+hotel-subgraph      |   city: 'Seoul',
+hotel-subgraph      |   rating: 4.7,
+hotel-subgraph      |   description: 'Modern hotel in Seoul downtown with spa and skybar.'
+hotel-subgraph      | }
+hotel-subgraph      | Hotel subgraph. Fetched hotel: {
+hotel-subgraph      |   id: 'test-hotel-1',
+hotel-subgraph      |   operational: true,
+hotel-subgraph      |   fullyBooked: false,
+hotel-subgraph      |   city: 'Seoul',
+hotel-subgraph      |   rating: 4.7,
+hotel-subgraph      |   description: 'Modern hotel in Seoul downtown with spa and skybar.'
+hotel-subgraph      | }
+booking-subgraph    | booking-subgraph. Access denied
+hotel-subgraph      | Hotel subgraph. Query hotelsByIds called with ids: [ 'test-hotel-1', 'test-hotel-2' ]
+hotel-subgraph      | Hotel subgraph. Fetching hotel from http://monolith:8080/api/hotels/test-hotel-1
+hotel-subgraph      | Hotel subgraph. Fetching hotel from http://monolith:8080/api/hotels/test-hotel-2
+hotel-subgraph      | Hotel subgraph. Got hotels: [
+hotel-subgraph      |   {
+hotel-subgraph      |     id: 'test-hotel-1',
+hotel-subgraph      |     operational: true,
+hotel-subgraph      |     fullyBooked: false,
+hotel-subgraph      |     city: 'Seoul',
+hotel-subgraph      |     rating: 4.7,
+hotel-subgraph      |     description: 'Modern hotel in Seoul downtown with spa and skybar.'
+hotel-subgraph      |   },
+hotel-subgraph      |   {
+hotel-subgraph      |     id: 'test-hotel-2',
+hotel-subgraph      |     operational: true,
+hotel-subgraph      |     fullyBooked: true,
+hotel-subgraph      |     city: 'Busan',
+hotel-subgraph      |     rating: 4.5,
+hotel-subgraph      |     description: 'Luxury beach resort in Busan with ocean view.'
+hotel-subgraph      |   }
+hotel-subgraph      | ]
