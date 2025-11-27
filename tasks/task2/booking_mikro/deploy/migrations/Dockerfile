@@ -6,6 +6,6 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -o app ./cmd/migrations/main.go
 FROM alpine:3.22
 
 COPY --from=build /app .
-COPY migration/pg /migration
-ENTRYPOINT ["/app", "-migrations-dir=/migration"]
+COPY ./migration/pg/ /migration/pg/
+ENTRYPOINT ["/app"]
 CMD ["up"]

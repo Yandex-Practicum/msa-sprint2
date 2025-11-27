@@ -28,6 +28,12 @@ services:
       - "5432:5432"
     volumes:
       - monolith-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hotelio -d hotelio"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - hotelio-net
 
@@ -36,7 +42,7 @@ services:
       context: ./booking_mikro
       dockerfile: ./deploy/migrations/Dockerfile
     environment:
-      PG_CONN_STR: "postgresql://hotelio:hotelio@monolith-db:5432/hotelio"
+      PG_CONN_STR: "postgresql://hotelio:hotelio@monolith-db:5432/booking_srv"
       MIGRATIONS_DIR: "./migration/pg/"
     depends_on:
       monolith-db:
