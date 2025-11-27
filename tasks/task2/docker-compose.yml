@@ -31,6 +31,19 @@ services:
     networks:
       - hotelio-net
 
+  ht-migrations:
+    build:
+      context: ./booking_mikro
+      dockerfile: ./deploy/migrations/Dockerfile
+    environment:
+      PG_CONN_STR: "postgresql://hotelio:hotelio@monolith-db:5432/hotelio"
+      MIGRATIONS_DIR: "./migration/pg/"
+    depends_on:
+      monolith-db:
+        condition: service_healthy
+    networks:
+      - hotelio-net
+
   kafka:
     image: confluentinc/cp-kafka:7.2.1
     ports:

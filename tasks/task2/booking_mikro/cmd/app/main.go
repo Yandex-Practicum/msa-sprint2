@@ -17,7 +17,7 @@ import (
 )
 
 var (
-	storagePath string = "postgresql://hotelio:hotelio@monolith-db:5432/${PG_NAME}?sslmode=disable"
+	storagePath string = "postgresql://hotelio:hotelio@monolith-db:5432/booking_srv?sslmode=disable"
 	url         string
 )
 
