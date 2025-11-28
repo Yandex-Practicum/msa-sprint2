@@ -37,7 +37,7 @@ services:
     networks:
       - hotelio-net
 
-  ht-migrations:
+  migrations:
     build:
       context: ./booking_mikro
       dockerfile: ./deploy/migrations/Dockerfile
@@ -47,6 +47,15 @@ services:
     depends_on:
       monolith-db:
         condition: service_healthy
+    networks:
+      - hotelio-net
+  booking-service:
+    build:
+      context: ./booking_mikro
+      dockerfile: ./deploy/app/Dockerfile
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
     networks:
       - hotelio-net
 
