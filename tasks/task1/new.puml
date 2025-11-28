@@ -1,0 +1,75 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(user, "User", "Interacts with frontend")
+
+System_Boundary(hotelio, "Hotelio Microservices") {
+    
+    ' ========== API GATEWAY ==========
+    Container(api_gateway, "API Gateway", "Spring Cloud Gateway", "Single entry point, routing, rate limiting")
+    
+    ' ========== CORE SERVICES ==========
+    Container(user_service, "User Service", "Spring Boot", "Manages user data, blacklists, authentication")
+    ContainerDb(user_db, "User DB", "PostgreSQL", "Stores users, profiles, blacklists")
+    
+    Container(hotel_service, "Hotel Service", "Spring Boot", "Manages hotel catalog, availability, search")
+    ContainerDb(hotel_db, "Hotel DB", "PostgreSQL", "Stores hotels, rooms, amenities")
+    
+    Container(booking_service, "Booking Service", "Spring Boot", "Orchestrates booking process, payments")
+    ContainerDb(booking_db, "Booking DB", "PostgreSQL", "Stores bookings, payments, status history")
+    
+    Container(promo_service, "Promo Code Service", "Spring Boot", "Manages promotions, discounts, validation")
+    ContainerDb(promo_db, "Promo DB", "PostgreSQL", "Stores promo codes, usage rules, statistics")
+    
+    Container(review_service, "Review Service", "Spring Boot", "Manages reviews, ratings, moderation")
+    ContainerDb(review_db, "Review DB", "PostgreSQL", "Stores reviews, ratings, comments")
+    
+    ' ========== SUPPORTING SERVICES ==========
+    Container(notification_service, "Notification Service", "Spring Boot", "Sends emails, SMS, push notifications")
+    
+    Container(search_service, "Search Service", "Spring Boot + Elasticsearch", "Handles hotel search and filtering")
+    ContainerDb(search_index, "Search Index", "Elasticsearch", "Hotel search index")
+}
+
+' ========== EXTERNAL SYSTEMS ==========
+System_Ext(payment_gateway, "Payment Gateway", "Stripe/Adyen", "Processes payment transactions")
+
+' ========== COMMUNICATION FLOWS ==========
+
+' User to Gateway
+Rel(user, api_gateway, "HTTPS REST API", "JSON")
+
+' Gateway to Services
+Rel(api_gateway, user_service, "REST", "JSON")
+Rel(api_gateway, hotel_service, "REST", "JSON")
+Rel(api_gateway, booking_service, "REST", "JSON")
+Rel(api_gateway, promo_service, "REST", "JSON")
+Rel(api_gateway, review_service, "REST", "JSON")
+Rel(api_gateway, search_service, "REST", "JSON")
+
+' Service-to-Service Synchronous Communication
+Rel(booking_service, user_service, "REST", "Validate user")
+Rel(booking_service, hotel_service, "REST", "Check availability")
+Rel(booking_service, promo_service, "REST", "Validate promo code")
+Rel(booking_service, payment_gateway, "HTTPS", "Process payment")
+
+' Service-to-Service Asynchronous Communication
+Rel(booking_service, notification_service, "AMQP", "Booking events")
+Rel(review_service, hotel_service, "REST", "Update hotel ratings")
+Rel(hotel_service, search_service, "AMQP", "Hotel data updates")
+
+' Database Connections
+Rel(user_service, user_db, "JDBC")
+Rel(hotel_service, hotel_db, "JDBC")
+Rel(booking_service, booking_db, "JDBC")
+Rel(promo_service, promo_db, "JDBC")
+Rel(review_service, review_db, "JDBC")
+Rel(search_service, search_index, "REST")
+
+' Data Replication (async)
+Rel(hotel_service, search_service, "AMQP", "Hotel updates")
+Rel_R(user_db, user_service, "Reads/Writes")
+
+@enduml
