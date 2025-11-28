@@ -15,16 +15,34 @@ const typeDefs = gql`
     hotelsByIds(ids: [ID!]!): [Hotel]
   }
 `;
+const url = "localhost:8084/api/hotels/"
+
+async function getHotelInfo(id) {
+  const response = await fetch(url + id, {
+    method: 'Get',
+  });
+  const responseData = await response.json();
+  return responseData.Map((i) => {
+    return ({
+      id: i.Id,
+      name: i.name,
+      city: i.city,
+      stars: i.rating,
+    });
+  });
+}
 
 const resolvers = {
   Hotel: {
     __resolveReference: async ({ id }) => {
-      // TODO: Реальный вызов к hotel-сервису или заглушка
+      return getHotelInfo(id)
     },
   },
   Query: {
     hotelsByIds: async (_, { ids }) => {
-      // TODO: Заглушка или REST-запрос
+      return ids.map((i)=>{
+        return getHotelInfo(i);
+      });
     },
   },
 };

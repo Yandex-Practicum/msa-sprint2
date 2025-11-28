@@ -53,6 +53,8 @@ services:
     build:
       context: ./booking_mikro
       dockerfile: ./deploy/app/Dockerfile
+    ports:
+      - "9090:9090"
     depends_on:
       migrations:
         condition: service_completed_successfully

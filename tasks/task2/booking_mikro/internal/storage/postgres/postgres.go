@@ -18,7 +18,7 @@ var (
 	getAllBookings = `SELECT id,user_id,hotel_id,promocod,discount_percent,price,created_at 
 						FROM bookings;`
 	getUserBookings = `SELECT id,user_id,hotel_id,promocod,discount_percent,price,created_at
-						FROM bookings, WHERE user_id = $1;`
+						FROM bookings WHERE user_id = $1;`
 )
 
 type Storage struct {

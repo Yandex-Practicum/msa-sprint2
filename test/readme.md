@@ -49,7 +49,7 @@
 ```bash
 cd test/
 docker build -t hotelio-tester .
-docker run --rm \                                                                                                                                                                   ok | 4s | 01:49:56
+docker run --rm \
   -e DB_HOST=host.docker.internal \
   -e DB_PORT=5432 \
   -e DB_NAME=hotelio \
