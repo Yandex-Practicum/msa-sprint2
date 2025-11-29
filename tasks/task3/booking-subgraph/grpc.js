@@ -32,13 +32,15 @@ const client = new bookingProto.BookingService(
 export function listBookings(user_id) {
   const requestPayload = { user_id: user_id };
 
-  client.ListBookings(requestPayload, (error, response) => {
-    if (error) {
-      console.error('Error fetching bookings:', error.details || error.message);
-      return;
-    }
-    // Success: 'response' matches the 'booking' message structure
-    return response.bookings
+  // Оборачиваем асинхронный вызов в Promise
+  return new Promise((resolve, reject) => {
+    client.ListBookings(requestPayload, (error, response) => {
+      if (error) {
+        console.error('Error fetching bookings:', error.details || error.message);
+        return reject(error); // Отклоняем Promise при ошибке gRPC
+      }
+      // Успех: разрешаем Promise с массивом бронирований
+      resolve(response.bookings); 
+    });
   });
 }
-

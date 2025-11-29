@@ -22,10 +22,15 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     bookingsByUser: async (_, { userId }, { req }) => {
-      bookings = listBookings(userId)
+      const bookings = await  listBookings(userId)
+      if (!Array.isArray(bookings)) {
+        console.error("Received non-array data from listBookings:", bookings);
+        return []; 
+      }
+
       return bookings.map((i) => {
        return  ({
-          id: i.Id,
+          id: String(i.id), 
           userId: i.user_id,
           hotelId: i.hotel_id,
           promoCode: i.promo_code,

@@ -50,6 +50,7 @@
 cd test/
 docker build -t hotelio-tester .
 docker run --rm \
+  --network hotelio-net \
   -e DB_HOST=host.docker.internal \
   -e DB_PORT=5432 \
   -e DB_NAME=hotelio \

@@ -15,21 +15,39 @@ const typeDefs = gql`
     hotelsByIds(ids: [ID!]!): [Hotel]
   }
 `;
-const url = "localhost:8084/api/hotels/"
+const url = "hotelio-monolith:8080/api/hotels/"
+
+
 
 async function getHotelInfo(id) {
-  const response = await fetch(url + id, {
-    method: 'Get',
-  });
-  const responseData = await response.json();
-  return responseData.Map((i) => {
-    return ({
-      id: i.Id,
-      name: i.name,
-      city: i.city,
-      stars: i.rating,
+  try {
+    const response = await fetch(url + id, {
+      method: 'Get',
     });
-  });
+    
+    // Проверяем статус ответа
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`HTTP error! Status: ${response.status}. Body: ${errorText}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    
+    // !!! ИСПРАВЛЕНИЕ: Используйте .map() с маленькой буквы !!!
+    return responseData.map((i) => { 
+      return ({
+        id: String(i.Id), // Убедитесь, что ID это строка
+        name: i.name,
+        city: i.city,
+        stars: i.rating,
+      });
+    });
+
+  } catch (error) {
+    console.error(`FETCH/PARSE ERROR for URL ${url + id}:`, error.message);
+    throw error; // Пробрасываем ошибку дальше в GraphQL
+  }
 }
 
 const resolvers = {
