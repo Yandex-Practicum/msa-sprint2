@@ -15,16 +15,52 @@ const typeDefs = gql`
     hotelsByIds(ids: [ID!]!): [Hotel]
   }
 `;
+const url = "hotelio-monolith:8080/api/hotels/"
+
+
+
+async function getHotelInfo(id) {
+  try {
+    const response = await fetch(url + id, {
+      method: 'Get',
+    });
+    
+    // Проверяем статус ответа
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`HTTP error! Status: ${response.status}. Body: ${errorText}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    
+    // !!! ИСПРАВЛЕНИЕ: Используйте .map() с маленькой буквы !!!
+    return responseData.map((i) => { 
+      return ({
+        id: String(i.Id), // Убедитесь, что ID это строка
+        name: i.name,
+        city: i.city,
+        stars: i.rating,
+      });
+    });
+
+  } catch (error) {
+    console.error(`FETCH/PARSE ERROR for URL ${url + id}:`, error.message);
+    throw error; // Пробрасываем ошибку дальше в GraphQL
+  }
+}
 
 const resolvers = {
   Hotel: {
     __resolveReference: async ({ id }) => {
-      // TODO: Реальный вызов к hotel-сервису или заглушка
+      return getHotelInfo(id)
     },
   },
   Query: {
     hotelsByIds: async (_, { ids }) => {
-      // TODO: Заглушка или REST-запрос
+      return ids.map((i)=>{
+        return getHotelInfo(i);
+      });
     },
   },
 };

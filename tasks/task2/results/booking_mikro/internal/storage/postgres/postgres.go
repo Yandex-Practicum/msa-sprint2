@@ -13,12 +13,12 @@ import (
 )
 
 var (
-	insertBooking = `INSERT INTO booking(user_id,hotel_id,promocod,discount_percent,price,created_at)
+	insertBooking = `INSERT INTO booking(user_id,hotel_id,promo_code,discount_percent,price,created_at)
 					VALUES($1,$2,$3,$4,$5,$6)returning id;`
-	getAllBookings = `SELECT id,user_id,hotel_id,promocod,discount_percent,price,created_at 
-						FROM bookings;`
-	getUserBookings = `SELECT id,user_id,hotel_id,promocod,discount_percent,price,created_at
-						FROM bookings, WHERE user_id = $1;`
+	getAllBookings = `SELECT id,user_id,hotel_id,promo_code,discount_percent,price,created_at 
+						FROM booking;`
+	getUserBookings = `SELECT id,user_id,hotel_id,promo_code,discount_percent,price,created_at
+						FROM booking WHERE user_id = $1;`
 )
 
 type Storage struct {
@@ -33,7 +33,7 @@ func (s *Storage) SaveBooking(ctx context.Context, booking model.Booking) (int64
 	row := s.db.QueryRowContext(ctx,
 		insertBooking,
 		booking.UserId, booking.HotelId,
-		booking.Promocode,
+		booking.PromoCode,
 		booking.DiscountPercent,
 		booking.Price,
 		booking.CreatedAt)
@@ -68,7 +68,7 @@ func (s *Storage) GetAllBookings(ctx context.Context) ([]model.Booking, error) {
 
 	for rows.Next() {
 		var b model.Booking
-		if err := rows.Scan(&b.Id, &b.UserId, &b.Promocode, &b.DiscountPercent, b.Price, b.CreatedAt); err != nil {
+		if err := rows.Scan(&b.Id, &b.UserId, &b.PromoCode, &b.DiscountPercent, b.Price, b.CreatedAt); err != nil {
 			return bookings, fmt.Errorf("GetAllBookings.rows.Scan: %w", err)
 		}
 		bookings = append(bookings, b)
@@ -90,7 +90,7 @@ func (s *Storage) GetUserBookings(ctx context.Context, userId string) ([]model.B
 
 	for rows.Next() {
 		var b model.Booking
-		if err := rows.Scan(&b.Id, &b.UserId, &b.Promocode, &b.DiscountPercent, b.Price, b.CreatedAt); err != nil {
+		if err := rows.Scan(&b.Id, &b.UserId, &b.HotelId, &b.PromoCode, &b.DiscountPercent, &b.Price, &b.CreatedAt); err != nil {
 			return bookings, fmt.Errorf("GetUserBookings.rows.Scan: %w", err)
 		}
 		bookings = append(bookings, b)

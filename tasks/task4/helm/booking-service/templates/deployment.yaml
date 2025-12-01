@@ -5,10 +5,11 @@ metadata:
   labels:
     app: {{ .Release.Name }}
 spec:
+  # Используем replicaCount из values.yaml
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Release.Name }}
+      app: {{ .Release.Name }} # Селектор совпадает с меткой в template
   template:
     metadata:
       labels:
@@ -16,8 +17,36 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
+          # Используем имя и тег образа из values.yaml
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
-          imagePullPolicy: Never
+          # Используем pullPolicy из values.yaml (IfNotPresent для локальной работы)
+          imagePullPolicy: {{ .Values.image.pullPolicy }} 
 
           ports:
-            - containerPort: {{ .Values.service.targetPort }}
+            - containerPort: {{ .Values.service.targetPort }} # Порт 8080
+
+          # --- ДОБАВЛЕНО: Переменные окружения ---
+          env:
+            - name: ENABLE_FEATURE_X
+              # Используем env.ENABLE_FEATURE_X из values.yaml
+              value: {{ .Values.env.ENABLE_FEATURE_X | quote }}
+
+          # --- ДОБАВЛЕНО: Ресурсы (requests/limits) ---
+          resources:
+            {{ toYaml .Values.resources | nindent 12 }}
+
+          # --- ДОБАВЛЕНО: Liveness Probe (по /ping) ---
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.livenessProbe.path }} # /ping
+              port: {{ .Values.service.targetPort }} # 8080
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          
+          # --- ДОБАВЛЕНО: Readiness Probe (по /ping) ---
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.readinessProbe.path }} # /ping
+              port: {{ .Values.service.targetPort }} # 8080
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 	"time"
 
@@ -61,7 +62,7 @@ func (s *Service) CreateBooking(ctx context.Context, req *pb.BookingRequest) (*p
 	id, err := s.bookingStore.SaveBooking(ctx, model.Booking{
 		UserId:    req.UserId,
 		HotelId:   req.HotelId,
-		Promocode: req.PromoCode,
+		PromoCode: req.PromoCode,
 		Price:     finalPrice,
 		CreatedAt: createdAt,
 	})
@@ -88,14 +89,17 @@ func (s *Service) ListBookings(ctx context.Context, req *pb.BookingListRequest) 
 	if req.UserId == "" {
 		bookings, err = s.bookingStore.GetAllBookings(ctx)
 		if err != nil {
+			log.Printf("ListBookings.bookingStore.GetAllBookings: %s", err)
 			return &pb.BookingListResponse{}, fmt.Errorf("bookingStore.GetAllBookings: %w", err)
 		}
 	} else {
 		bookings, err = s.bookingStore.GetUserBookings(ctx, req.UserId)
 		if err != nil {
+			log.Printf("ListBookings.bookingStore.GetUserBookings: %s", err)
 			return &pb.BookingListResponse{}, fmt.Errorf("bookingStore.GetUserBookings: %w", err)
 		}
 	}
+	log.Printf("ListBookings success : %v", bookings)
 	return &pb.BookingListResponse{
 		Bookings: lo.Map(bookings, mapDomainBookingToProto),
 	}, nil
@@ -106,7 +110,7 @@ func mapDomainBookingToProto(b model.Booking, _ int) *pb.BookingResponse {
 		Id:              strconv.Itoa(int(b.Id)),
 		UserId:          b.UserId,
 		HotelId:         b.HotelId,
-		PromoCode:       b.Promocode,
+		PromoCode:       b.PromoCode,
 		DiscountPercent: b.DiscountPercent,
 		Price:           b.Price,
 		CreatedAt:       b.CreatedAt.String(),

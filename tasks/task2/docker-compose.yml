@@ -39,7 +39,7 @@ services:
 
   migrations:
     build:
-      context: ./booking_mikro
+      context: ./results/booking_mikro
       dockerfile: ./deploy/migrations/Dockerfile
     environment:
       PG_CONN_STR: "postgresql://hotelio:hotelio@monolith-db:5432/booking_srv"
@@ -51,8 +51,10 @@ services:
       - hotelio-net
   booking-service:
     build:
-      context: ./booking_mikro
+      context: ./results/booking_mikro
       dockerfile: ./deploy/app/Dockerfile
+    ports:
+      - "9090:9090"
     depends_on:
       migrations:
         condition: service_completed_successfully

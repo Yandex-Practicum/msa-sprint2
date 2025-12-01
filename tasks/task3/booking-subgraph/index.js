@@ -1,6 +1,7 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { buildSubgraphSchema } from '@apollo/subgraph';
+import { listBookings } from './grpc.js'
 import gql from 'graphql-tag';
 
 const typeDefs = gql`
@@ -21,11 +22,25 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     bookingsByUser: async (_, { userId }, { req }) => {
-		// TODO: Реальный вызов к grpc booking-сервису или заглушка + ACL
+      const bookings = await  listBookings(userId)
+      if (!Array.isArray(bookings)) {
+        console.error("Received non-array data from listBookings:", bookings);
+        return []; 
+      }
+
+      return bookings.map((i) => {
+       return  ({
+          id: String(i.id), 
+          userId: i.user_id,
+          hotelId: i.hotel_id,
+          promoCode: i.promo_code,
+          discountPercent: i.discount_percent,
+        });
+      });
     },
   },
   Booking: {
-	  // TODO: Реальный вызов к grpc booking-сервису или заглушка + ACL
+    // TODO: Реальный вызов к grpc booking-сервису или заглушка + ACL
   },
 };
 

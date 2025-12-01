@@ -6,7 +6,7 @@ type Booking struct {
 	Id              int64
 	UserId          string
 	HotelId         string
-	Promocode       string
+	PromoCode       string
 	DiscountPercent float64
 	Price           float64
 	CreatedAt       time.Time

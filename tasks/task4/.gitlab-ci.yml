@@ -4,20 +4,40 @@ stages:
   - deploy
 
 variables:
-  IMAGE_TAG: latest
-  IMAGE_NAME: booking-service
+  IMAGE_TAG: v0.1.0
+  IMAGE_NAME: booking-service # Изменено для соответствия имени образа из Dockerfile
+  HELM_CHART_PATH: ./helm/booking-service # Путь к директории вашего Helm-чарта
 
 build:
   stage: build
   script:
-
+    # Команда для сборки Docker-образа
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG ./booking-service
+    - echo "Image built successfully."
 
 test:
   stage: test
   script:
-
+    - echo "Testing container healthcheck..."
+    # Запускаем контейнер в фоне с включенным фича-флагом для теста готовности
+    - docker run -d --name test-container -e ENABLE_FEATURE_X=true -p 8080:8080 $IMAGE_NAME:$IMAGE_TAG
+    # Ждем запуска сервиса (достаточно 5 секунд)
+    - sleep 5
+    # Проверяем эндпоинт /ping с помощью curl
+    - docker exec test-container sh -c 'curl http://localhost:8080/ping'
+    # Проверяем эндпоинт /feature, который должен работать, т.к. флаг включен
+    - docker exec test-container sh -c 'curl http://localhost:8080/feature'
+  # Гарантируем остановку и удаление контейнера после теста
+  after_script:
+    - docker stop test-container
+    - docker rm test-container
 
 deploy:
   stage: deploy
   script:
- 
+    - echo "Loading Docker image into Minikube..."
+    # Загружаем образ в среду Minikube
+    - minikube image load $IMAGE_NAME:$IMAGE_TAG
+    - echo "Deploying Helm chart to Minikube..."
+    # Развертываем приложение, используя helm upgrade --install 
+    - helm upgrade --install booking-services $HELM_CHART_PATH --wait
