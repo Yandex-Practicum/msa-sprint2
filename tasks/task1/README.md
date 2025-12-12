@@ -30,3 +30,6 @@ curl http://localhost:8084/bookings
 ```
 
 ---
+<!-- загрузка данных -->
+docker cp init-fixtures.sql hotelio-db:/tmp/init-fixtures.sql
+docker exec -e PGPASSWORD="hotelio" -it hotelio-db psql -U hotelio -d hotelio -f /tmp/init-fixtures.sql
