@@ -10,7 +10,8 @@ timeout 2 bash -c "</dev/tcp/${DB_HOST}/${DB_PORT}" \
 
 # Загрузка фикстур
 echo "🧪 Загрузка фикстур..."
-PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" "${DB_NAME}" < init-fixtures.sql
+psql "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}" \
+     -f init-fixtures.sql 2>&1 | iconv -f cp1251 -t utf-8
 
 echo "🧪 Выполнение HTTP-тестов..."
 
