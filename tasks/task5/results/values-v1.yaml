@@ -1,0 +1,41 @@
+﻿namespace: default
+
+version: v1
+
+replicaCount: 1
+
+image:
+  name: booking-service
+  tag: v1
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+livenessProbe:
+  enabled: true
+  httpGet:
+    path: /ping
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 2
+  failureThreshold: 3
+  successThreshold: 1
+
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: /ping
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 2
+  failureThreshold: 3
+  successThreshold: 1
+
+environment:
+  ENABLE_FEATURE_X: "false"
+  SERVICE_VERSION: "v1"

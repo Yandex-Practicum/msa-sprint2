@@ -1,0 +1,49 @@
+﻿replicaCount: 1
+
+version: v1
+namespace: sprint2-task4
+
+image:
+  name: task4-booking-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+resources:
+
+livenessProbe:
+  enabled: true
+  httpGet:
+    path: /ping
+    port: 8080
+  # количество секунд, которое Kubernetes ждёт после старта контейнера перед первой проверкой
+  initialDelaySeconds: 5
+  # интервал (в секундах) между последовательными проверками после первой.
+  periodSeconds: 10
+  # время ожидания ответа на проверку. Если ответ не поступил за это время, проверка считается проваленной.
+  timeoutSeconds: 2
+  # число последовательных неудачных проверок, после которых Kubernetes считает контейнер "плохим" и, в случае livenessProbe, перезапускает его.
+  failureThreshold: 3
+  # число успешных проверок подряд, после которых контейнер считается "здоровым". Обычно 1, используется для readinessProbe.
+  successThreshold: 1
+
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: /feature
+    port: 8080
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 2
+  failureThreshold: 3
+  successThreshold: 1
+
+environment:
+  ENABLE_FEATURE_X: "true"
+  SERVICE_VERSION: "v1"
+
+

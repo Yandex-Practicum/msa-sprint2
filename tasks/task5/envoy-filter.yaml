@@ -1,0 +1,24 @@
+﻿apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: booking-service-feature-flag
+  namespace: default
+spec:
+  configPatches:
+  - applyTo: HTTP_ROUTE
+    match:
+      context: SIDECAR_OUTBOUND
+      routeConfiguration:
+        vhost:
+          name: "booking-service.default.svc.cluster.local:80"
+          route:
+            action: ROUTE
+    patch:
+      operation: INSERT_FIRST
+      value:
+        match:
+          headers:
+          - name: x-feature-enabled
+            exactMatch: "true"
+        route:
+          cluster: "outbound|80|v2|booking-service.default.svc.cluster.local"

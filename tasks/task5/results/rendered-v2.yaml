@@ -1,0 +1,71 @@
+---
+# Source: booking-service/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking-service
+  namespace: default
+  labels:
+    app: booking-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    app: booking-service
+---
+# Source: booking-service/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-service
+  namespace: default
+  labels:
+    app: booking-service
+    app-version: "1.1"
+    version: "v2"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: booking-service
+      version: "v2"
+  template:
+    metadata:
+      labels:
+        app: booking-service
+        version: "v2"
+    spec:
+      containers:
+        - name: booking-service
+          image: "booking-service:v2"
+          imagePullPolicy: Never
+
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+            successThreshold: 1
+          readinessProbe:
+            httpGet:
+              path: /feature
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+            successThreshold: 1
+          env:
+            - name: ENABLE_FEATURE_X
+              value: "true"
+            - name: SERVICE_VERSION
+              value: "v2"
