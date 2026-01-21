@@ -1,0 +1,4 @@
+t-a-w@SaraHonor:/mnt/c/Users/t-a-w/source/repos/msa-sprint2/test$ docker exec hotelio-db psql -U hotelio -d hotelio -c "select * from booking"
+ discount_percent | price | created_at | id | hotel_id | promo_code | user_id
+------------------+-------+------------+----+----------+------------+---------
+(0 rows)

@@ -1,0 +1,18 @@
+🔍 GraphQL Query: bookingsByUser
+Requested userId: test-user-1
+userid header: test-user-3
+⚠️ Service error - returning empty array
+❌ Error in bookingsByUser: authoruthorizedUserId is not defined
+
+
+🔍 GraphQL Query: bookingsByUser
+Requested userId: test-user-2
+userid header: test-user-2
+📡 Calling booking service: hotelio-monolith:8080/api/bookings?userId=test-user-2
+❌ Booking service responded with status: 500 
+❌ Error in bookingsByUser: Booking service error: 500 
+⚠️ Service error - returning empty array
+2026-01-21T08:35:04.283Z ERROR 1 --- [nio-8080-exec-5] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: java.lang.NullPointerException: Cannot invoke "com.hotelio.monolith.repository.BookingRepository.findByUserId(String)" because "this.bookingRepository" is null] with root cause
+java.lang.NullPointerException: Cannot invoke "com.hotelio.monolith.repository.BookingRepository.findByUserId(String)" because "this.bookingRepository" is null
+	at com.hotelio.monolith.service.BookingService.listBookings(BookingService.java:39) ~[!/:1.0.0]
+	at com.hotelio.monolith.controller.BookingController.listBookings(BookingController.java:23) ~[!/:1.0.0]

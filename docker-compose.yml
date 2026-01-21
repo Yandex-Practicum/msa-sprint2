@@ -1,0 +1,101 @@
+version: '3.8'
+
+services:
+  booking-service:
+    build:
+      context: ./booking-service
+      dockerfile: Dockerfile
+    container_name: booking-service
+    ports:
+      - "9090:9090"  # gRPC
+      - "8081:8080"  # REST
+    networks:
+      - hotelio-net
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://+:8080;http://+:9090"
+      ConnectionStrings__BookingDb: "Host=booking-db;Port=5432;Database=booking;Username=booking;Password=booking;Include Error Detail=true"
+      Kafka__BootstrapServers: "kafka:9092"
+      Monolith__BaseUrl: "http://monolith:8080"
+
+  booking-db:
+    image: postgres:15-alpine
+    container_name: booking-db
+    environment:
+      POSTGRES_USER: booking
+      POSTGRES_PASSWORD: booking
+      POSTGRES_DB: booking
+    ports:
+      - "5433:5432"
+    volumes:
+      - booking-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+
+  booking-history-service:
+    build:
+      context: ./Hotelio.BookingHistoryService
+      dockerfile: Dockerfile
+    container_name: booking-history-service
+    ports:
+      - "8082:8080"
+    networks:
+      - hotelio-net
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__HistoryDb: "Host=history-db;Port=5432;Database=history;Username=history;Password=history"
+      Kafka__BootstrapServers: "kafka:9092"
+
+  history-db:
+    image: postgres:15-alpine
+    container_name: history-db
+    environment:
+      POSTGRES_USER: history
+      POSTGRES_PASSWORD: history
+      POSTGRES_DB: history
+    ports:
+      - "5434:5432"
+    volumes:
+      - history-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+
+  promocode-service:
+    build:
+      context: ./Hotelio.PromoCodeService
+      dockerfile: Dockerfile
+    container_name: promocode-service
+    ports:
+      - "9091:9091"  # gRPC
+      - "8083:8080"
+    networks:
+      - hotelio-net
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__HistoryDb: "Host=promocode-db;Port=5432;Database=promocode;Username=promocode;Password=promocode"
+      Kafka__BootstrapServers: "kafka:9092"
+
+  promocode-db:
+    image: postgres:15-alpine
+    container_name: promocode-db
+    environment:
+      POSTGRES_USER: promocode
+      POSTGRES_PASSWORD: promocode
+      POSTGRES_DB: promocode
+    ports:
+      - "5435:5432"
+    volumes:
+      - history-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net 
+
+
+networks:
+  hotelio-net:
+    external: true
+    name: hotelio-net  # Используем сеть из монолита
+
+volumes:
+  booking-db-data:
+  history-db-data:
+  promocode-db-data:

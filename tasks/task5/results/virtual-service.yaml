@@ -1,0 +1,40 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: booking-service
+spec:
+  hosts:
+  - booking-service
+  http:
+  # Правило 1: Маршрутизация по фича-флагу (приоритетное)
+  - match:
+    - headers:
+        X-Feature-Enabled:
+          exact: "true"
+    route:
+    - destination:
+        host: booking-service
+        subset: v2
+  # Правило 2: Основной канареечный и fallback маршрут
+  - route:
+    - destination:
+        host: booking-service
+        subset: v1
+      weight: 90
+    - destination:
+        host: booking-service
+        subset: v2
+      weight: 10
+    # Настройки Retry
+    retries:
+      attempts: 3
+      perTryTimeout: 2s
+      retryOn: 5xx,gateway-error,connect-failure,refused-stream
+    
+    # Настройка fallback на уровне HTTP-маршрута
+    fault:
+      abort:
+        httpStatus: 500
+        percentage:
+          value: 0
+    # Istio сам перенаправит запрос при ошибках от upstream, если указать это в DestinationRule
