@@ -11,5 +11,9 @@ spec:
       targetPort: {{ .Values.service.targetPort }}
       protocol: TCP
       name: http
+    - port: 9090
+      targetPort: 9090
+      protocol: TCP
+      name: grpc
   selector:
     app: {{ .Release.Name }}

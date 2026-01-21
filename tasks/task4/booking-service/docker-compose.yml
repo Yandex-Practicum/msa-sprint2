@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  booking-service:
+    build:
+      context: ./booking-service
+      dockerfile: Dockerfile
+    container_name: booking-service
+    ports:
+      - "9090:9090"  # gRPC
+      - "8081:8080"  # REST
+    networks:
+      - hotelio-net
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://+:8080;http://+:9090"
+      ConnectionStrings__BookingDb: "Host=booking-db;Port=5432;Database=booking;Username=booking;Password=booking;Include Error Detail=true"
+      Kafka__BootstrapServers: "kafka:9092"
+      Monolith__BaseUrl: "http://monolith:8080"
+
+  booking-db:
+    image: postgres:15-alpine
+    container_name: booking-db
+    environment:
+      POSTGRES_USER: booking
+      POSTGRES_PASSWORD: booking
+      POSTGRES_DB: booking
+    ports:
+      - "5433:5432"
+    volumes:
+      - booking-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+
+networks:
+  hotelio-net:
+    external: true
+    name: hotelio-net  # Используем сеть из монолита
+
+volumes:
+  booking-db-data:

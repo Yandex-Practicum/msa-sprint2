@@ -1,0 +1,6 @@
+t-a-w@SaraHonor:/mnt/c/Users/t-a-w/source/repos/msa-sprint2/test$ docker exec booking-db psql -U booking -d booking -c "select * from bookings"
+ Id |   UserId    |   HotelId    | PromoCode | DiscountPercent | Price |         CreatedAt
+----+-------------+--------------+-----------+-----------------+-------+----------------------------
+ 61 | test-user-3 | test-hotel-1 |           |            0.00 | 80.00 | 2026-01-20 19:20:04.49896
+ 62 | test-user-2 | test-hotel-1 | TESTCODE1 |           10.00 | 90.00 | 2026-01-20 19:20:04.636603
+(2 rows)

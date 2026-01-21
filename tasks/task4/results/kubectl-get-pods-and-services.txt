@@ -1,0 +1,14 @@
+t-a-w@SaraHonor:/mnt/c/Users/t-a-w/source/repos/msa-sprint2/tasks/task3$ kubectl get pods
+NAME                                  READY   STATUS     RESTARTS          AGE
+booking-service-5787cb7865-lq8ws      0/2     Init:1/2   263 (9m4s ago)    41h
+booking-service-v1-7dc6d48f98-56pnf   0/2     Init:1/2   263 (8m58s ago)   41h
+booking-service-v1-7dc6d48f98-59s9h   0/2     Init:1/2   263 (9m5s ago)    41h
+booking-service-v1-7ff94489cd-54kq2   0/2     Init:1/2   263 (9m3s ago)    41h
+booking-service-v2-5fb7c9f88b-tqm2h   0/2     Init:1/2   263 (8m59s ago)   41h
+booking-service-v2-6d7f594dc6-fjhxf   0/2     Init:1/2   263 (8m57s ago)   41h
+t-a-w@SaraHonor:/mnt/c/Users/t-a-w/source/repos/msa-sprint2/tasks/task3$ kubectl get services
+NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)           AGE
+booking-service      ClusterIP   10.96.150.26     <none>        80/TCP,9090/TCP   2d14h
+booking-service-v1   ClusterIP   10.98.100.217    <none>        80/TCP,9090/TCP   2d3h
+booking-service-v2   ClusterIP   10.107.246.178   <none>        80/TCP,9090/TCP   2d3h
+kubernetes           ClusterIP   10.96.0.1        <none>        443/TCP           2d23h

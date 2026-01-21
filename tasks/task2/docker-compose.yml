@@ -14,8 +14,10 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://monolith-db:5432/hotelio
       SPRING_DATASOURCE_USERNAME: hotelio
       SPRING_DATASOURCE_PASSWORD: hotelio
-      BOOKING_SERVICE_EXTERNAL_HOST: booking-service
+      BOOKING_SERVICE_EXTERNAL_HOST: booking-service # gRPC сервис
       BOOKING_SERVICE_EXTERNAL_PORT: 9090
+      PROMOCODE_SERVICE_EXTERNAL_HOST: promocode-service # gRPC сервис
+      PROMOCODE_SERVICE_EXTERNAL_PORT: 9091
 
   monolith-db:
     image: postgres:15
@@ -57,4 +59,5 @@ volumes:
 
 networks:
   hotelio-net:
-    external: true
+    name: hotelio-net
+    driver: bridge

@@ -1,0 +1,60 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(user, "User", "Взаимодействует с веб-приложением")
+
+System_Boundary(gateway, "API Gateway Layer") {
+  Container(api_gateway, "API Gateway", "Spring Cloud Gateway", "Маршрутизация запросов к микросервисам")
+}
+
+System_Boundary(services, "Microservices Layer") {
+  
+  Container(booking_service, "Booking Service", "Spring Boot", "Управление бронированиями")
+  ContainerDb(booking_db, "Booking DB", "PostgreSQL", "Данные бронирований")
+  
+  Container(hotel_service, "Hotel Service", "Spring Boot", "Управление информацией об отелях")
+  ContainerDb(hotel_db, "Hotel DB", "PostgreSQL", "Данные отелей")
+  
+  Container(user_service, "User Service", "Spring Boot", "Управление учетными записями, авторизация")
+  ContainerDb(user_db, "User DB", "PostgreSQL", "Данные пользователей")
+  
+  Container(promo_service, "PromoCode Service", "Spring Boot", "Управление промокодами")
+  ContainerDb(promo_db, "PromoCode DB", "PostgreSQL", "Промокоды")
+  
+  Container(review_service, "Review Service", "Spring Boot", "Управление отзывами об отелях")
+  ContainerDb(review_db, "Review DB", "PostgreSQL", "Отзывы")
+  
+  Container(notification_service, "Notification Service", "Spring Boot", "Сервис уведомлений")
+}
+
+Container(kafka, "Message Broker", "Apache Kafka", "Асинхронная коммуникация")
+
+' Relationships
+Rel(user, api_gateway, "HTTPS", "API calls")
+
+Rel(api_gateway, booking_service, "REST", "HTTP")
+Rel(api_gateway, hotel_service, "REST", "HTTP")
+Rel(api_gateway, user_service, "REST", "HTTP")
+Rel(api_gateway, promo_service, "REST", "HTTP")
+Rel(api_gateway, review_service, "REST", "HTTP")
+
+' Service to DB
+Rel(booking_service, booking_db, "JDBC")
+Rel(hotel_service, hotel_db, "JDBC")
+Rel(user_service, user_db, "JDBC")
+Rel(promo_service, promo_db, "JDBC")
+Rel(review_service, review_db, "JDBC")
+
+' Service to Service Sync
+Rel(booking_service, hotel_service, "REST", "Получить информацию об отелях")
+Rel(booking_service, user_service, "REST", "Валидация пользователей")
+Rel(booking_service, promo_service, "REST", "Применить промокод")
+
+' Async communications
+Rel(booking_service, kafka, "Publishes", "Booking events")
+Rel(kafka, notification_service, "Consumes", "Send notifications")
+Rel(kafka, review_service, "Consumes", "Request reviews")
+
+@enduml

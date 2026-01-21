@@ -1,0 +1,85 @@
+stages:
+  - build
+  - test
+  - deploy
+  - tag
+
+variables:
+  IMAGE_TAG: latest
+  IMAGE_NAME: booking-service
+  HELM_RELEASE_NAME: booking-service
+  K8S_NAMESPACE: default
+
+build:
+  stage: build
+  script:
+    - 'echo "Building Docker image..."'
+    - 'cd booking-service'
+    - 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
+    - 'docker tag $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME:latest'
+    - 'echo "Image built successfully"'
+
+
+test:
+  stage: test
+  script:
+    - 'echo "Testing Docker image..."'
+    - 'docker run -d --name booking-test -p 8080:8080 $IMAGE_NAME:$IMAGE_TAG'
+    - 'sleep 10  # Даем сервису время запуститься'
+    - 'echo "Testing /ping endpoint..."'
+    - 'curl --fail http://localhost:8080/ping || exit 1'
+    - 'echo "Testing without feature flag..."'
+    - 'curl --fail http://localhost:8080/feature-x || exit 1'
+    - 'echo "Testing with feature flag..."'
+    - 'docker rm -f booking-test'
+    - 'docker run -d --name booking-test-feature -e ENABLE_FEATURE_X=true -e USE_IN_MEMORY_DB=true -e ASPNETCORE_ENVIRONMENT=Development -e ConnectionStrings__BookingDb="" -p 8081:8080 $IMAGE_NAME:$IMAGE_TAG'
+    - 'sleep 5'
+    - 'curl --fail http://localhost:8081/feature-x || exit 1'
+    - 'docker rm -f booking-test-feature'
+    - 'echo "All tests passed!"'
+  needs: ["build"]
+
+
+deploy-staging:
+  stage: deploy
+  script:
+    - 'echo "Deploying to staging..."'
+    - 'minikube image load $IMAGE_NAME:$IMAGE_TAG'
+    - 'minikube image load $IMAGE_NAME:latest'
+    - 'helm upgrade --install $HELM_RELEASE_NAME ./helm/booking-service --namespace $K8S_NAMESPACE --values ./helm/booking-service/values-staging.yaml --set image.tag=$IMAGE_TAG --wait'
+    - 'echo "Deployment completed"'
+    - 'echo "Testing deployment..."'
+    - 'kubectl rollout status deployment/$HELM_RELEASE_NAME -n $K8S_NAMESPACE --timeout=60s'
+  needs: ["test"]
+  environment:
+    name: staging
+    url: http://booking-service.local
+
+deploy-prod:
+  stage: deploy
+  script:
+    - 'echo "Deploying to production..."'
+    - 'minikube image load $IMAGE_NAME:$IMAGE_TAG'
+    - 'minikube image load $IMAGE_NAME:latest'
+    - 'helm upgrade --install $HELM_RELEASE_NAME ./helm/booking-service --namespace $K8S_NAMESPACE --values ./helm/booking-service/values-prod.yaml --set image.tag=$IMAGE_TAG --wait'
+    - 'echo "Deployment completed"'
+    - 'kubectl rollout status deployment/$HELM_RELEASE_NAME -n $K8S_NAMESPACE --timeout=60s'
+  needs: ["deploy-staging"]
+  when: manual
+  environment:
+    name: production
+    url: http://booking-service.prod
+
+create-tag:
+  stage: tag
+  script:
+    - 'echo "Creating git tag..."'
+    - 'TIMESTAMP=$(date +"%Y%m%d-%H%M%S")'
+    - 'TAG_NAME="release-$TIMESTAMP"'
+    - 'git config --global user.email "ci@example.com"'
+    - 'git config --global user.name "GitLab CI"'
+    - 'git tag -a "$TAG_NAME" -m "Release created by CI/CD pipeline at $TIMESTAMP"'
+    - 'echo "Created tag: $TAG_NAME"'
+  needs: ["deploy-staging"]
+  only:
+    - main

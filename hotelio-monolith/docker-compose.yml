@@ -16,6 +16,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: hotelio
       BOOKING_SERVICE_EXTERNAL_HOST: booking-service
       BOOKING_SERVICE_EXTERNAL_PORT: 9090
+      PROMOCODE_SERVICE_EXTERNAL_HOST: promocode-service
+      PROMOCODE_SERVICE_EXTERNAL_PORT: 9091
 
   monolith-db:
     image: postgres:15
@@ -40,6 +42,10 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      # Автосоздание топиков при первом обращении
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
     networks:
       - hotelio-net
   zookeeper:
@@ -57,4 +63,5 @@ volumes:
 
 networks:
   hotelio-net:
-    external: true
+    name: hotelio-net
+    driver: bridge

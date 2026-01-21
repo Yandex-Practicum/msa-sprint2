@@ -1,0 +1,42 @@
+// promocode.proto
+syntax = "proto3";
+
+option csharp_namespace = "Hotelio.PromoCodeService";
+option java_package = "com.hotelio.monolith.grpc";
+
+package promocode;
+
+service PromoCodeService {
+  rpc GetPromoByCode (GetPromoRequest) returns (PromoCodeResponse);
+  rpc IsPromoValid (IsValidRequest) returns (IsValidResponse);
+  rpc ValidatePromo (ValidateRequest) returns (PromoCodeResponse);
+}
+
+message GetPromoRequest {
+  string code = 1;
+}
+
+message IsValidRequest {
+  string code = 1;
+  bool is_vip_user = 2;
+}
+
+message ValidateRequest {
+  string code = 1;
+  string user_id = 2;
+}
+
+message PromoCodeResponse {
+  string code = 1;
+  double discount = 2;
+  bool vip_only = 3;
+  string valid_until = 4; // ISO 8601 date string
+  string description = 5;
+  bool success = 6;
+  string error_message = 7;
+}
+
+message IsValidResponse {
+  bool valid = 1;
+  string error_message = 2;
+}

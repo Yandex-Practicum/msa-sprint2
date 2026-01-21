@@ -17,7 +17,28 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
-          imagePullPolicy: Never
-
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.service.targetPort }}
+              name: http-rest
+            - containerPort: 9090
+              name: grpc
+          env:
+            - name: ENABLE_FEATURE_X
+              value: {{ .Values.env.ENABLE_FEATURE_X | quote }}
+            - name: ASPNETCORE_ENVIRONMENT
+              value: {{ .Values.env.ASPNETCORE_ENVIRONMENT | quote }}
+            - name: ASPNETCORE_URLS
+              value: {{ .Values.env.ASPNETCORE_URLS | quote }}
+          {{- if .Values.resources }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
+          {{- if .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          {{- end }}

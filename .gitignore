@@ -1,0 +1,18 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/bin/Debug
+/booking-service/bin/Debug/net10.0
+/booking-service/obj
+/Hotelio.BookingHistoryService/bin/Debug/net10.0
+/Hotelio.BookingHistoryService/obj
+/Hotelio.PromoCodeService/bin/Debug/net10.0
+/Hotelio.PromoCodeService/obj
+/obj
+/.vs
+/booking-service/.vs
+/tasks/task4/booking-service/.vs
+/tasks/task4/booking-service/bin/Debug/net10.0
+/tasks/task4/booking-service/obj
+/tasks/task5/istio-1.28.2

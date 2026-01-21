@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>81004b7c-31a1-4dfb-a5ba-e74cef24f635</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\booking.proto" GrpcServices="Server" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="Grpc.AspNetCore" Version="2.64.0" />
+	  <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
+	  <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0" />
+	  <PackageReference Include="Confluent.Kafka" Version="2.3.0" />
+  </ItemGroup>
+
+</Project>

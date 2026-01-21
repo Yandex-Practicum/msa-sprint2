@@ -1,0 +1,29 @@
+t-a-w@SaraHonor:/mnt/c/Users/t-a-w/source/repos/msa-sprint2/test$ docker exec history-db psql -U history -d history -c "\dt"
+                List of relations
+ Schema |         Name          | Type  |  Owner
+--------+-----------------------+-------+---------
+ public | __EFMigrationsHistory | table | history
+ public | dailystatistics       | table | history
+ public | hotelstatistics       | table | history
+ public | userstatistics        | table | history
+(4 rows)
+
+t-a-w@SaraHonor:/mnt/c/Users/t-a-w/source/repos/msa-sprint2/test$ docker exec history-db psql -U history -d history -c "select * from dailystatistics"
+                  Id                  |            Date            | BookingCount | TotalRevenue | AverageBookingValue
+--------------------------------------+----------------------------+--------------+--------------+---------------------
+ 1b5fd83a-8a0f-4c53-a615-f1cd8aea5e26 | 2026-01-20 19:20:04.49896  |            1 |           80 |                  80
+ 6b6c9145-0330-49ff-84e0-47ac97e1364a | 2026-01-20 19:20:04.636603 |            1 |           90 |                  90
+(2 rows)
+
+t-a-w@SaraHonor:/mnt/c/Users/t-a-w/source/repos/msa-sprint2/test$ docker exec history-db psql -U history -d history -c "select * from hotelstatistics"
+                  Id                  |   HotelId    | BookingCount | TotalRevenue | AverageBookingValue
+--------------------------------------+--------------+--------------+--------------+---------------------
+ 6f7e847a-7151-4dfc-93b8-39d94134547f | test-hotel-1 |            2 |          170 |                  85
+(1 row)
+
+t-a-w@SaraHonor:/mnt/c/Users/t-a-w/source/repos/msa-sprint2/test$ docker exec history-db psql -U history -d history -c "select * from userstatistics"
+                  Id                  |   UserId    | BookingCount | TotalSpent |      LastBookingDate
+--------------------------------------+-------------+--------------+------------+----------------------------
+ 6fb3050e-f686-44fb-962f-4a718a5d3551 | test-user-3 |            1 |         80 | 2026-01-20 19:20:04.61086
+ 18a15cbc-31a1-4b1c-aa4e-ab522b5883b4 | test-user-2 |            1 |         90 | 2026-01-20 19:20:04.667958
+(2 rows)
