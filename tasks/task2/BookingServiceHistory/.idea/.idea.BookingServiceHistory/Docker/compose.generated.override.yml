@@ -1,0 +1,24 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  bookingservice-history:
+    build:
+      context: "C:\\Practicum\\microservice-architecture\\sprint2\\msa-sprint2\\tasks\\\
+        task2\\BookingServiceHistory"
+      dockerfile: "BookingServiceHistory/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net9.0/BookingServiceHistory.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "bookingservicehistory:dev"
+    ports: []
+    volumes:
+    - "C:\\Practicum\\microservice-architecture\\sprint2\\msa-sprint2\\tasks\\task2\\\
+      BookingServiceHistory\\BookingServiceHistory:/app:rw"
+    - "C:\\Practicum\\microservice-architecture\\sprint2\\msa-sprint2\\tasks\\task2\\\
+      BookingServiceHistory:/src:rw"
+    - "C:\\Users\\33pro\\.nuget\\packages:/home/app/.nuget/packages"
+    working_dir: "/app"

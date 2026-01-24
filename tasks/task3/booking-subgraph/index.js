@@ -4,28 +4,69 @@ import { buildSubgraphSchema } from '@apollo/subgraph';
 import gql from 'graphql-tag';
 
 const typeDefs = gql`
+  # Основной тип Booking
   type Booking @key(fields: "id") {
     id: ID!
     userId: String!
     hotelId: String!
     promoCode: String
     discountPercent: Int
+    # Связь с другим субграфом
+    hotel: Hotel @requires(fields: "hotelId")
+  }
+
+  # Объявление внешнего типа из hotel-subgraph
+  extend type Hotel @key(fields: "id") {
+    id: ID! @external
   }
 
   type Query {
     bookingsByUser(userId: String!): [Booking]
   }
-
 `;
+
 
 const resolvers = {
   Query: {
     bookingsByUser: async (_, { userId }, { req }) => {
-		// TODO: Реальный вызов к grpc booking-сервису или заглушка + ACL
+      const userHeader = req.headers['userid'];
+
+      if (userHeader !== userId) {
+        console.log('booking-subgraph. Access denied');
+        throw new Error('Access denied');
+      }
+
+      const url = process.env.BOOKING_URL;
+
+      console.log(`Booking subgraph. Fetching bookings from ${url}/api/bookings?userId=${userId}`);
+
+      let response;
+      try {
+        response = await fetch(`${url}/api/bookings?userId=${userId}`);
+      } catch (error) {
+        console.error(`Booking subgraph. Error fetching bookings: ${error.message}`);
+        throw new Error(`Error while fetching bookings: ${error.message}`);
+      }
+
+      const bookings = await response.json();
+
+      console.log('Booking subgraph. Got bookings:', bookings);
+
+      return bookings;
     },
   },
+
   Booking: {
-	  // TODO: Реальный вызов к grpc booking-сервису или заглушка + ACL
+    // Получение информации о гостинице по ID
+    hotel: (booking) => {
+      console.log(`Booking subgraph. Getting hotel for booking: ${booking.hotel_id}...`);
+
+      // Возвращаем объект гостиницы
+      return {
+        __typename: 'Hotel',
+        id: booking.hotel_id,
+      };
+    },
   },
 };
 

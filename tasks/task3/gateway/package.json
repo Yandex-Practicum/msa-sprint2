@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
-    "@apollo/server": "^4.8.1",
-    "@apollo/gateway": "^2.5.2",
+    "@apollo/server": "^4.12.2",
+    "@apollo/gateway": "^2.9.0",
     "graphql": "^16.8.1"
   }
 }

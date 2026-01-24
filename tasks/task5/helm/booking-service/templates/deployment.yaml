@@ -1,0 +1,31 @@
+# templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "booking-service.fullname" . }}
+  labels:
+    {{- include "booking-service.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: booking-service
+      version: {{ .Values.version | default "v1" }}
+  template:
+    metadata:
+      labels:
+        app: booking-service
+        version: {{ .Values.version | default "v1" }}
+        app.kubernetes.io/name: {{ include "booking-service.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: ENABLE_FEATURE_X
+              value: {{ .Values.enableFeatureX | quote }}
+          ports:
+            - containerPort: 8080
+          

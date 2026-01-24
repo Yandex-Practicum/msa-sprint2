@@ -8,6 +8,8 @@ RUN apk add --no-cache curl
 # Устанавливаем рабочую директорию
 WORKDIR /app
 
+EXPOSE 8080
+
 # Копируем Go-файл и скрипт проверки DNS
 COPY main.go .
 COPY check-dns.sh .
