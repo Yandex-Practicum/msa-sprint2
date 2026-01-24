@@ -1,0 +1,48 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+    ' Services
+    Component(gateway, "Gateway", "Java Service", "Api gateway")
+
+    Component(bookingService, "BookingService", "Java Service", "Validates and creates bookings")
+    Component(hotelService, "HotelService", "Java Service", "Retrieves hotel details")
+    Component(userService, "UserService", "Java Service", "Validates user status and blacklist")
+    Component(promoService, "PromoCodeService", "Java Service", "Applies discounts and rules")
+    Component(reviewService, "ReviewService", "Java Service", "Manages hotel reviews")
+
+    ' DB
+    ComponentDb(bookingServiceDb, "DB", "PostgreSQL", "Service data")
+    ComponentDb(hotelServiceDb, "DB", "PostgreSQL", "Service data")
+    ComponentDb(userServiceDb, "DB", "PostgreSQL", "Service data")
+    ComponentDb(promoServiceDb, "DB", "PostgreSQL", "Service data")
+    ComponentDb(reviewServiceDb, "DB", "PostgreSQL", "Service data")
+
+    Component(kafka, "Kafka", "Kafka", "")
+
+    Rel(bookingService, bookingServiceDb, "Reads/Writes")
+    Rel(userService, userServiceDb, "Reads/Writes")
+    Rel(hotelService, hotelServiceDb, "Reads/Writes")
+    Rel(promoService, promoServiceDb, "Reads/Writes")
+    Rel(reviewService, reviewServiceDb, "Reads/Writes")
+
+    Rel(bookingService, kafka, "Reads/Writes")
+    Rel(userService, kafka, "Reads/Writes")
+    Rel(hotelService, kafka, "Reads/Writes")
+    Rel(promoService, kafka, "Reads/Writes")
+    Rel(reviewService, kafka, "Reads/Writes")
+
+Person(user, "User", "Interacts with frontend")
+Rel(user, gateway, "Uses")
+Rel(user, gateway, "Uses")
+Rel(user, gateway, "Uses")
+Rel(user, gateway, "Uses")
+Rel(user, gateway, "Uses")
+
+Rel(gateway, userService, "Uses")
+Rel(gateway, bookingService, "Uses")
+Rel(gateway, hotelService, "Uses")
+Rel(gateway, promoService, "Uses")
+Rel(gateway, reviewService, "Uses")
+@enduml

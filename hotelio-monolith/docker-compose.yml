@@ -1,0 +1,60 @@
+version: "3.8"
+
+services:
+  monolith:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hotelio-monolith
+    ports:
+      - "8084:8080"
+    networks:
+      - hotelio-net
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://monolith-db:5432/hotelio
+      SPRING_DATASOURCE_USERNAME: hotelio
+      SPRING_DATASOURCE_PASSWORD: hotelio
+      BOOKING_SERVICE_EXTERNAL_HOST: booking-service
+      BOOKING_SERVICE_EXTERNAL_PORT: 9090
+
+  monolith-db:
+    image: postgres:15
+    container_name: hotelio-db
+    environment:
+      POSTGRES_USER: hotelio
+      POSTGRES_PASSWORD: hotelio
+      POSTGRES_DB: hotelio
+    ports:
+      - "5432:5432"
+    volumes:
+      - monolith-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+
+  kafka:
+    image: confluentinc/cp-kafka:7.2.1
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - hotelio-net
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.2.1
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - hotelio-net
+
+volumes:
+  monolith-db-data:
+
+networks:
+  hotelio-net:
+    external: true
