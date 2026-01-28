@@ -1,0 +1,33 @@
+﻿services:
+  bookingservice-history:
+    image: bookingservicehistory
+    build:
+      context: .
+      dockerfile: BookingServiceHistory/Dockerfile
+    environment:      
+      - ConnectionStrings__PostgreSQL=Host=bookinghistoryservice-db;Port=5432;Database=hotelio;Username=hotelio;Password=hotelio
+      - Kafka__BootstrapServers=kafka:9092
+      - Kafka__GroupId=booking-service-
+    networks:
+      - hotelio-net
+  
+  bookinghistoryservice-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: hotelio
+      POSTGRES_PASSWORD: hotelio
+      POSTGRES_DB: hotelio
+    ports:
+      - "5434:5432"
+    volumes:
+      - db-data-history:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+
+networks:
+  hotelio-net:
+    external: true
+    
+volumes:
+  db-data-history:
+

@@ -52,11 +52,13 @@ public class BookingService {
         log.info("Final price calculated: base={}, discount={}, final={}", basePrice, discount, finalPrice);
 
         Booking booking = new Booking();
+        
         booking.setUserId(userId);
         booking.setHotelId(hotelId);
         booking.setPromoCode(promoCode);
         booking.setDiscountPercent(discount);
         booking.setPrice(finalPrice);
+        
 
         return bookingRepository.save(booking);
     }

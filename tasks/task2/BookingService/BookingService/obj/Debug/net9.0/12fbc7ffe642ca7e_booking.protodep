@@ -1,0 +1,2 @@
+obj\Debug\net9.0\Protos/Booking.cs \
+obj\Debug\net9.0\Protos/BookingGrpc.cs: Protos/booking.proto

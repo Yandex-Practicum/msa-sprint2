@@ -1,0 +1,73 @@
+test@DESKTOP-I3OA0HC:/mnt/c/Practicum/microservice-architecture/sprint2/msa-sprint2/tasks/task4$ gitlab-ci-local build test deploy_prod tagnvm install
+Using fallback git user.name
+  Command failed with exit code 1: git config user.name
+Using fallback git user.email
+  Command failed with exit code 1: git config user.email
+parsing and downloads finished in 183 ms.
+json schema validated in 580 ms
+build       starting shell (build)
+build       $ docker build -t ${IMAGE_NAME:-booking-service}:${IMAGE_NAME:-latest} ./booking-service
+build       > DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+build       >             BuildKit is currently disabled; enable it by removing the DOCKER_BUILDKIT=0
+build       >             environment-variable.
+build       >
+build       > Sending build context to Docker daemon  6.656kB
+build       > Step 1/9 : FROM golang:1.21-alpine
+build       >  ---> c2321c7cf721
+build       > Step 2/9 : RUN apk add --no-cache curl
+build       >  ---> Using cache
+build       >  ---> 9cb6c3c90841
+build       > Step 3/9 : WORKDIR /app
+build       >  ---> Using cache
+build       >  ---> d2aaf0d367e6
+build       > Step 4/9 : EXPOSE 8080
+build       >  ---> Using cache
+build       >  ---> ac91fbef11ab
+build       > Step 5/9 : COPY main.go .
+build       >  ---> Using cache
+build       >  ---> b3d730bed9f9
+build       > Step 6/9 : COPY check-dns.sh .
+build       >  ---> Using cache
+build       >  ---> ff1d93ac6f14
+build       > Step 7/9 : RUN chmod +x check-dns.sh
+build       >  ---> Using cache
+build       >  ---> 850c806a1f01
+build       > Step 8/9 : RUN go build -o booking-service main.go
+build       >  ---> Using cache
+build       >  ---> d9cf141fb26c
+build       > Step 9/9 : CMD ["./booking-service"]
+build       >  ---> Using cache
+build       >  ---> d4c8121dc376
+build       > Successfully built d4c8121dc376
+build       > Successfully tagged booking-service:latest
+build       finished in 590 ms
+test        starting shell (test)
+test        $ docker run -d --name test -p 8080:8080 ${IMAGE_NAME:-booking-service}:${IMAGE_NAME:-latest}
+test        > 0021c5995e7086242a1ea5ce2d12746c5debabb9d17a8127a03972412d4aa0b4
+test        $ sleep 5
+test        $ curl -f http://localhost:8080/ping
+test        >   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+test        >                                  Dload  Upload   Total   Spent    Left  Speed
+100     4  100     4    0     0   1728      0 --:--:-- --:--:-- --:--:--  2000
+test        > pong<gclShellPromptPlaceholder> docker rm -f test
+test        > test
+test        finished in 6.27 s
+deploy_prod starting shell (deploy)
+deploy_prod $ minikube image load ${IMAGE_NAME:-booking-service}:${IMAGE_NAME:-latest}
+deploy_prod > still running...
+deploy_prod > still running...
+deploy_prod > still running...
+deploy_prod > still running...
+deploy_prod $ helm upgrade --install booking-service helm/booking-service -f helm/booking-service/values-prod.yaml
+deploy_prod > Release "booking-service" has been upgraded. Happy Helming!
+deploy_prod > NAME: booking-service
+deploy_prod > LAST DEPLOYED: Thu Jan 22 22:46:51 2026
+deploy_prod > NAMESPACE: default
+deploy_prod > STATUS: deployed
+deploy_prod > REVISION: 2
+deploy_prod > TEST SUITE: None
+deploy_prod finished in 47 s
+
+ PASS  build
+ PASS  test
+ PASS  deploy_prod
