@@ -1,0 +1,17 @@
+docker exec -it hotelio-booking-history-db psql -U booking-history -d booking-history
+psql (15.15 (Debian 15.15-1.pgdg13+1))
+Type "help" for help.
+
+booking-history=# \dt
+               List of relations
+ Schema |    Name     | Type  |      Owner      
+--------+-------------+-------+-----------------
+ public | booking_log | table | booking-history
+(1 row)
+
+booking-history=#  SELECT * FROM booking_log ORDER BY created_at DESC;
+ discount_percent | price | booking_id |          created_at           | id |           logged_at           |   hotel_id   |   user_id   
+------------------+-------+------------+-------------------------------+----+-------------------------------+--------------+-------------
+                0 |   100 |          2 | 2026-02-04 09:59:22.898773+00 |  2 | 2026-02-04 09:59:22.998272+00 | test-hotel-1 | test-user-2
+                0 |   100 |          1 | 2026-02-04 09:59:17.539222+00 |  1 | 2026-02-04 09:59:22.967837+00 | test-hotel-1 | test-user-3
+(2 rows)
