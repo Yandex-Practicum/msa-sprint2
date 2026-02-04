@@ -22,10 +22,9 @@ test:
   tags:
     - shell
   script:
-    # Запускаем контейнер из образа, собранного на прошлом этапе
+    
     - docker run -d --name test_run_$CI_PIPELINE_ID $IMAGE_NAME:$IMAGE_TAG
     - sleep 5
-    # Проверка метода ping
     - docker exec test_run_$CI_PIPELINE_ID curl --fail http://localhost:8080/ping || (docker logs test_run_$CI_PIPELINE_ID && exit 1)
   after_script:
     - eval $(minikube docker-env)

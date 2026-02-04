@@ -1,0 +1,16 @@
+CONTAINER ID   IMAGE                             COMMAND                  CREATED          STATUS          PORTS                                                             NAMES
+391f32b26810   task3-apollo-gateway              "docker-entrypoint.s…"   21 minutes ago   Up 21 minutes   0.0.0.0:4000->4000/tcp, [::]:4000->4000/tcp                       task3-apollo-gateway-1
+5488ceedd8e0   task3-promo-subgraph              "docker-entrypoint.s…"   21 minutes ago   Up 21 minutes   0.0.0.0:4003->4003/tcp, [::]:4003->4003/tcp                       task3-promo-subgraph-1
+6f1c616ae6de   task3-hotel-subgraph              "docker-entrypoint.s…"   21 minutes ago   Up 21 minutes   0.0.0.0:4002->4002/tcp, [::]:4002->4002/tcp                       task3-hotel-subgraph-1
+1bbed42d1865   task3-booking-subgraph            "docker-entrypoint.s…"   21 minutes ago   Up 21 minutes   0.0.0.0:4001->4001/tcp, [::]:4001->4001/tcp                       task3-booking-subgraph-1
+b5d747872bf9   task2-booking-history-service     "python booking-hist…"   6 days ago       Up 6 days                                                                         booking-history-service
+bbea6f5c5c2a   task2-booking-service             "python booking-serv…"   6 days ago       Up 6 days       0.0.0.0:50051->50051/tcp, [::]:50051->50051/tcp                   booking-service
+825a8434f647   postgres:15                       "docker-entrypoint.s…"   6 days ago       Up 6 days       0.0.0.0:5433->5432/tcp, [::]:5433->5432/tcp                       booking-db
+cf54a59803ad   confluentinc/cp-zookeeper:7.2.1   "/etc/confluent/dock…"   6 days ago       Up 6 days       2888/tcp, 0.0.0.0:2181->2181/tcp, [::]:2181->2181/tcp, 3888/tcp   task2-zookeeper-1
+1de5fe344a2c   confluentinc/cp-kafka:7.2.1       "/etc/confluent/dock…"   6 days ago       Up 6 days       0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp                       task2-kafka-1
+1ea317389f90   task2-monolith                    "java -jar app.jar"      6 days ago       Up 6 days       0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp                       hotelio-monolith
+bfd60a7d4418   postgres:15                       "docker-entrypoint.s…"   6 days ago       Up 6 days       0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp                       hotelio-db
+76491c0fe198   postgres:15                       "docker-entrypoint.s…"   6 days ago       Up 6 days       0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp                       booking-history-db
+73f6a46eb15c   a848e8d83e0d                      "./run_all.sh"           7 days ago       Up 7 days       50051/tcp                                                         xenodochial_pasteur
+dc2b010e8c64   a848e8d83e0d                      "./run_all.sh"           7 days ago       Up 7 days       50051/tcp                                                         romantic_murdock
+8ed933856cc2   a848e8d83e0d                      "./run_all.sh"           7 days ago       Up 7 days       50051/tcp                                                         charming_ride

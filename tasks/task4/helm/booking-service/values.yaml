@@ -2,8 +2,8 @@ replicaCount: 1
 
 image:
   name: booking-service
-  tag: latest
-  pullPolicy: IfNotPresent
+  tag: local
+  pullPolicy: Never
 
 service:
   type: ClusterIP
@@ -13,6 +13,16 @@ service:
 resources:
 
 livenessProbe:
+  httpGet:
+    path: /ping
+    port: http
+  initialDelaySeconds: 15
+  periodSeconds: 20
 
 readinessProbe:
+  httpGet:
+    path: /ping
+    port: http
+  initialDelaySeconds: 15
+  periodSeconds: 20
 

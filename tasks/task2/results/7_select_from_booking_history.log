@@ -1,0 +1,17 @@
+test git:(main) ✗ docker exec -it 76491c0fe198  /bin/bash
+root@76491c0fe198:/# psql -U booking-history -d booking-history
+psql (15.15 (Debian 15.15-1.pgdg13+1))
+Type "help" for help.
+
+booking-history=# select * from "booking-history";
+ id |   user_id   |   hotel_id   | price |          created_at           
+----+-------------+--------------+-------+-------------------------------
+  7 | test-user-2 | test-hotel-2 |     9 | 2026-01-25 12:45:45.002116+00
+  8 | test-user-3 | test-hotel-1 |     9 | 2026-01-25 12:45:45.058539+00
+  9 | test-user-2 | test-hotel-1 |     9 | 2026-01-25 12:45:45.084122+00
+ 10 | test-user-0 | test-hotel-1 |     9 | 2026-01-25 12:45:45.109993+00
+ 11 | test-user-2 | test-hotel-2 |     9 | 2026-01-25 12:46:35.709634+00
+ 12 | test-user-3 | test-hotel-1 |     9 | 2026-01-25 12:46:35.742322+00
+ 13 | test-user-2 | test-hotel-1 |     9 | 2026-01-25 12:46:35.758322+00
+ 14 | test-user-0 | test-hotel-1 |     9 | 2026-01-25 12:46:35.774126+00
+(8 rows)

@@ -6,7 +6,8 @@ import { ApolloGateway } from '@apollo/gateway';
 const gateway = new ApolloGateway({
   serviceList: [
     { name: 'booking', url: 'http://booking-subgraph:4001' },
-    { name: 'hotel', url: 'http://hotel-subgraph:4002' }
+    { name: 'hotel', url: 'http://hotel-subgraph:4002' },
+    { name: 'promo', url: 'http://promo-subgraph:4003' }
   ]
 });
 

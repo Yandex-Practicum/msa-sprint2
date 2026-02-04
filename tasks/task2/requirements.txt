@@ -1,0 +1,6 @@
+grpcio==1.70.0
+grpcio-tools==1.70.0
+protobuf==5.29.0
+confluent-kafka==2.2.0
+python-dotenv==1.0.0
+psycopg2-binary

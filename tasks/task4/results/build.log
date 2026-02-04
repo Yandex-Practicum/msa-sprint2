@@ -1,0 +1,37 @@
+build  starting shell (build)
+build  $ helm lint ./helm/booking-service
+build  > ==> Linting ./helm/booking-service
+build  > [INFO] Chart.yaml: icon is recommended
+build  > 
+build  > 1 chart(s) linted, 0 chart(s) failed
+build  $ docker build -t $IMAGE_NAME:$IMAGE_TAG ./booking-service
+build  finished in 871 ms
+test   starting shell (test)
+test   $ docker run -d --name test_run_$CI_PIPELINE_ID $IMAGE_NAME:$IMAGE_TAG
+test   > 5c0abcd6368d6065b33793f287497e09ab33257f3515ade3ab633ed0e03ad4b9
+test   $ sleep 5
+test   $ docker exec test_run_$CI_PIPELINE_ID curl --fail http://localhost:8080/ping || (docker logs test_run_$CI_PIPELINE_ID && exit 1)
+test   > pong
+test   Running after script...
+test   $ eval $(minikube docker-env)
+test   $ docker rm -f test_run_$CI_PIPELINE_ID
+test   finished in 5.55 s
+deploy starting shell (deploy)
+deploy $ minikube image load $IMAGE_NAME:$IMAGE_TAG
+deploy > still running...
+deploy $ echo "Deploying $IMAGE_NAME with tag $IMAGE_TAG"
+deploy > Deploying booking-service with tag latest
+deploy $ helm upgrade --install $IMAGE_NAME ./helm/booking-service/ --set image.repository="$IMAGE_NAME"  --set image.tag="$IMAGE_TAG" --set image.pullPolicy=Never --wait
+deploy > Release "booking-service" has been upgraded. Happy Helming!
+deploy > NAME: booking-service
+deploy > LAST DEPLOYED: Mon Feb  2 02:45:09 2026
+deploy > NAMESPACE: default
+deploy > STATUS: deployed
+deploy > REVISION: 3
+deploy > DESCRIPTION: Upgrade complete
+deploy > TEST SUITE: None
+deploy finished in 14 s
+
+ PASS  build 
+ PASS  test  
+ PASS  deploy
