@@ -1,0 +1,14 @@
+docker ps
+CONTAINER ID   IMAGE                             COMMAND                  CREATED         STATUS         PORTS                                         NAMES
+6b629df6b1c0   task3-apollo-gateway              "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes   0.0.0.0:4000->4000/tcp, [::]:4000->4000/tcp   task3-apollo-gateway-1
+8ff0cc24ffd2   task3-promocode-subgraph          "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes   0.0.0.0:4003->4003/tcp, [::]:4003->4003/tcp   task3-promocode-subgraph-1
+72e78b855293   task3-hotel-subgraph              "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes   0.0.0.0:4002->4002/tcp, [::]:4002->4002/tcp   task3-hotel-subgraph-1
+6888f8efba40   task3-booking-subgraph            "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes   0.0.0.0:4001->4001/tcp, [::]:4001->4001/tcp   task3-booking-subgraph-1
+f292a715db35   confluentinc/cp-kafka:7.2.1       "/etc/confluent/dock…"   6 hours ago     Up 6 hours     0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp   task2-kafka-1
+815087defb9a   task2-monolith                    "java -jar app.jar"      6 hours ago     Up 6 hours     0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp   hotelio-monolith
+9b447663ac7c   postgres:15                       "docker-entrypoint.s…"   6 hours ago     Up 6 hours     0.0.0.0:5433->5432/tcp, [::]:5433->5432/tcp   hotelio-booking-db
+7f20c6eee47a   postgres:15                       "docker-entrypoint.s…"   6 hours ago     Up 6 hours     0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   hotelio-db
+cba997b021ad   postgres:15                       "docker-entrypoint.s…"   6 hours ago     Up 6 hours     0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp   hotelio-booking-history-db
+28b5228ac15b   task2-booking-service             "java -jar app.jar"      6 hours ago     Up 6 hours     8081/tcp, 9090/tcp                            booking
+27f402f977f6   confluentinc/cp-zookeeper:7.2.1   "/etc/confluent/dock…"   6 hours ago     Up 6 hours     0.0.0.0:2181->2181/tcp, [::]:2181->2181/tcp   task2-zookeeper-1
+6bc1e1b9553a   task2-booking-history-service     "java -jar app.jar"      6 hours ago     Up 6 hours     8081/tcp, 9090/tcp                            booking-history
