@@ -5,7 +5,7 @@ echo "🏁 Регрессионный тест до миграции Hotelio"
 
 # Проверка соединения
 echo "🧪 Проверка подключения к БД..."
-timeout 2 bash -c "</dev/tcp/${DB_HOST}/${DB_PORT}" \
+bash -c "exec 3<>/dev/tcp/${DB_HOST}/${DB_PORT}" 2>/dev/null \
   || { echo "❌ Не удалось подключиться к ${DB_HOST}:${DB_PORT}"; exit 1; }
 
 # Загрузка фикстур
