@@ -5,16 +5,40 @@ services:
     build: ./gateway
     ports:
       - "4000:4000"
+    networks:
+      - hotelio-net
     depends_on:
       - booking-subgraph
       - hotel-subgraph
+      - promocode-subgraph
 
   booking-subgraph:
     build: ./booking-subgraph
     ports:
       - "4001:4001"
+    networks:
+      - hotelio-net
+    environment:
+      MONOLITH_URL: http://hotelio-monolith:8080
 
   hotel-subgraph:
     build: ./hotel-subgraph
     ports:
       - "4002:4002"
+    networks:
+      - hotelio-net
+    environment:
+      MONOLITH_URL: http://hotelio-monolith:8080
+
+  promocode-subgraph:
+    build: ./promocode-subgraph
+    ports:
+      - "4003:4003"
+    networks:
+      - hotelio-net
+    environment:
+      MONOLITH_URL: http://hotelio-monolith:8080
+
+networks:
+  hotelio-net:
+    external: true

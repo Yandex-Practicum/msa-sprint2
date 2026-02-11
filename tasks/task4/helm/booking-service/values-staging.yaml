@@ -1,0 +1,16 @@
+replicaCount: 1
+
+image:
+  tag: latest
+
+env:
+  - name: ENABLE_FEATURE_X
+    value: "true"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi

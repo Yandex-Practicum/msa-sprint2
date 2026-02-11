@@ -10,6 +10,9 @@ services:
       - "8084:8080"
     networks:
       - hotelio-net
+    depends_on:
+      monolith-db:
+        condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://monolith-db:5432/hotelio
       SPRING_DATASOURCE_USERNAME: hotelio
@@ -28,10 +31,14 @@ services:
       - monolith-db-data:/var/lib/postgresql/data
     networks:
       - hotelio-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hotelio -d hotelio"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 volumes:
   monolith-db-data:
 
 networks:
   hotelio-net:
-    external: true

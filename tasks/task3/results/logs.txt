@@ -1,0 +1,11 @@
+Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+✅ Booking subgraph ready at http://localhost:4001/
+{"ts":"2026-02-11T17:25:45.922Z","level":"info","msg":"bookingsByUser","userId":"test-user-2","requestingUser":"test-user-2"}
+{"ts":"2026-02-11T17:25:45.922Z","level":"info","msg":"fetchUserBookings → monolith","userId":"test-user-2"}
+{"ts":"2026-02-11T17:25:45.937Z","level":"info","msg":"booking","id":"2","requestingUser":"test-user-2"}
+{"ts":"2026-02-11T17:25:45.974Z","level":"info","msg":"fetchUserBookings ← monolith","userId":"test-user-2","count":1}
+{"ts":"2026-02-11T17:25:45.974Z","level":"info","msg":"Booking.hotel ref","bookingId":"2","hotelId":"test-hotel-1"}
+{"ts":"2026-02-11T17:25:48.871Z","level":"info","msg":"bookingsByUser","userId":"test-user-2","requestingUser":"test-user-1"}
+{"ts":"2026-02-11T17:25:48.871Z","level":"warn","msg":"ACL denied: bookingsByUser","requestingUser":"test-user-1","userId":"test-user-2"}
+{"ts":"2026-02-11T17:25:48.872Z","level":"info","msg":"booking","id":"2","requestingUser":"test-user-1"}
+{"ts":"2026-02-11T17:25:48.879Z","level":"warn","msg":"ACL denied: booking","requestingUser":"test-user-1","ownerId":"test-user-2","id":"2"}

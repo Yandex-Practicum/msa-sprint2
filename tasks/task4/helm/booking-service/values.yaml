@@ -10,9 +10,28 @@ service:
   port: 80
   targetPort: 8080
 
+env:
+  - name: ENABLE_FEATURE_X
+    value: "false"
+
 resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
 
 livenessProbe:
+  httpGet:
+    path: /ping
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10
 
 readinessProbe:
-
+  httpGet:
+    path: /ping
+    port: 8080
+  initialDelaySeconds: 3
+  periodSeconds: 5

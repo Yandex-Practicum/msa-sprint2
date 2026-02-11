@@ -1,0 +1,49 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(user, "User", "Фронтенд или мобильное приложение")
+
+System_Boundary(hotelio, "Hotelio Platform") {
+
+  Container(gateway, "API Gateway", "nginx / Cloud Gateway", "Маршрутизирует запросы, обрабатывает авторизацию, rate limiting")
+
+  Container(bookingSvc, "Booking Service", "Spring Boot", "Оркестрирует процесс бронирования: валидация пользователей, отелей, промо, отзывов; расчитывает цену")
+  Container(userSvc, "User Service", "Spring Boot", "Управлеят статусом пользователей, чс, VIP флаг, проверка доступов")
+  Container(hotelSvc, "Hotel Service", "Spring Boot", "Отдает данные по отелям, доступность, поиск города, рейтинг отелей")
+  Container(reviewSvc, "Review Service", "Spring Boot", "Хранение отзывов, расчитывает рейтинг (avg rating >= 4.0, count >= 10)")
+  Container(promoSvc, "Promo Service", "Spring Boot", "Проверка кодов, применяет правила VIP, расчитывает скидки")
+
+  ContainerDb(bookingDb, "Booking DB", "PostgreSQL", "bookings")
+  ContainerDb(userDb, "User DB", "PostgreSQL", "users")
+  ContainerDb(hotelDb, "Hotel DB", "PostgreSQL", "hotels")
+  ContainerDb(reviewDb, "Review DB", "PostgreSQL", "reviews")
+  ContainerDb(promoDB, "Promo DB", "PostgreSQL", "promo_codes")
+
+  Container(kafka, "Message Broker", "Apache Kafka", "Async events: booking.created, hotel.status.updated")
+}
+
+Rel(user, gateway, "HTTPS")
+
+Rel(gateway, bookingSvc, "REST /api/bookings")
+Rel(gateway, userSvc, "REST /api/users")
+Rel(gateway, hotelSvc, "REST /api/hotels")
+Rel(gateway, reviewSvc, "REST /api/reviews")
+Rel(gateway, promoSvc, "REST /api/promos")
+
+Rel(bookingSvc, userSvc, "gRPC isAuthorized, isVip")
+Rel(bookingSvc, hotelSvc, "gRPC isOperational, isFullyBooked")
+Rel(bookingSvc, reviewSvc, "gRPC isTrustedHotel")
+Rel(bookingSvc, promoSvc, "gRPC validate")
+Rel(promoSvc, userSvc, "gRPC isVip")
+
+Rel(bookingSvc, bookingDb, "Reads/Writes")
+Rel(userSvc, userDb, "Reads/Writes")
+Rel(hotelSvc, hotelDb, "Reads/Writes")
+Rel(reviewSvc, reviewDb, "Reads/Writes")
+Rel(promoSvc, promoDB, "Reads/Writes")
+
+Rel(bookingSvc, kafka, "Publishes booking.created")
+Rel(kafka, hotelSvc, "Subscribes hotel.status.updated")
+@enduml

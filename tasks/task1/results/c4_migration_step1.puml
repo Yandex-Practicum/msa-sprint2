@@ -1,0 +1,35 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Strangler Fig - Шаг 1: Review Service вынесен
+
+Person(user, "User", "Фронтенд или мобильное приложение")
+
+System_Boundary(hotelio, "Hotelio Platform") {
+
+  Container(gateway, "API Gateway", "nginx / Cloud Gateway", "Запросы на /api/reviews/* в Review Service; остальные на молнолит")
+
+  System_Boundary(monolith_boundary, "Hotelio монолит (продолжает работать)") {
+    Container(monolith, "Monolith", "Spring Boot", "Работает с /api/bookings, /api/users, /api/hotels, /api/promos. BookingService вызывает Review Service через gRPC вместо внутреннего ReviewService")
+    ContainerDb(monolithDb, "Monolith DB", "PostgreSQL", "users, hotels, bookings, promo_codes (таблица review удалена после миграции)")
+  }
+
+  System_Boundary(review_boundary, "Review Service (новый)") {
+    Container(reviewSvc, "Review Service", "Spring Boot", "Отзывы и trust score. Отдает REST и gRPC эндпоинты")
+    ContainerDb(reviewDb, "Review DB", "PostgreSQL", "reviews (данные перенесены из монолита)")
+  }
+
+  Container(kafka, "Message Broker", "Apache Kafka", "Готов к использованию в следующих шагах миграции")
+}
+
+Rel(user, gateway, "HTTPS")
+
+Rel(gateway, monolith, "REST /api/bookings, /api/users, /api/hotels, /api/promos")
+Rel(gateway, reviewSvc, "REST /api/reviews")
+
+Rel(monolith, reviewSvc, "gRPC isTrustedHotel(hotelId)\n(заменяет internal reviewService.isTrustedHotel)")
+Rel(monolith, monolithDb, "Reads/Writes")
+Rel(reviewSvc, reviewDb, "Reads/Writes")
+@enduml

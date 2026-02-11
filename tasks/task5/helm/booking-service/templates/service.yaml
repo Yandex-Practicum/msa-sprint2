@@ -1,0 +1,17 @@
+{{- if eq .Values.version "v1" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.app }}
+  labels:
+    app: {{ .Values.app }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ .Values.app }}
+{{- end }}

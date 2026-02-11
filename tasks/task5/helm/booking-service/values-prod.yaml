@@ -1,0 +1,16 @@
+replicaCount: 2
+
+image:
+  tag: stable
+
+env:
+  - name: ENABLE_FEATURE_X
+    value: "false"
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi

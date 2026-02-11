@@ -1,0 +1,11 @@
+version: v1
+replicaCount: 1
+
+image:
+  tag: latest
+
+env:
+  - name: ENABLE_FEATURE_X
+    value: "false"
+  - name: SERVICE_VERSION
+    value: "v1"

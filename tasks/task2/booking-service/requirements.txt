@@ -1,0 +1,9 @@
+grpcio==1.64.0
+grpcio-tools==1.64.0
+grpcio-reflection==1.64.0
+sqlalchemy==2.0.30
+psycopg2-binary==2.9.9
+requests==2.31.0
+kafka-python==2.0.2
+pydantic==2.7.1
+pydantic-settings==2.3.1
