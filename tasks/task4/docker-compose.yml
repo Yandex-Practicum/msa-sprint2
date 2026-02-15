@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  booking-service:
+    build: ./booking-service
+    ports:
+      - "8080:8080"
+    environment:
+      ENABLE_FEATURE_X: true
+    networks:
+      - hotelio-net
+
+networks:
+  hotelio-net:
+    external: true

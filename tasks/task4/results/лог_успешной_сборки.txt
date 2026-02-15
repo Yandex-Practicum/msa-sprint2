@@ -1,0 +1,28 @@
+% docker build -t booking-service --no-cache .
+[+] Building 19.7s (10/10) FINISHED                                                                                                                             docker:desktop-linux
+ => [internal] load build definition from Dockerfile                                                                                                                            0.0s
+ => => transferring dockerfile: 862B                                                                                                                                            0.0s
+ => [internal] load metadata for docker.io/library/golang:1.21-alpine                                                                                                           0.2s
+ => [internal] load .dockerignore                                                                                                                                               0.0s
+ => => transferring context: 2B                                                                                                                                                 0.0s
+ => CACHED [1/5] FROM docker.io/library/golang:1.21-alpine@sha256:2414035b086e3c42b99654c8b26e6f5b1b1598080d65fd03c7f499552ff4dc94                                              0.0s
+ => => resolve docker.io/library/golang:1.21-alpine@sha256:2414035b086e3c42b99654c8b26e6f5b1b1598080d65fd03c7f499552ff4dc94                                                     0.0s
+ => [internal] load build context                                                                                                                                               0.0s
+ => => transferring context: 29B                                                                                                                                                0.0s
+ => [2/5] RUN apk add --no-cache curl                                                                                                                                          14.3s
+ => [3/5] WORKDIR /app                                                                                                                                                          0.0s 
+ => [4/5] COPY main.go .                                                                                                                                                        0.0s 
+ => [5/5] RUN go build -o booking-service main.go                                                                                                                               3.3s 
+ => exporting to image                                                                                                                                                          1.8s 
+ => => exporting layers                                                                                                                                                         1.5s 
+ => => exporting manifest sha256:e30806b504f630b307e44a744e474d0bfe77372beda39d9b1ec6da75ce5c342b                                                                               0.0s 
+ => => exporting config sha256:1af24a67814185cea411ad63ca0f971c2272f25004b119a5d783e695da6df4b2                                                                                 0.0s
+ => => exporting attestation manifest sha256:1032cc2220807dc0f7ab33532d07e738ab5117d244c7b479a607a4730e3ff0e8                                                                   0.0s
+ => => exporting manifest list sha256:9c1f92819332804c9a3e62b4ac76c64f81941bff9d6fd9c2cdff2a98fc13120c                                                                          0.0s
+ => => naming to docker.io/library/booking-service:latest                                                                                                                       0.0s
+ => => unpacking to docker.io/library/booking-service:latest                                                                                                                    0.2s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/eghaj3nttl7q8phxjq9m93ttb
+
+What's next:
+    View a summary of image vulnerabilities and recommendations → docker scout quickview

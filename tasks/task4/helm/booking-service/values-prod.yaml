@@ -1,0 +1,23 @@
+replicaCount: 3
+environment: production
+
+ingress:
+  hosts:
+    - host: booking-service
+
+env:
+  LOG_LEVEL: info
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi
+  limits:
+    cpu: 2
+    memory: 2Gi
+
+tolerations:
+  - key: "dedicated"
+    operator: "Equal"
+    value: "production"
+    effect: "NoSchedule"
