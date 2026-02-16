@@ -1,0 +1,45 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: booking-service-dr
+  namespace: hotelio
+spec:
+  host: booking-service-v1
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 10
+        connectTimeout: 1s
+      http:
+        maxRequestsPerConnection: 10
+  host: booking-service-v2
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 10
+        connectTimeout: 1s
+      http:
+        maxRequestsPerConnection: 10
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: booking-service-vs
+spec:
+  hosts:
+    - booking-service-v1
+  http:
+    - route:
+        - destination:
+            host: booking-service-v1
+            port:
+              number: 80
+        - destination:
+            host: booking-service-v2
+            port:
+              number: 80
+      retries:
+        attempts: 3 
+        perTryTimeout: 2s
+        retryOn: gateway-error,connect-failure,refused-stream

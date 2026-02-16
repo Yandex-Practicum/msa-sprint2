@@ -1,0 +1,38 @@
+replicaCount: 1
+versionLabel: v1
+
+image:
+  name: booking-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 200m
+    memory: 512Mi
+
+env:
+  ENABLE_FEATURE_X: true
+
+livenessProbe:
+      httpGet:
+        path: /ping
+        port: 8080
+      initialDelaySeconds: 3
+      periodSeconds: 3
+
+readinessProbe:
+      httpGet:
+        path: /ping
+        port: 8080
+      initialDelaySeconds: 3
+      periodSeconds: 3
+
