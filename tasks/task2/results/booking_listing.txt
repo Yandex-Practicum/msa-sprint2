@@ -1,0 +1,2 @@
+curl http://localhost:8084/bookings
+{"timestamp":"2026-02-04T10:04:30.972+00:00","status":404,"error":"Not Found","path":"/bookings"}% 

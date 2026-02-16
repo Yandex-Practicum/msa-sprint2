@@ -1,0 +1,18 @@
+replicaCount: 1
+environment: staging
+
+ingress:
+  hosts:
+    - host: booking-service
+
+env:
+  ENABLE_FEATURE_X: true
+  LOG_LEVEL: debug
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 512Mi
+  limits:
+    cpu: 400m
+    memory: 1Gi

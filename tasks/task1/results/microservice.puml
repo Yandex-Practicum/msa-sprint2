@@ -1,0 +1,80 @@
+@startuml Hotelio_Microservice_C2
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Контекстная диаграмма: Hotelio микросервисы
+
+System_Boundary(hotelio, "Hotelio Microservice", "Kubernetes") {
+    ' Controllers
+    Component(api_gateway, "BookingController", "Apollo GraphOS", "Main API gateway")
+    
+    Container_Boundary(telemetry, "Сбор и отображение метрик") {
+        Container(metrics, "Метрики", "Premetheus", "Сбор метрик")
+        Container(dashboard, "Дашбоард", "Grafana", "Визуализация метрик")
+    }
+    ' Microservices
+    Container_Boundary(booking, "Booking Microservice") {
+        Component(bookingService, "BookingService", "Java Service", "Validates and creates bookings")
+        ComponentDb(postgres_booking, "Booking DB", "PostgreSQL", "Stores bookings")
+    }
+
+    Container_Boundary(users, "Users Microservice") {
+        Component(userService, "UserService", "Java Service", "Validates user status and blacklist")
+        ComponentDb(postgres_users, "User profile DB", "PostgreSQL", "Stores users")
+    }
+
+    Container_Boundary(hotel, "Hotel Microservice") {
+        Component(hotelService, "HotelService", "Java Service", "Retrieves hotel details")
+        ComponentDb(postgres_hotel, "Hotel DB", "PostgreSQL", "Stores hotels")
+    }
+
+    Container_Boundary(promo, "Promo Microservice") {
+        Component(promoService, "PromoCodeService", "Java Service", "Applies discounts and rules")
+        ComponentDb(postgres_promo, "Promo DB", "PostgreSQL", "Stores promos")
+    }
+
+    Container_Boundary(review, "Review Microservice") {
+        Component(reviewService, "ReviewService", "Java Service", "Manages hotel reviews")
+        ComponentDb(postgres_review, "Review DB", "PostgreSQL", "Stores reviews")
+    }
+
+    ' Bus
+    Component(event_bus, "EventBus", "Apache Kafka") {
+        Component(topic_users, "Topic: user_profile_events", "Kafka")
+        Component(topic_promo, "Topic: promo_events", "Kafka")
+        Component(topic_review, "Topic: review_events", "Kafka")
+        Component(topic_hotel, "Topic: hotel_events", "Kafka")
+    }
+
+    ' Controller-Service relations
+    Rel(api_gateway, bookingService, "Uses", "GraphQL")
+    Rel(api_gateway, hotelService, "Uses", "GraphQL")
+    Rel(api_gateway, promoService, "Uses", "GraphQL")
+    Rel(api_gateway, reviewService, "Uses", "GraphQL")
+    Rel(api_gateway, userService, "Uses", "GraphQL")
+
+    ' Service-DB
+    Rel(bookingService, postgres_booking, "Reads/Writes")
+    Rel(reviewService, postgres_review, "Reads/Writes")
+    Rel(userService, postgres_users, "Reads")
+    Rel(hotelService, postgres_hotel, "Reads")
+    Rel(promoService, postgres_promo, "Reads")
+    
+    ' Kafka-sub
+    Rel(topic_users, bookingService, "Signed", "caches")
+    Rel(topic_users, promoService, "Signed", "caches")
+    Rel(topic_promo, bookingService, "Signed", "caches")
+    Rel(topic_review, bookingService, "Signed", "caches")
+    Rel(topic_hotel, bookingService, "Signed", "caches")
+
+    ' Kafka-pub
+    Rel(userService, topic_users, "Publishes")
+    Rel(hotelService, topic_hotel, "Publishes")
+    Rel(promoService, topic_promo, "Publishes")
+    Rel(reviewService, topic_review, "Publishes")
+}
+
+Person(user, "User", "Interacts with frontend")
+Rel(user, api_gateway, "Uses", "GraphQL")
+@enduml

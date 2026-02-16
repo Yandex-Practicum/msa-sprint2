@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: feature-flag
+  namespace: istio-system
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+    - applyTo: HTTP_ROUTE
+      match:
+        context: GATEWAY
+        routeConfiguration:
+          vhost:
+            name: "*"
+            route:
+              action: ANY
+      patch:
+        operation: INSERT_FIRST
+        value:
+          match:
+            headers:
+              - name: "X-Feature-Enabled"
+                exactMatch: "true"
+          route:
+            cluster: outbound|80||booking-service-v2.hotelio.svc.cluster.local
