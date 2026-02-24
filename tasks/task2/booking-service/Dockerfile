@@ -1,18 +1,13 @@
 FROM python:3.12-slim
+
 WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN apt-get update && apt-get install -y --no-install-recommends gcc && rm -rf /var/lib/apt/lists/*
+COPY app ./app
+COPY proto ./proto
 
-COPY booking-service/requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r /app/requirements.txt
+# если генерацию хочешь делать в контейнере:
+RUN python -m grpc_tools.protoc -I ./proto --python_out=./app --grpc_python_out=./app ./proto/booking.proto
 
-COPY booking-service/src /app
-COPY booking.proto /app/booking.proto
-
-RUN python -m grpc_tools.protoc -I /app \
-      --python_out=/app \
-      --grpc_python_out=/app \
-      /app/booking.proto
-
-ENV PYTHONPATH=/app
-CMD ["python", "main.py"]
+CMD ["python", "-u", "app/server.py"]

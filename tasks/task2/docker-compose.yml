@@ -1,6 +1,41 @@
 version: "3.8"
 
 services:
+  kafka:
+    container_name: kafka
+    image: confluentinc/cp-kafka:7.2.1
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - hotelio-net
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.2.1
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - hotelio-net
+  kafka_ui:
+    image: 'provectuslabs/kafka-ui:v0.7.2'
+    container_name: kafka_ui
+    ports:
+      - "8081:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+    depends_on:
+      - kafka
+    networks:
+      - hotelio-net
   booking-db:
     image: postgres:15
     container_name: booking-db
@@ -15,8 +50,8 @@ services:
 
   booking-service:
     build:
-      context: .
-      dockerfile: booking-service/Dockerfile
+      context: ./booking-service
+      dockerfile: Dockerfile
     container_name: booking-service
     environment:
       GRPC_PORT: "9090"
@@ -31,7 +66,6 @@ services:
     networks:
       - hotelio-net
     restart: unless-stopped
-    command: ["sh", "-c", "sleep 5 && python main.py"]
 
   booking-history-db:
     image: postgres:15
@@ -47,8 +81,8 @@ services:
 
   booking-history-service:
     build:
-      context: .
-      dockerfile: booking-history-service/Dockerfile
+      context: ./booking-history-service
+      dockerfile: Dockerfile
     container_name: booking-history-service
     environment:
       DB_DSN: "postgresql://history:history@booking-history-db:5432/booking_history"
@@ -61,7 +95,7 @@ services:
     networks:
       - hotelio-net
     restart: unless-stopped
-    command: ["sh", "-c", "sleep 5 && python main.py"]
+
   monolith:
     build:
       context: ../monolith
@@ -92,39 +126,7 @@ services:
     networks:
       - hotelio-net
 
-  kafka:
-    image: confluentinc/cp-kafka:7.2.1
-    ports:
-      - "9092:9092"
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_OPTS: "-Djava.net.preferIPv4Stack=true -Djava.net.preferIPv4Addresses=true"
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    networks:
-      - hotelio-net
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.2.1
-    ports:
-      - "2181:2181"
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    networks:
-      - hotelio-net
-  kafka_ui:
-    image: 'provectuslabs/kafka_ui:v0.7.2'
-    container_name: kafka_ui
-    ports:
-      - "8081:8081"
-    environment:
-      KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
-      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
-    depends_on:
-      - kafka
+
 
 
 volumes:
