@@ -1,0 +1,4 @@
+grpcio==1.66.2
+grpcio-tools==1.66.2
+psycopg2-binary==2.9.9
+confluent-kafka==2.5.0
