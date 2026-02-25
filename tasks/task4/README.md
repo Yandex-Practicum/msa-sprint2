@@ -1,114 +1,90 @@
-# Подготовка окружения
-Перед началом убедитесь, что на машине установлены:
-Требуемое ПО:
+# Задание 4: Автоматизация доставки booking-service
+
+## Требования к окружению
+
 - Docker
 - Minikube
+- kubectl
 - Helm
-- Node.js + npm — желательно через nvm
-- gitlab-ci-local
+- Git
+- Node.js и npm (для `gitlab-ci-local`)
 
-# Команды установки (Ubuntu/WSL)
+Установка локального раннера CI:
 
-## Установка nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-source ~/.bashrc
-nvm install --lts
-
-## Установка gitlab-ci-local
-npm install -g gitlab-ci-local
-
-## Запуск Minikube
-minikube start --driver=docker
-
-# Структура проекта
-
-task4/
-├── booking-service/               # REST-сервис (Node/Java/etc)
-├── helm/
-│   └── booking-service/          # Helm-чарт сервиса
-├── .gitlab-ci.yml                # CI/CD пайплайн (требуется доработка)
-├── check-dns.sh                  # Проверка DNS внутри кластера
-├── check-status                  # Статус деплоя и curl локально
-├── README.md                     # Этот файл
-
-# Что нужно реализовать
-
-1. Docker-образ сервиса
-	- Либо на базе имеющегося booking-service, либо на базе предложенного в задаче
-- Собирается с помощью docker build
-- Открывает порт 8080
-- Возвращает /ping → pong
-- Поведение сервиса меняется при наличии переменной ENABLE_FEATURE_X=true
-
-2. Helm-чарт:
-
-- Deployment с пробами:
-	- livenessProbe и readinessProbe по /ping
-- Service типа ClusterIP (порт 80 → targetPort 8080)
-- Значения из values.yaml:
-	- replicaCount
-	- image.name, image.tag, image.pullPolicy
-	- env[] — переменные окружения	
-	- resources — requests и limits
-	- ENABLE_FEATURE_X — фича-флаг
-
-Обязательно сделайте два варианта values.yaml: для staging и prod
-
-3. CI/CD пайплайн (.gitlab-ci.yml):
-
-Стадии:
-- build: docker build
-- test: docker run, проверка /ping
-- deploy: minikube image load и helm upgrade
-- tag: создать git-тег с timestamp (можно сделать вручную)
-
-! Используйте gitlab-ci-local:
-gitlab-ci-local build test deploy tag
-
-4. 🔎 Service Discovery через DNS
-
-- Проверка: http://booking-service/ping работает из другого пода внутри Minikube
-- Используйте скрипт check-dns.sh
-
-# Проверка корректности
-
-## Проверка сервисов:
-
-./check-status
-
-Пример вывода:
-
-▶️ Checking booking-service deployment...
-NAME                             READY   STATUS    RESTARTS   AGE
-booking-service-78d99d7dd5-abc   1/1     Running   0          1m
-
-▶️ Checking service...
-NAME              TYPE        CLUSTER-IP      PORT(S)   AGE
-booking-service   ClusterIP   10.96.170.171   80/TCP    1m
-
-▶️ Port-forward to test service locally:
-kubectl port-forward svc/booking-service 8080:80
-Then: curl http://localhost:8080/ping
-
-## Проверка DNS внутри кластера:
-
-./check-dns.sh
-
-Ожидаемый вывод:
-
-▶️ Running in-cluster DNS test...
-pong
-✅ Success
-
-
-# Подсказки:
-
-- imagePullPolicy: Never нужен для использования локального образа
-- minikube image load копирует образ внутрь Minikube
-- DNS имена booking-service работают только внутри кластера
-
-Для доступа снаружи используйте:
 ```bash
-kubectl port-forward svc/booking-service 8080:80
-curl http://localhost:8080/ping
+npm install -g gitlab-ci-local
+```
+
+Запуск Minikube:
+
+```bash
+minikube start --driver=docker
+```
+
+## Структура проекта
+
+```text
+task4/
+|- booking-service/
+|- helm/
+|  \- booking-service/
+|- .gitlab-ci.yml
+|- check-dns.sh
+|- check-status.sh
+\- results/
+```
+
+## Сервис
+
+Сервис слушает порт `8080` и предоставляет:
+
+- `GET /ping` -> `pong`
+- `GET /health` -> `ok`
+- `GET /ready` -> `ready`
+- `GET /feature` -> доступен только при `ENABLE_FEATURE_X=true`
+
+## Локальная сборка и запуск
+
+```bash
+docker build -t booking-service:latest ./booking-service
+docker run --rm -p 8080:8080 -e ENABLE_FEATURE_X=true booking-service:latest
+curl http://127.0.0.1:8080/ping
+```
+
+## Деплой Helm в Minikube
+
+Используйте значения для staging:
+
+```bash
+minikube image load booking-service:latest
+helm upgrade --install booking-service ./helm/booking-service \
+  -f ./helm/booking-service/values-staging.yaml \
+  --set image.name=booking-service \
+  --set image.tag=latest
+```
+
+Проверка статуса деплоя:
+
+```bash
+./check-status.sh
+```
+
+Проверка DNS из другого pod:
+
+```bash
+./check-dns.sh
+```
+
+## Локальная проверка CI
+
+Запуск обязательных стадий:
+
+```bash
+gitlab-ci-local build test deploy tag
+```
+
+Запуск со стадией unit-тестов:
+
+```bash
+gitlab-ci-local unit build test deploy tag
 ```

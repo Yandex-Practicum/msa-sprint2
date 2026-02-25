@@ -5,23 +5,41 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
-func main() {
+func newHandler() http.Handler {
 	enableFeatureX := os.Getenv("ENABLE_FEATURE_X") == "true"
+	mux := http.NewServeMux()
 
-	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "pong")
 	})
 
-	// TODO: Feature flag route
-	// if ENABLE_FEATURE_X=true, expose /feature
+	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "ok")
+	})
+
+	mux.HandleFunc("/ready", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "ready")
+	})
+
 	if enableFeatureX {
-		http.HandleFunc("/feature", func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprintf(w, "Feature X is enabled!")
+		mux.HandleFunc("/feature", func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprintf(w, "Фича X включена!")
 		})
 	}
 
-	log.Println("Server running on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	return mux
+}
+
+func main() {
+	server := &http.Server{
+		Addr:              ":8080",
+		Handler:           newHandler(),
+		ReadHeaderTimeout: 5 * time.Second,
+	}
+
+	log.Println("Сервер запущен на :8080")
+	log.Fatal(server.ListenAndServe())
 }
