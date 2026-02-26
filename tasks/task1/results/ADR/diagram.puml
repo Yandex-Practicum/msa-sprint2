@@ -1,0 +1,68 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+System_Boundary(hotel, "Hotelio") {
+    Container(api, "API Gateway", "Nginx")
+
+    System_Boundary(hotelio_new, "Hotelio Microservices") {
+        Container(review, "Reviews Service") {
+            Component(reviewController, "ReviewController", "Spring MVC", "/api/reviews")
+            Component(reviewService, "ReviewService", "Java Service", "Manages hotel reviews")
+            ComponentDb(post, "Review DB", "PostgreSQL", "Reviews")
+            
+            Rel(reviewController, reviewService, "Uses")
+            Rel(reviewService, post, "Reads/Writes")
+        }
+
+    }
+
+    System_Boundary(hotelio, "Hotelio Monolith") {
+    Container(monolith, "Monolith Application", "Spring Boot", "Legacy app exposing REST endpoints for hotel booking") {
+
+        ' Controllers
+        Component(bookingController, "BookingController", "Spring MVC", "/api/bookings")
+        Component(hotelController, "HotelController", "Spring MVC", "/api/hotels")
+        Component(promoController, "PromoCodeController", "Spring MVC", "/api/promos")
+    
+        Component(userController, "UserController", "Spring MVC", "/api/users")
+
+        ' Services
+        Component(bookingService, "BookingService", "Java Service", "Validates and creates bookings")
+        Component(hotelService, "HotelService", "Java Service", "Retrieves hotel details")
+        Component(userService, "UserService", "Java Service", "Validates user status and blacklist")
+        Component(promoService, "PromoCodeService", "Java Service", "Applies discounts and rules")
+        
+
+        ' DB
+        ComponentDb(postgres, "Monolith DB", "PostgreSQL", "Stores users, hotels, bookings, promos")
+
+        ' Controller-Service relations
+        Rel(bookingController, bookingService, "Uses")
+        Rel(hotelController, hotelService, "Uses")
+        Rel(promoController, promoService, "Uses")
+
+        Rel(userController, userService, "Uses")
+
+        ' Service-Service and Service-DB
+        Rel(bookingService, hotelService, "Calls")
+        Rel(bookingService, userService, "Calls")
+        Rel(bookingService, promoService, "Calls")
+        Rel(bookingService, review, "Calls")
+
+        Rel(bookingService, postgres, "Reads/Writes")
+        Rel(userService, postgres, "Reads")
+        Rel(hotelService, postgres, "Reads")
+        Rel(promoService, postgres, "Reads")
+    }
+    }
+}
+
+
+Person(user, "User", "Interacts with frontend")
+Rel(user, api, "Uses")
+Rel(api, bookingController, "Uses")
+Rel(api, hotelController, "Uses")
+Rel(api, promoController, "Uses")
+Rel(api, review, "Uses")
+Rel(api, userController, "Uses")
+@enduml

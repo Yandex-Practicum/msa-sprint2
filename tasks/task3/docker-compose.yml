@@ -8,6 +8,7 @@ services:
     depends_on:
       - booking-subgraph
       - hotel-subgraph
+      - promocode-subgraph
 
   booking-subgraph:
     build: ./booking-subgraph
@@ -18,3 +19,8 @@ services:
     build: ./hotel-subgraph
     ports:
       - "4002:4002"
+
+  promocode-subgraph:
+    build: ./promocode-subgraph
+    ports:
+      - "4003:4003"

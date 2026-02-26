@@ -1,0 +1,6 @@
+﻿IMAGE_NAME: booking-service
+IMAGE_TAG: latest
+CONTAINER_NAME: booking-service-smoke
+RELEASE_NAME: booking-service
+CHART_PATH: helm/booking-service
+VALUES_FILE: helm/booking-service/values-staging.yaml

@@ -1,0 +1,28 @@
+🏁 Регресс booking-service (gRPC → Kafka → Postgres)
+🧪 Ждём Postgres booking-history-db:5432...
+✅ Postgres доступен
+🧪 Создаём бронирования через client.py...
+[1/5] id=d460dc2f-45ce-4bfa-9621-762da0d32d1f user=u1 hotel=h1 promo= price=100.0
+[2/5] id=7b128942-fac7-4c75-9e06-6bef136cd718 user=u2 hotel=h2 promo=SALE10 price=90.0
+[3/5] id=fb9e7dbc-8c67-45c5-81e6-2b306e00e658 user=u2 hotel=h1 promo=SALE10 price=90.0
+[4/5] id=53ea95c6-dbbd-4f5f-8c22-6f69769f8215 user=u2 hotel=h2 promo=SALE20 price=80.0
+[5/5] id=d5f875ce-f208-4ff9-a793-e06fde0ae915 user=u2 hotel=h3 promo= price=100.0
+
+ListBookings(u1) -> 18 items
+✅ client.py успешно отработал
+🧪 Проверяем записи в booking-history-db...
+✅ bookings count=5
+🎉 Регресс успешно пройден
+
+
+"select * from bookings"
+docker exec -it booking-history-db psql -U history -d booking_history -c "select * from bookings;"
+
+id                  | user_id | hotel_id | promo_code | discount_percent | price |          created_at           |          occurred_at
+--------------------------------------+---------+----------+------------+------------------+-------+-------------------------------+-------------------------------
+d460dc2f-45ce-4bfa-9621-762da0d32d1f | u1      | h1       |            |                0 |   100 | 2026-02-24 16:59:39.946758+00 | 2026-02-24 16:59:39.946776+00
+ 7b128942-fac7-4c75-9e06-6bef136cd718 | u2      | h2       | SALE10     |               10 |    90 | 2026-02-24 16:59:40.000576+00 | 2026-02-24 16:59:40.000593+00
+ fb9e7dbc-8c67-45c5-81e6-2b306e00e658 | u2      | h1       | SALE10     |               10 |    90 | 2026-02-24 16:59:40.053438+00 | 2026-02-24 16:59:40.053456+00
+ 53ea95c6-dbbd-4f5f-8c22-6f69769f8215 | u2      | h2       | SALE20     |               20 |    80 | 2026-02-24 16:59:40.106209+00 | 2026-02-24 16:59:40.106224+00
+ d5f875ce-f208-4ff9-a793-e06fde0ae915 | u2      | h3       |            |                0 |   100 | 2026-02-24 16:59:40.158913+00 | 2026-02-24 16:59:40.158929+00
+ (5 rows)

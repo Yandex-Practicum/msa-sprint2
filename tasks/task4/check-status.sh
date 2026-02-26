@@ -1,24 +1,26 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
-echo "▶️ Checking booking-service deployment..."
+echo "Проверка deployment booking-service..."
 kubectl get pods -l app=booking-service
 
 echo
-echo "▶️ Checking service..."
-kubectl get svc booking-service || echo "(No service found)"
+echo "Проверка service booking-service..."
+kubectl get svc booking-service
 
 echo
-echo "▶️ Helm release:"
-helm list | grep booking-service || echo "(No release found)"
+echo "Проверка Helm-релиза..."
+helm list | grep booking-service || echo "Релиз booking-service не найден"
 
 echo
-echo "▶️ Port-forward to test service locally:"
+echo "Команда port-forward:"
 echo "  kubectl port-forward svc/booking-service 8080:80"
-echo "  Then in another terminal:"
-echo "    curl http://localhost:8080/ping"
+echo "  curl http://127.0.0.1:8080/ping"
 
 echo
-echo "▶️ Quick curl (if port-forward already running):"
-curl --fail http://localhost:8080/ping && echo "✅ Reachable" || echo "❌ Not responding"
+if curl -fsS http://127.0.0.1:8080/ping >/dev/null; then
+  echo "Сервис отвечает на http://127.0.0.1:8080/ping"
+else
+  echo "Port-forward пока не запущен (это ожидаемо, если вы его не запускали)."
+fi
