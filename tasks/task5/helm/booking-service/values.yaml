@@ -1,0 +1,75 @@
+image:
+  name: booking-service
+  tag: latest
+  pullPolicy: Never
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+env: []
+
+versions:
+  - name: v1
+    replicaCount: 1
+    enableFeatureX: "false"
+    env: []
+  - name: v2
+    replicaCount: 1
+    enableFeatureX: "false"
+    env: []
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
+
+livenessProbe:
+  path: /ping
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 2
+  failureThreshold: 3
+
+readinessProbe:
+  path: /ping
+  initialDelaySeconds: 3
+  periodSeconds: 5
+  timeoutSeconds: 2
+  failureThreshold: 3
+
+canary:
+  v1Weight: 90
+  v2Weight: 10
+
+istio:
+  host: booking-service
+  gateway:
+    enabled: true
+    name: booking-service-gateway
+    hosts:
+      - "*"
+  retries:
+    attempts: 8
+    perTryTimeout: 1s
+    retryOn: 5xx,connect-failure,refused-stream,reset,gateway-error
+  circuitBreaker:
+    tcpMaxConnections: 25
+    http1MaxPendingRequests: 25
+    maxRequestsPerConnection: 2
+    maxRetries: 5
+    consecutive5xxErrors: 3
+    interval: 5s
+    baseEjectionTime: 30s
+    maxEjectionPercent: 100
+  featureFlag:
+    requestHeader: x-feature-enabled
+    routeHeader: x-feature-enabled-route
+    enabledValue: "true"
+  envoyFilter:
+    namespace: istio-system
+

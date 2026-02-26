@@ -1,0 +1,67 @@
+image:
+  name: booking-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+env:
+  - name: APP_ENV
+    value: prod
+  - name: LOG_LEVEL
+    value: info
+
+versions:
+  - name: v1
+    replicaCount: 3
+    enableFeatureX: "false"
+    env: []
+  - name: v2
+    replicaCount: 1
+    enableFeatureX: "false"
+    env: []
+
+resources:
+  requests:
+    cpu: 150m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+livenessProbe:
+  path: /ping
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 2
+  failureThreshold: 3
+
+readinessProbe:
+  path: /ping
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 2
+  failureThreshold: 3
+
+canary:
+  v1Weight: 90
+  v2Weight: 10
+
+istio:
+  retries:
+    attempts: 6
+    perTryTimeout: 1s
+    retryOn: 5xx,connect-failure,refused-stream,reset,gateway-error
+  circuitBreaker:
+    tcpMaxConnections: 100
+    http1MaxPendingRequests: 100
+    maxRequestsPerConnection: 2
+    maxRetries: 20
+    consecutive5xxErrors: 5
+    interval: 5s
+    baseEjectionTime: 30s
+    maxEjectionPercent: 100
+

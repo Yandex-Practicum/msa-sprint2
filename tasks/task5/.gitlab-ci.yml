@@ -1,0 +1,56 @@
+stages:
+  - unit
+  - build
+  - test
+  - deploy
+  - tag
+
+variables:
+  IMAGE_NAME: booking-service
+  IMAGE_TAG: latest
+  CONTAINER_NAME: booking-service-smoke
+  RELEASE_NAME: booking-service
+  CHART_PATH: helm/booking-service
+  VALUES_FILE: helm/booking-service/values-staging.yaml
+
+unit:
+  stage: unit
+  script:
+    - cd booking-service
+    - go test ./...
+
+build:
+  stage: build
+  script:
+    - docker build -t "$IMAGE_NAME:$IMAGE_TAG" ./booking-service
+
+test:
+  stage: test
+  script:
+    - docker run -d --name "$CONTAINER_NAME" -p 18080:8080 "$IMAGE_NAME:$IMAGE_TAG"
+    - |
+      for i in $(seq 1 20); do
+        if curl -fsS http://127.0.0.1:18080/ping >/dev/null; then
+          break
+        fi
+        sleep 1
+      done
+    - curl -fsS http://127.0.0.1:18080/ping
+  after_script:
+    - docker rm -f "$CONTAINER_NAME" 2>/dev/null || true
+
+deploy:
+  stage: deploy
+  script:
+    - minikube image load "$IMAGE_NAME:$IMAGE_TAG"
+    - helm upgrade --install "$RELEASE_NAME" "$CHART_PATH" -f "$VALUES_FILE" --set image.name="$IMAGE_NAME" --set image.tag="$IMAGE_TAG"
+    - kubectl rollout status deployment/"$RELEASE_NAME-v1" --timeout=120s
+    - kubectl rollout status deployment/"$RELEASE_NAME-v2" --timeout=120s
+
+tag:
+  stage: tag
+  script:
+    - 'TAG_NAME="deploy-$(date +%Y%m%d-%H%M%S)-${CI_PIPELINE_ID:-local}"'
+    - git tag "$TAG_NAME"
+    - 'echo "Tag created: $TAG_NAME"'
+
