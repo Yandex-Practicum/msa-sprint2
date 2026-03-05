@@ -1,0 +1,12 @@
+Checking booking-service deployment...
+NAME                               READY   STATUS    RESTARTS   AGE
+booking-service-5457748cf6-fmz4h   1/1     Running   0          12m
+
+Checking service...
+NAME              TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+booking-service   ClusterIP   10.99.137.100   <none>        80/TCP    12m
+
+Port-forward to test service locally:
+kubectl port-forward svc/booking-service 8080:80
+Then:
+curl http://localhost:8080/ping

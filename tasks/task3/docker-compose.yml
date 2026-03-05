@@ -5,16 +5,48 @@ services:
     build: ./gateway
     ports:
       - "4000:4000"
+    environment:
+      - NODE_ENV=production
     depends_on:
       - booking-subgraph
       - hotel-subgraph
+      - promocode-subgraph
+    restart: unless-stopped
+    networks:
+      - graphql-net
 
   booking-subgraph:
     build: ./booking-subgraph
     ports:
       - "4001:4001"
+    environment:
+      - MONOLITH_URL=http://hotelio-monolith:8080
+    networks:
+      - graphql-net
+      - hotelio-net
 
   hotel-subgraph:
     build: ./hotel-subgraph
     ports:
       - "4002:4002"
+    environment:
+      - MONOLITH_URL=http://hotelio-monolith:8080
+    networks:
+      - graphql-net
+      - hotelio-net
+
+  promocode-subgraph:
+    build: ./promocode-subgraph
+    ports:
+      - "4003:4003"
+    environment:
+      - MONOLITH_URL=http://hotelio-monolith:8080
+    networks:
+      - graphql-net
+      - hotelio-net
+
+networks:
+  graphql-net:
+    driver: bridge
+  hotelio-net:
+    external: true

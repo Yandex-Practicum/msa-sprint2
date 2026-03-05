@@ -3,7 +3,7 @@ version: "3.8"
 services:
   monolith:
     build:
-      context: ../monolith
+      context: ../../hotelio-monolith
       dockerfile: Dockerfile
     container_name: hotelio-monolith
     ports:
@@ -16,6 +16,9 @@ services:
       SPRING_DATASOURCE_PASSWORD: hotelio
       BOOKING_SERVICE_EXTERNAL_HOST: booking-service
       BOOKING_SERVICE_EXTERNAL_PORT: 9090
+    depends_on:
+      - monolith-db
+      - booking-service
 
   monolith-db:
     image: postgres:15
@@ -42,6 +45,9 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
       - hotelio-net
+    depends_on:
+      - zookeeper
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.2.1
     ports:
@@ -52,8 +58,69 @@ services:
     networks:
       - hotelio-net
 
+  booking-db:
+    image: postgres:15
+    container_name: booking-db
+    environment:
+      POSTGRES_USER: booking
+      POSTGRES_PASSWORD: booking
+      POSTGRES_DB: booking
+    networks:
+      - hotelio-net
+    volumes:
+      - booking-db-data:/var/lib/postgresql/data
+
+  booking-service:
+    build:
+      context: ./booking-service
+    container_name: booking-service
+    ports:
+      - "9090:9090"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://booking-db:5432/booking
+      SPRING_DATASOURCE_USERNAME: booking
+      SPRING_DATASOURCE_PASSWORD: booking
+      MONOLITH_URL: http://hotelio-monolith:8080
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    networks:
+      - hotelio-net
+    depends_on:
+      - booking-db
+      - kafka
+
+  booking-history-db:
+    image: postgres:15
+    container_name: booking-history-db
+    environment:
+      POSTGRES_USER: history
+      POSTGRES_PASSWORD: history
+      POSTGRES_DB: history
+    networks:
+      - hotelio-net
+    volumes:
+      - booking-history-db-data:/var/lib/postgresql/data
+
+  booking-history-service:
+    build:
+      context: ./booking-history-service
+    container_name: booking-history-service
+    ports:
+      - "8085:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://booking-history-db:5432/history
+      SPRING_DATASOURCE_USERNAME: history
+      SPRING_DATASOURCE_PASSWORD: history
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    networks:
+      - hotelio-net
+    depends_on:
+      - booking-history-db
+      - kafka
+
 volumes:
   monolith-db-data:
+  booking-db-data:
+  booking-history-db-data:
 
 networks:
   hotelio-net:

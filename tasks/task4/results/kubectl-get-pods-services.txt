@@ -1,0 +1,57 @@
+=== kubectl get pods ===
+NAME                               READY   STATUS    RESTARTS   AGE
+booking-service-5457748cf6-fmz4h   1/1     Running   0          81s
+
+=== kubectl get services ===
+NAME              TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+booking-service   ClusterIP   10.99.137.100   <none>        80/TCP    81s
+kubernetes        ClusterIP   10.96.0.1       <none>        443/TCP   3m56s
+
+=== kubectl get deployment -o wide ===
+NAME              READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS        IMAGES                   SELECTOR
+booking-service   1/1     1            1           81s   booking-service   booking-service:latest   app=booking-service
+Name:                   booking-service
+Namespace:              default
+CreationTimestamp:      Tue, 03 Mar 2026 22:15:49 +0300
+Labels:                 app=booking-service
+                        app.kubernetes.io/managed-by=Helm
+Annotations:            deployment.kubernetes.io/revision: 1
+                        meta.helm.sh/release-name: booking-service
+                        meta.helm.sh/release-namespace: default
+Selector:               app=booking-service
+Replicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:  app=booking-service
+  Containers:
+   booking-service:
+    Image:      booking-service:latest
+    Port:       8080/TCP
+    Host Port:  0/TCP
+    Limits:
+      cpu:     250m
+      memory:  128Mi
+    Requests:
+      cpu:      100m
+      memory:   64Mi
+    Liveness:   http-get http://:8080/ping delay=5s timeout=1s period=10s #success=1 #failure=3
+    Readiness:  http-get http://:8080/health delay=3s timeout=1s period=5s #success=1 #failure=3
+    Environment:
+      ENABLE_FEATURE_X:  false
+    Mounts:              <none>
+  Volumes:               <none>
+  Node-Selectors:        <none>
+  Tolerations:           <none>
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Available      True    MinimumReplicasAvailable
+  Progressing    True    NewReplicaSetAvailable
+OldReplicaSets:  <none>
+NewReplicaSet:   booking-service-5457748cf6 (1/1 replicas created)
+Events:
+  Type    Reason             Age   From                   Message
+  ----    ------             ----  ----                   -------
+  Normal  ScalingReplicaSet  81s   deployment-controller  Scaled up replica set booking-service-5457748cf6 from 0 to 1

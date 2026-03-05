@@ -1,0 +1,43 @@
+============================================
+ Feature Flag Header Check
+============================================
+
+--- Part 1: 10 requests WITHOUT x-feature-enabled header ---
+  [1] -> pong-v1
+  [2] -> pong-v1
+  [3] -> pong-v1
+  [4] -> pong-v1
+  [5] -> pong-v1
+  [6] -> pong-v1
+  [7] -> pong-v1
+  [8] -> pong-v1
+  [9] -> pong-v1
+  [10] -> pong-v1
+  v1: 10, v2: 0
+
+--- Part 2: 10 requests WITH x-feature-enabled: true ---
+  [1] -> pong-v2
+  [2] -> pong-v2
+  [3] -> pong-v2
+  [4] -> pong-v2
+  [5] -> pong-v2
+  [6] -> pong-v2
+  [7] -> pong-v2
+  [8] -> pong-v2
+  [9] -> pong-v2
+  [10] -> pong-v2
+
+[PASS] All requests with x-feature-enabled: true routed to v2
+
+--- Part 3: Check x-feature-routed response header (EnvoyFilter) ---
+HTTP/1.1 200 OK
+date: Tue, 03 Mar 2026 20:33:05 GMT
+content-length: 7
+content-type: text/plain; charset=utf-8
+x-envoy-upstream-service-time: 5
+x-feature-routed: v2
+server: envoy
+
+[PASS] x-feature-routed header present in response (EnvoyFilter is active)
+
+Done.

@@ -1,0 +1,58 @@
+============================================
+ Istio Service Mesh Verification
+============================================
+
+--- Istio system pods ---
+NAME                                   READY   STATUS    RESTARTS   AGE
+istio-egressgateway-74b45df455-67gct   1/1     Running   0          4m21s
+istio-ingressgateway-f547fc59c-xqc4f   1/1     Running   0          4m21s
+istiod-f75584cf4-2gqhr                 1/1     Running   0          4m40s
+
+--- Namespace injection label ---
+NAME      STATUS   AGE   LABELS
+default   Active   55m   istio-injection=enabled,kubernetes.io/metadata.name=default
+
+--- booking-service pods (expect 2/2 READY with Istio sidecar) ---
+NAME                                  READY   STATUS    RESTARTS   AGE     IP            NODE       NOMINATED NODE   READINESS GATES
+booking-service-v1-68dbd777b9-79vrf   2/2     Running   0          3m1s    10.244.0.14   minikube   <none>           <none>
+booking-service-v2-b4b6794f5-nrgdv    2/2     Running   0          2m54s   10.244.0.15   minikube   <none>           <none>
+
+--- Sidecar injection check ---
+  [OK] Pod booking-service-v1-68dbd777b9-79vrf has istio-proxy (native sidecar in initContainers): istio-init istio-proxy
+  [OK] Pod booking-service-v2-b4b6794f5-nrgdv has istio-proxy (native sidecar in initContainers): istio-init istio-proxy
+  => All pods have Istio sidecars injected
+
+--- VirtualService ---
+  name: booking-service
+    name: feature-flag-route
+        host: booking-service
+        subset: v2
+  - name: canary-route
+        host: booking-service
+        subset: v1
+      weight: 90
+        host: booking-service
+        subset: v2
+      weight: 10
+
+--- DestinationRule ---
+  name: booking-service
+  host: booking-service
+    name: v1
+    name: v2
+      consecutive5xxErrors: 3
+
+--- EnvoyFilter ---
+  name: feature-flag-header
+            name: envoy.filters.network.http_connection_manager
+              name: envoy.filters.http.router
+        name: envoy.filters.http.lua
+  workloadSelector:
+      version: v2
+
+--- Summary ---
+VirtualService:  PRESENT
+DestinationRule: PRESENT
+EnvoyFilter:     PRESENT
+
+Done.

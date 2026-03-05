@@ -1,0 +1,67 @@
+============================================
+ Canary Traffic Distribution Check (90/10)
+============================================
+
+Sending 50 requests to /ping ...
+
+  [1] -> pong-v1
+  [2] -> pong-v1
+  [3] -> pong-v1
+  [4] -> pong-v1
+  [5] -> pong-v1
+  [6] -> pong-v1
+  [7] -> pong-v1
+  [8] -> pong-v1
+  [9] -> pong-v1
+  [10] -> pong-v1
+  [11] -> pong-v1
+  [12] -> pong-v1
+  [13] -> pong-v1
+  [14] -> pong-v1
+  [15] -> pong-v1
+  [16] -> pong-v1
+  [17] -> pong-v2
+  [18] -> pong-v1
+  [19] -> pong-v1
+  [20] -> pong-v1
+  [21] -> pong-v1
+  [22] -> pong-v1
+  [23] -> pong-v1
+  [24] -> pong-v1
+  [25] -> pong-v1
+  [26] -> pong-v1
+  [27] -> pong-v1
+  [28] -> pong-v1
+  [29] -> pong-v1
+  [30] -> pong-v1
+  [31] -> pong-v1
+  [32] -> pong-v1
+  [33] -> pong-v1
+  [34] -> pong-v1
+  [35] -> pong-v1
+  [36] -> pong-v1
+  [37] -> pong-v1
+  [38] -> pong-v1
+  [39] -> pong-v1
+  [40] -> pong-v1
+  [41] -> pong-v2
+  [42] -> pong-v1
+  [43] -> pong-v1
+  [44] -> pong-v1
+  [45] -> pong-v1
+  [46] -> pong-v1
+  [47] -> pong-v1
+  [48] -> pong-v1
+  [49] -> pong-v1
+  [50] -> pong-v1
+
+--- Results ---
+Total requests:  50
+pong-v1 (v1):    48 (96%)
+pong-v2 (v2):    2 (4%)
+Failures:        0
+
+[PASS] Both v1 and v2 received traffic (canary routing is active)
+[PASS] v2 received ~4% of traffic (expected ~10%, tolerance 2-35%)
+
+Done.

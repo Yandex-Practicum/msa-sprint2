@@ -1,0 +1,17 @@
+replicaCount: 1
+
+image:
+  tag: latest
+  pullPolicy: Never
+
+env:
+  - name: ENABLE_FEATURE_X
+    value: "false"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 250m
+    memory: 128Mi

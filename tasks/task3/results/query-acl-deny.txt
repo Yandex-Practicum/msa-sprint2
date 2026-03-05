@@ -1,0 +1,41 @@
+# ACL Deny — попытка получить чужие бронирования
+
+## Запрос
+
+POST http://localhost:4000
+Header: userid: test-user-3   ← запрашивает чужие данные
+Header: Content-Type: application/json
+
+Query:
+{
+  bookingsByUser(userId: "test-user-2") {
+    id
+  }
+}
+
+## Ответ
+
+{
+  "errors": [
+    {
+      "message": "Access denied: you can only view your own bookings",
+      "path": [
+        "bookingsByUser"
+      ],
+      "extensions": {
+        "code": "FORBIDDEN",
+        "serviceName": "booking"
+      }
+    }
+  ],
+  "data": {
+    "bookingsByUser": null
+  }
+}
+
+## Что видно
+
+- userid в заголовке (test-user-3) НЕ совпадает с userId в запросе (test-user-2)
+- booking-subgraph выбросил GraphQLError(FORBIDDEN)
+- Gateway вернул ошибку с code: FORBIDDEN
+- Работает и при полном отсутствии заголовка userid
