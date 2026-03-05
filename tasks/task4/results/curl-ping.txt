@@ -1,0 +1,8 @@
+=== curl http://localhost:8080/ping ===
+pong
+
+=== curl http://localhost:8080/health ===
+ok
+
+=== ENABLE_FEATURE_X=false: /feature returns 404 ===
+HTTP 404

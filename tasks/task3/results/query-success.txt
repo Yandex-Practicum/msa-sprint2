@@ -1,0 +1,63 @@
+# Успешный вызов — bookingsByUser с заголовком userid: test-user-2
+
+## Запрос
+
+POST http://localhost:4000
+Header: userid: test-user-2
+Header: Content-Type: application/json
+
+Query:
+{
+  bookingsByUser(userId: "test-user-2") {
+    id
+    userId
+    hotelId
+    promoCode
+    discountPercent
+    hotel {
+      city
+      rating
+      description
+    }
+    discountInfo {
+      isValid
+      originalDiscount
+      finalDiscount
+      description
+    }
+  }
+}
+
+## Ответ
+
+{
+  "data": {
+    "bookingsByUser": [
+      {
+        "id": "1",
+        "userId": "test-user-2",
+        "hotelId": "test-hotel-1",
+        "promoCode": "TESTCODE1",
+        "discountPercent": 10,
+        "hotel": {
+          "city": "Seoul",
+          "rating": 4.7,
+          "description": "Modern hotel in Seoul downtown with spa and skybar."
+        },
+        "discountInfo": {
+          "isValid": true,
+          "originalDiscount": 10,
+          "finalDiscount": 10,
+          "description": "Обычный промокод"
+        }
+      }
+    ]
+  }
+}
+
+## Что видно
+
+- discountPercent = 10 — приходит из promocode-subgraph (@override из booking-subgraph)
+- hotel.city/rating/description — приходит из hotel-subgraph через DataLoader
+- discountInfo — рассчитано в promocode-subgraph через REST /api/promos/TESTCODE1
+- ACL пропустил запрос: userid в заголовке совпадает с userId в запросе

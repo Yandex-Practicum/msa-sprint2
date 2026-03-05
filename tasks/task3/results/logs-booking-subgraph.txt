@@ -1,0 +1,30 @@
+# Логи booking-subgraph после запросов
+
+## docker logs task3-booking-subgraph-1
+
+Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+✅ Booking subgraph ready at http://localhost:4001/
+   Monolith URL: http://hotelio-monolith:8080
+[ACL] User test-user-2 fetching bookings for userId=test-user-2
+[REST] Got 1 bookings for userId=test-user-2
+[ACL] User test-user-2 fetching bookings for userId=test-user-2
+[REST] Got 1 bookings for userId=test-user-2
+[ACL] User test-user-2 fetching bookings for userId=test-user-2
+[REST] Got 1 bookings for userId=test-user-2
+
+# Логи hotel-subgraph — DataLoader batching
+
+## docker logs task3-hotel-subgraph-1
+
+Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+✅ Hotel subgraph ready at http://localhost:4002/
+   Monolith URL: http://hotelio-monolith:8080
+[DataLoader] Batching 1 hotel(s): test-hotel-1
+[DataLoader] Batching 1 hotel(s): test-hotel-1
+[DataLoader] Batching 1 hotel(s): test-hotel-1
+
+# Пояснение
+
+Каждый запрос bookingsByUser с hotel { ... } вызывает DataLoader.
+DataLoader батчит все hotel IDs за один тик event-loop и делает Promise.all параллельных
+HTTP-запросов к /api/hotels/{id}, вместо N последовательных запросов.

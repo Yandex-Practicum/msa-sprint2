@@ -1,0 +1,30 @@
+@startuml C4-Context-As-Is
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title C4 Context — Hotelio (As-Is, Текущее состояние — Монолит)
+
+Person(user, "Пользователь", "Клиент платформы бронирования отелей.\nПолучает доступ через браузер\nили мобильное приложение.")
+
+Person(analytics_team, "Аналитическая команда", "Внутренняя команда.\nТребует доступа к данным о бронированиях\nдля построения отчётов и статистики.")
+
+System(hotelio, "Hotelio Monolith", "Java Spring Boot монолит.\nОбрабатывает бронирования, управляет\nпользователями, отелями, промокодами\nи отзывами.\nЕдиная точка входа для всех клиентов.")
+
+SystemDb(postgres, "Monolith PostgreSQL", "Единая реляционная база данных.\nТаблицы: app_user, booking, hotel,\npromo_code, review.\nВсе модули используют одну БД.")
+
+Rel(user, hotelio, "Использует", "HTTPS / REST API")
+Rel(analytics_team, postgres, "Читает напрямую", "SQL / psql\n(прямой доступ к боевой БД)")
+Rel(hotelio, postgres, "Читает и записывает", "JDBC / JPA")
+
+note right of hotelio
+  **Проблемы текущей архитектуры:**
+  - Все 5 модулей в одном процессе
+  - Единая точка отказа
+  - Невозможно масштабировать отдельно
+  - Общая БД — скрытые зависимости
+  - Блокировка параллельной разработки
+  - Нет BFF для фронтенда
+end note
+
+@enduml

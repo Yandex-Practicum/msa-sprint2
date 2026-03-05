@@ -1,0 +1,43 @@
+replicaCount: 1
+
+appName: booking-service   # fixed label for Service selector (shared between v1 and v2)
+appVersion: v1             # Istio subset label (v1 or v2)
+createService: true        # only v1 creates the shared Service
+
+image:
+  name: booking-service
+  tag: v1
+  pullPolicy: Never
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+env:
+  - name: ENABLE_FEATURE_X
+    value: "false"
+  - name: APP_VERSION
+    value: "v1"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 250m
+    memory: 128Mi
+
+livenessProbe:
+  httpGet:
+    path: /ping
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+  initialDelaySeconds: 3
+  periodSeconds: 5

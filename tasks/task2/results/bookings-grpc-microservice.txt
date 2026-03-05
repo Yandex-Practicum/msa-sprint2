@@ -1,0 +1,64 @@
+=== gRPC: booking.BookingService/ListBookings {user_id: 'test-user-2'} ===
+{
+  "bookings": [
+    {
+      "id": "2",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-03-02T20:35:23.768082Z"
+    },
+    {
+      "id": "4",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-03-02T20:36:16.346130Z"
+    },
+    {
+      "id": "6",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-03-02T20:40:35.301670Z"
+    }
+  ]
+}
+
+=== gRPC: booking.BookingService/ListBookings {user_id: 'test-user-3'} ===
+{
+  "bookings": [
+    {
+      "id": "1",
+      "user_id": "test-user-3",
+      "hotel_id": "test-hotel-1",
+      "price": 80,
+      "created_at": "2026-03-02T20:35:23.115330Z"
+    },
+    {
+      "id": "3",
+      "user_id": "test-user-3",
+      "hotel_id": "test-hotel-1",
+      "price": 80,
+      "created_at": "2026-03-02T20:36:16.282721Z"
+    },
+    {
+      "id": "5",
+      "user_id": "test-user-3",
+      "hotel_id": "test-hotel-1",
+      "price": 80,
+      "created_at": "2026-03-02T20:40:35.244043Z"
+    }
+  ]
+}
+
+=== gRPC: available services (reflection) ===
+booking.BookingService
+grpc.health.v1.Health
+grpc.reflection.v1alpha.ServerReflection

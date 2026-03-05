@@ -1,0 +1,52 @@
+@startuml C4-Container-Intermediate
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title C4 Container — Hotelio\n(To-Be Промежуточное состояние, ~2 месяца)\nПервый этап: выделение BookingService + booking-history-service
+
+Person(user, "Пользователь", "Клиент платформы бронирования отелей.")
+Person(analytics_team, "Аналитическая команда", "Внутренняя команда аналитики.")
+
+System_Boundary(hotelio_platform, "Hotelio Platform") {
+
+    System_Boundary(monolith_boundary, "Hotelio Monolith (сохраняется)") {
+        Container(monolith, "Monolith Application", "Java Spring Boot", "REST API для управления пользователями,\nотелями, промокодами, отзывами.\nСодержит gRPC-прокси для BookingService:\nPOST /api/bookings делегируется\nна booking-service через gRPC.\nGET /api/bookings временно здесь.")
+        ContainerDb(monolith_db, "Monolith DB", "PostgreSQL", "Таблицы: app_user, hotel,\npromo_code, review.\nТаблица booking переносится.")
+    }
+
+    System_Boundary(booking_boundary, "Booking Domain (новый микросервис)") {
+        Container(booking_service, "booking-service", "Java Spring Boot\ngRPC Server (port 9090)", "Бизнес-логика создания бронирований.\nПолучает данные о пользователях, отелях,\nпромокодах и отзывах через REST API монолита.\nПубликует события BookingCreated в Kafka.")
+        ContainerDb(booking_db, "Booking DB", "PostgreSQL", "Таблица: booking.\nИзолированная БД только\nдля сервиса бронирований.")
+    }
+
+    System_Boundary(history_boundary, "Analytics Domain (новый микросервис)") {
+        Container(booking_history, "booking-history-service", "Java Spring Boot\nKafka Consumer", "Подписывается на топик booking-events.\nФормирует аналитические агрегаты:\nстатистика по пользователям, отелям, дням.")
+        ContainerDb(history_db, "History DB", "PostgreSQL", "Аналитические данные о бронированиях.\nАгрегаты и история событий.")
+    }
+
+    Container(kafka, "Apache Kafka", "Kafka Broker\n+ Zookeeper", "Шина асинхронных событий.\nТопик: booking-events\n(BookingCreated события).")
+}
+
+Rel(user, monolith, "Отправляет запросы", "HTTPS / REST\nPOST /api/bookings (проксируется)\nGET /api/hotels, /api/users,\n/api/promos, /api/reviews")
+
+Rel(monolith, booking_service, "Перенаправляет создание\nбронирования", "gRPC\nCreateBooking()")
+
+Rel(booking_service, monolith, "Запрашивает данные\nдругих доменов", "REST\n/api/users/{id}\n/api/hotels/{id}\n/api/promos/validate\n/api/reviews/{id}/trusted")
+
+Rel(booking_service, booking_db, "Читает и записывает", "JDBC / JPA")
+Rel(booking_service, kafka, "Публикует событие", "Kafka Producer\nBookingCreated")
+Rel(booking_history, kafka, "Подписывается на события", "Kafka Consumer\nbooking-events")
+Rel(booking_history, history_db, "Записывает агрегаты", "JDBC / JPA")
+Rel(monolith, monolith_db, "Читает и записывает", "JDBC / JPA")
+Rel(analytics_team, history_db, "Читает аналитику", "SQL\n(изолировано от боевой БД)")
+
+note right of booking_service
+  **Временная зависимость:**
+  booking-service вызывает REST монолита
+  для получения данных других доменов.
+  Устраняется по мере выделения
+  AppUserService, HotelService и др.
+end note
+
+@enduml

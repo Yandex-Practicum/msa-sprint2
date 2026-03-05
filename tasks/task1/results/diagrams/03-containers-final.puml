@@ -1,0 +1,95 @@
+@startuml C4-Container-Final
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title C4 Container — Hotelio\n(To-Be Финальное состояние, ~1 год)\nПолная микросервисная архитектура с Service Mesh
+
+Person(user, "Пользователь", "Клиент платформы.\nДоступ через браузер\nили мобильное приложение.")
+Person(analytics_team, "Аналитическая команда", "Внутренняя команда аналитики.")
+
+System_Boundary(hotelio_platform, "Hotelio Platform (Kubernetes + Istio Service Mesh)") {
+
+    System_Boundary(gateway_layer, "API Gateway Layer") {
+        Container(apollo_gateway, "Apollo Gateway", "Node.js\nApollo Federation", "GraphQL суперграф.\nАгрегирует схемы всех subgraph-сервисов.\nЕдиная точка входа для фронтенда.\nACL на уровне запросов.")
+    }
+
+    System_Boundary(graphql_layer, "GraphQL Subgraphs (BFF Layer)") {
+        Container(booking_subgraph, "booking-subgraph", "Node.js\nApollo Federation", "GraphQL схема домена бронирований.\nACL: userId из заголовка.\nДанные из booking-service (gRPC).")
+        Container(hotel_subgraph, "hotel-subgraph", "Node.js\nApollo Federation", "GraphQL схема домена отелей.\nDataLoader для батчинга (решение N+1).\n__resolveReference через hotelsByIds.")
+        Container(promocode_subgraph, "promocode-subgraph", "Node.js\nApollo Federation", "GraphQL схема промокодов.\n@override discountPercent из booking.\nValidation и активные промокоды.")
+    }
+
+    System_Boundary(booking_domain, "Booking Domain") {
+        Container(booking_service, "booking-service", "Java Spring Boot\ngRPC Server\nHelm Chart", "Создание и управление бронированиями.\ngRPC: CreateBooking, ListBookings.\nPublishes: BookingCreated -> Kafka.\nCanary deployment через Istio.")
+        ContainerDb(booking_db, "Booking DB", "PostgreSQL", "Таблица: booking.\nИзолированная БД.")
+        Container(booking_history, "booking-history-service", "Java Spring Boot\nKafka Consumer\nHelm Chart", "Аналитика бронирований.\nАгрегаты по пользователям,\nотелям, дням.")
+        ContainerDb(history_db, "History DB", "PostgreSQL", "Аналитические агрегаты.")
+    }
+
+    System_Boundary(user_domain, "User Domain") {
+        Container(user_service, "user-service", "Java Spring Boot\ngRPC + REST\nHelm Chart", "Управление пользователями.\nПроверка: активность,\nблэклист, VIP-статус.")
+        ContainerDb(user_db, "User DB", "PostgreSQL", "Таблица: app_user.")
+    }
+
+    System_Boundary(hotel_domain, "Hotel Domain") {
+        Container(hotel_service, "hotel-service", "Java Spring Boot\nREST\nHelm Chart", "Управление отелями.\nПоиск по городу, топ-рейтинг.\nОперационность и доступность.")
+        ContainerDb(hotel_db, "Hotel DB", "PostgreSQL", "Таблица: hotel.")
+    }
+
+    System_Boundary(review_domain, "Review Domain") {
+        Container(review_service, "review-service", "Java Spring Boot\nREST\nHelm Chart", "Управление отзывами.\nTrust score:\navg >= 4.0 AND count >= 10.")
+        ContainerDb(review_db, "Review DB", "PostgreSQL", "Таблица: review.")
+    }
+
+    System_Boundary(promo_domain, "PromoCode Domain") {
+        Container(promo_service, "promocode-service", "Java Spring Boot\nREST\nHelm Chart", "Управление промокодами.\nВалидация, VIP-правила.")
+        ContainerDb(promo_db, "PromoCode DB", "PostgreSQL", "Таблица: promo_code.")
+    }
+
+    Container(kafka, "Apache Kafka", "Kafka Cluster\n(3 brokers)", "Шина событий.\nТопики: booking-events.\nReplication factor = 3.")
+
+    System_Boundary(observability, "Observability Stack") {
+        Container(prometheus, "Prometheus + Grafana", "Metrics", "Сбор метрик со всех сервисов.\nДашборды по доменам.")
+        Container(jaeger, "Jaeger", "Distributed Tracing", "Распределённая трассировка.")
+    }
+}
+
+Rel(user, apollo_gateway, "GraphQL запросы", "HTTPS port 4000")
+Rel(apollo_gateway, booking_subgraph, "Маршрутизирует", "HTTP GraphQL")
+Rel(apollo_gateway, hotel_subgraph, "Маршрутизирует", "HTTP GraphQL")
+Rel(apollo_gateway, promocode_subgraph, "Маршрутизирует", "HTTP GraphQL")
+
+Rel(booking_subgraph, booking_service, "Вызывает", "gRPC")
+Rel(hotel_subgraph, hotel_service, "Вызывает", "REST")
+Rel(promocode_subgraph, promo_service, "Вызывает", "REST")
+
+Rel(booking_service, user_service, "Проверяет пользователя", "gRPC / mTLS")
+Rel(booking_service, hotel_service, "Проверяет отель", "gRPC / mTLS")
+Rel(booking_service, review_service, "Проверяет trust score", "REST / mTLS")
+Rel(booking_service, promo_service, "Валидирует промокод", "REST / mTLS")
+
+Rel(booking_service, booking_db, "Читает/Пишет", "JDBC")
+Rel(user_service, user_db, "Читает/Пишет", "JDBC")
+Rel(hotel_service, hotel_db, "Читает/Пишет", "JDBC")
+Rel(review_service, review_db, "Читает/Пишет", "JDBC")
+Rel(promo_service, promo_db, "Читает/Пишет", "JDBC")
+
+Rel(booking_service, kafka, "BookingCreated", "Kafka Producer")
+Rel(booking_history, kafka, "Подписывается", "Kafka Consumer")
+Rel(booking_history, history_db, "Пишет агрегаты", "JDBC")
+Rel(analytics_team, history_db, "Читает аналитику", "SQL")
+
+Rel(booking_service, prometheus, "Метрики", "/actuator/prometheus")
+Rel(booking_service, jaeger, "Трассировка", "OpenTelemetry")
+
+note right of apollo_gateway
+  **Istio Service Mesh:**
+  - mTLS между всеми сервисами
+  - Canary: 90% v1 / 10% v2
+  - Circuit Breaker (DestinationRule)
+  - Retry policy
+  - Feature flags (EnvoyFilter)
+end note
+
+@enduml

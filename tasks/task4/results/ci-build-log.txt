@@ -1,0 +1,49 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 280B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/golang:1.21-alpine
+#2 DONE 0.3s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/7] FROM docker.io/library/golang:1.21-alpine@sha256:2414035b086e3c42b99654c8b26e6f5b1b1598080d65fd03c7f499552ff4dc94
+#4 resolve docker.io/library/golang:1.21-alpine@sha256:2414035b086e3c42b99654c8b26e6f5b1b1598080d65fd03c7f499552ff4dc94 0.0s done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 112B done
+#5 DONE 0.0s
+
+#6 [3/7] WORKDIR /app
+#6 CACHED
+
+#7 [4/7] COPY booking-service/main.go .
+#7 CACHED
+
+#8 [6/7] RUN chmod +x check-dns.sh
+#8 CACHED
+
+#9 [2/7] RUN apk add --no-cache curl
+#9 CACHED
+
+#10 [5/7] COPY check-dns.sh .
+#10 CACHED
+
+#11 [7/7] RUN go build -o booking-service main.go
+#11 CACHED
+
+#12 exporting to image
+#12 exporting layers done
+#12 exporting manifest sha256:b57d162284001c63b1bf5ce39224388c0e53e7e540a63cb54bd3e5a0844267ae done
+#12 exporting config sha256:8b271252b1ecdcdf83bb6f504cc8f50bd54cdd272e9e023f7bebd4b2ba7bfa6f done
+#12 exporting attestation manifest sha256:e744750c737c22597ce0fa4c4ddcae46185074cbcba3e219353de65e93ad9d6f 0.0s done
+#12 exporting manifest list sha256:3fe40f5cb48e402b587b3613a0766f27ef4a9198de269c02ee535c0e9fd0f3c1
+#12 exporting manifest list sha256:3fe40f5cb48e402b587b3613a0766f27ef4a9198de269c02ee535c0e9fd0f3c1 0.0s done
+#12 naming to docker.io/library/booking-service:latest done
+#12 unpacking to docker.io/library/booking-service:latest 0.0s done
+#12 DONE 0.1s

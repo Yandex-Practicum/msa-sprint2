@@ -1,0 +1,13 @@
+NAMES                        STATUS         PORTS
+task3-apollo-gateway-1       Up 6 minutes   0.0.0.0:4000->4000/tcp, [::]:4000->4000/tcp
+task3-promocode-subgraph-1   Up 6 minutes   0.0.0.0:4003->4003/tcp, [::]:4003->4003/tcp
+task3-booking-subgraph-1     Up 6 minutes   0.0.0.0:4001->4001/tcp, [::]:4001->4001/tcp
+task3-hotel-subgraph-1       Up 6 minutes   0.0.0.0:4002->4002/tcp, [::]:4002->4002/tcp
+hotelio-monolith             Up 8 minutes   0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp
+booking-service              Up 8 minutes   0.0.0.0:9090->9090/tcp, [::]:9090->9090/tcp
+booking-history-service      Up 8 minutes   0.0.0.0:8085->8080/tcp, [::]:8085->8080/tcp
+task2-kafka-1                Up 8 minutes   0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp
+hotelio-db                   Up 8 minutes   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+booking-db                   Up 8 minutes   5432/tcp
+booking-history-db           Up 8 minutes   5432/tcp
+task2-zookeeper-1            Up 8 minutes   0.0.0.0:2181->2181/tcp, [::]:2181->2181/tcp

@@ -1,0 +1,14 @@
+appName: booking-service
+appVersion: v2
+createService: false
+
+image:
+  name: booking-service
+  tag: v2
+  pullPolicy: Never
+
+env:
+  - name: ENABLE_FEATURE_X
+    value: "true"
+  - name: APP_VERSION
+    value: "v2"

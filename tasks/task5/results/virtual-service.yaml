@@ -1,0 +1,42 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: booking-service
+  namespace: default
+spec:
+  hosts:
+    - booking-service
+  http:
+    # Rule 1 (highest priority): Feature flag header → 100% v2
+    - name: feature-flag-route
+      match:
+        - headers:
+            x-feature-enabled:
+              exact: "true"
+      route:
+        - destination:
+            host: booking-service
+            subset: v2
+            port:
+              number: 80
+
+    # Rule 2: Canary 90/10 with retries (fallback when v1 is unhealthy)
+    - name: canary-route
+      route:
+        - destination:
+            host: booking-service
+            subset: v1
+            port:
+              number: 80
+          weight: 90
+        - destination:
+            host: booking-service
+            subset: v2
+            port:
+              number: 80
+          weight: 10
+      retries:
+        attempts: 3
+        perTryTimeout: 5s
+        retryOn: "5xx,connect-failure,retriable-4xx"
+      timeout: 15s

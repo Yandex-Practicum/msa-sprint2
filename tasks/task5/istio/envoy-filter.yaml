@@ -1,0 +1,39 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: feature-flag-header
+  namespace: default
+spec:
+  workloadSelector:
+    labels:
+      app: booking-service
+      version: v2
+  configPatches:
+    - applyTo: HTTP_FILTER
+      match:
+        context: SIDECAR_INBOUND
+        listener:
+          filterChain:
+            filter:
+              name: "envoy.filters.network.http_connection_manager"
+              subFilter:
+                name: "envoy.filters.http.router"
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.http.lua
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+            inline_code: |
+              function envoy_on_request(request_handle)
+                local feature = request_handle:headers():get("x-feature-enabled")
+                if feature == "true" then
+                  request_handle:logInfo("Feature flag detected: routing to v2")
+                end
+              end
+              function envoy_on_response(response_handle)
+                local feature = response_handle:headers():get("x-feature-routed")
+                if not feature then
+                  response_handle:headers():add("x-feature-routed", "v2")
+                end
+              end

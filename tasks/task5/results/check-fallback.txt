@@ -1,0 +1,36 @@
+============================================
+ Fallback Check (v1 down → fallback to v2)
+============================================
+
+--- Step 1: Scaling booking-service-v1 to 0 replicas (simulating v1 outage) ---
+deployment.apps/booking-service-v1 scaled
+Waiting 15s for pod termination and Istio EDS update...
+
+--- Current pods (v1 should be gone) ---
+NAME                                 READY   STATUS    RESTARTS   AGE
+booking-service-v2-b4b6794f5-nrgdv   2/2     Running   0          22m
+
+--- Step 2: Activating fallback VirtualService (100% traffic to v2) ---
+virtualservice.networking.istio.io/booking-service configured
+Waiting 5s for VirtualService update to propagate...
+
+--- Step 3: Sending 10 requests (expect all pong-v2) ---
+  [1] -> pong-v2
+  [2] -> pong-v2
+  [3] -> pong-v2
+  [4] -> pong-v2
+  [5] -> pong-v2
+  [6] -> pong-v2
+  [7] -> pong-v2
+  [8] -> pong-v2
+  [9] -> pong-v2
+  [10] -> pong-v2
+
+[PASS] All requests routed to v2 (fallback activated when v1 is unavailable)
+
+--- Restoring: scale v1 to 1, apply original canary VirtualService ---
+deployment.apps/booking-service-v1 scaled
+virtualservice.networking.istio.io/booking-service configured
+v1 restored.
+
+Done.

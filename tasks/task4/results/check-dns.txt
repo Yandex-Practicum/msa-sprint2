@@ -1,0 +1,3 @@
+[INFO] Running in-cluster DNS test...
+[INFO] DNS Response: pong
+[PASS] DNS test succeeded

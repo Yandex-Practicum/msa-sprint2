@@ -1,0 +1,81 @@
+parsing and downloads finished in 91 ms.
+json schema validated in 154 ms
+build  starting shell (build)
+build  $ docker build -t $IMAGE_NAME:$IMAGE_TAG -f booking-service/Dockerfile .
+build  > #0 building with "desktop-linux" instance using docker driver
+build  > 
+build  > #1 [internal] load build definition from Dockerfile
+build  > #1 transferring dockerfile: 280B done
+build  > #1 DONE 0.0s
+build  > 
+build  > #2 [internal] load metadata for docker.io/library/golang:1.21-alpine
+build  > #2 DONE 0.8s
+build  > 
+build  > #3 [internal] load .dockerignore
+build  > #3 transferring context: 2B done
+build  > #3 DONE 0.0s
+build  > 
+build  > #4 [1/7] FROM docker.io/library/golang:1.21-alpine@sha256:2414035b086e3c42b99654c8b26e6f5b1b1598080d65fd03c7f499552ff4dc94
+build  > #4 resolve docker.io/library/golang:1.21-alpine@sha256:2414035b086e3c42b99654c8b26e6f5b1b1598080d65fd03c7f499552ff4dc94 0.0s done
+build  > #4 DONE 0.0s
+build  > 
+build  > #5 [internal] load build context
+build  > #5 transferring context: 112B done
+build  > #5 DONE 0.0s
+build  > 
+build  > #6 [2/7] RUN apk add --no-cache curl
+build  > #6 CACHED
+build  > 
+build  > #7 [3/7] WORKDIR /app
+build  > #7 CACHED
+build  > 
+build  > #8 [5/7] COPY check-dns.sh .
+build  > #8 CACHED
+build  > 
+build  > #9 [6/7] RUN chmod +x check-dns.sh
+build  > #9 CACHED
+build  > 
+build  > #10 [4/7] COPY booking-service/main.go .
+build  > #10 CACHED
+build  > 
+build  > #11 [7/7] RUN go build -o booking-service main.go
+build  > #11 CACHED
+build  > 
+build  > #12 exporting to image
+build  > #12 exporting layers done
+build  > #12 exporting manifest sha256:b57d162284001c63b1bf5ce39224388c0e53e7e540a63cb54bd3e5a0844267ae done
+build  > #12 exporting config sha256:8b271252b1ecdcdf83bb6f504cc8f50bd54cdd272e9e023f7bebd4b2ba7bfa6f done
+build  > #12 exporting attestation manifest sha256:7627bafd37305b500fcd6a6bbe1bfa26678cceae36aa12b3ed0be1694b567032 0.0s done
+build  > #12 exporting manifest list sha256:edab021ae6f18595f8702a881467702b0982b0f6356d3ee0ba5d3d73d5fe8235
+build  > #12 exporting manifest list sha256:edab021ae6f18595f8702a881467702b0982b0f6356d3ee0ba5d3d73d5fe8235 0.0s done
+build  > #12 naming to docker.io/library/booking-service:latest done
+build  > #12 unpacking to docker.io/library/booking-service:latest done
+build  > #12 DONE 0.1s
+build  finished in 1.6 s
+test   starting shell (test)
+test   $ docker run -d --name ${IMAGE_NAME}-test -p 8081:8080 $IMAGE_NAME:$IMAGE_TAG
+test   > 0e9c4b3e487f117a8349fd606584b9c3d0285b98c083bce50ef4bc746ba9f356
+test   $ sleep 2
+test   $ curl -f http://localhost:8081/ping
+test   >   % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+test   >                                  Dload  Upload  Total   Spent   Left   Speed
+test   >   0      0   0      0   0      0      0      0                              0100      4 100      4   0      0    207      0                              0100      4 100      4   0      0    206      0                              0100      4 100      4   0      0    205      0                              0
+test   > pong<gclShellPromptPlaceholder> docker rm -f ${IMAGE_NAME}-test
+test   > booking-service-test
+test   finished in 3.13 s
+deploy starting shell (deploy)
+deploy $ minikube image load $IMAGE_NAME:$IMAGE_TAG
+deploy $ helm upgrade --install $IMAGE_NAME ./helm/booking-service -f values-staging.yaml
+deploy > Release "booking-service" has been upgraded. Happy Helming!
+deploy > NAME: booking-service
+deploy > LAST DEPLOYED: Tue Mar  3 22:27:37 2026
+deploy > NAMESPACE: default
+deploy > STATUS: deployed
+deploy > REVISION: 3
+deploy > DESCRIPTION: Upgrade complete
+deploy > TEST SUITE: None
+deploy finished in 4.92 s
+
+ PASS  build 
+ PASS  test  
+ PASS  deploy

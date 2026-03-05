@@ -1,0 +1,8 @@
+=== GET /api/bookings (all) via REST → Monolith ===
+[{"id":5,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":10.0,"price":90.0,"createdAt":"2026-03-02T20:40:34.811488Z"},{"id":6,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":null,"discountPercent":0.0,"price":80.0,"createdAt":"2026-03-02T20:40:34.811488Z"}]
+
+=== GET /api/bookings?userId=test-user-2 via REST → Monolith ===
+[{"id":5,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":10.0,"price":90.0,"createdAt":"2026-03-02T20:40:34.811488Z"}]
+
+=== GET /api/bookings?userId=test-user-3 via REST → Monolith ===
+[{"id":6,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":null,"discountPercent":0.0,"price":80.0,"createdAt":"2026-03-02T20:40:34.811488Z"}]

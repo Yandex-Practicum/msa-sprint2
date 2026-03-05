@@ -1,0 +1,59 @@
+stages:
+  - build
+  - test
+  - deploy
+  - tag
+
+variables:
+  IMAGE_NAME: booking-service
+
+build-v1:
+  stage: build
+  script:
+    - docker build -t $IMAGE_NAME:v1 -f booking-service/Dockerfile .
+
+build-v2:
+  stage: build
+  script:
+    - docker build -t $IMAGE_NAME:v2 -f booking-service/Dockerfile .
+
+test:
+  stage: test
+  script:
+    - docker run -d --name ${IMAGE_NAME}-test -p 8081:8080 -e APP_VERSION=v1 $IMAGE_NAME:v1
+    - sleep 2
+    - curl -f http://localhost:8081/ping | grep "pong-v1"
+    - docker rm -f ${IMAGE_NAME}-test
+    - docker run -d --name ${IMAGE_NAME}-test-v2 -p 8082:8080 -e APP_VERSION=v2 $IMAGE_NAME:v2
+    - sleep 2
+    - curl -f http://localhost:8082/ping | grep "pong-v2"
+    - docker rm -f ${IMAGE_NAME}-test-v2
+
+deploy:
+  stage: deploy
+  script:
+    # Load images into Minikube
+    - minikube image load $IMAGE_NAME:v1
+    - minikube image load $IMAGE_NAME:v2
+    # Deploy v1 (creates the shared Service)
+    - helm upgrade --install booking-service-v1 ./helm/booking-service -f values-v1.yaml
+    # Deploy v2 (no Service — shares the one from v1)
+    - helm upgrade --install booking-service-v2 ./helm/booking-service -f values-v2.yaml
+    # Apply Istio traffic management
+    - kubectl apply -f istio/destination-rule.yaml
+    - kubectl apply -f istio/virtual-service.yaml
+    - kubectl apply -f istio/envoy-filter.yaml
+    # Wait for rollout
+    - kubectl rollout status deployment/booking-service-v1 --timeout=120s
+    - kubectl rollout status deployment/booking-service-v2 --timeout=120s
+    # Verify Istio resources
+    - kubectl get virtualservice booking-service
+    - kubectl get destinationrule booking-service
+    - kubectl get envoyfilter feature-flag-header
+
+tag:
+  stage: tag
+  script:
+    - git tag ${IMAGE_NAME}-$(date +%Y%m%d%H%M%S)
+    - git push origin --tags
+  when: manual
