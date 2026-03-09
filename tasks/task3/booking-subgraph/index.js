@@ -21,11 +21,37 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     bookingsByUser: async (_, { userId }, { req }) => {
-		// TODO: Реальный вызов к grpc booking-сервису или заглушка + ACL
+          // // ACL: Проверка header userid
+          const userid = req.headers['userid'];
+          if (!userid) throw new Error('Unauthorized: userid header required');
+		      return [
+                {
+                  id: 'booking-1',
+                  userId: 'user-123',
+                  hotelId: 'hotel-456',
+                  promoCode: 'SUMMER20',
+                  discountPercent: 15,
+                },
+                {
+                  id: 'booking-2',
+                  userId: 'user-123',
+                  hotelId: 'hotel-789',
+                  promoCode: null,
+                  discountPercent: null,
+                },
+              ];
     },
   },
   Booking: {
-	  // TODO: Реальный вызов к grpc booking-сервису или заглушка + ACL
+	      __resolveReference: async ({ id }) => {
+            return {
+              id: id,
+              userId: 'user-123',
+              hotelId: 'hotel-456',
+              promoCode: 'STATIC-PROMO',
+              discountPercent: 10,
+            };
+          },
   },
 };
 
