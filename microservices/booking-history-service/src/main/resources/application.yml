@@ -1,0 +1,19 @@
+server:
+  port: 8088
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/rzn
+    username: pryabykh
+    password: pryabykh
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate.format_sql: false
+kafka:
+  bootstrap-servers: localhost:9092
+  consumer-group-id: booking-history-service
+  consumer-concurrency: 1
+  booking-topic:
+    name: BookingCreated

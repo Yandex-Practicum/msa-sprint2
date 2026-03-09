@@ -1,0 +1,23 @@
+Старая система после запуска тестов
+
+hotelio=# select * from public.booking;
+ discount_percent | price |         created_at          | id |   hotel_id   | promo_code |   user_id
+------------------+-------+-----------------------------+----+--------------+------------+-------------
+               10 |    90 | 2026-03-09 12:32:03.8298+00 |  7 | test-hotel-1 | TESTCODE1  | test-user-2
+                0 |    80 | 2026-03-09 12:32:03.8298+00 |  8 | test-hotel-1 |            | test-user-3
+(2 rows)
+
+Новая система после запуска тестов
+
+hotelio=# select * from booking;
+ discount_percent | price |          created_at           | id |   hotel_id   | promo_code |   user_id
+------------------+-------+-------------------------------+----+--------------+------------+-------------
+                0 |    80 | 2026-03-09 12:23:17.127021+00 |  1 | test-hotel-1 |            | test-user-3
+               10 |    90 | 2026-03-09 12:23:17.367633+00 |  2 | test-hotel-1 | TESTCODE1  | test-user-2
+                0 |    80 | 2026-03-09 12:23:33.384703+00 |  3 | test-hotel-1 |            | test-user-3
+               10 |    90 | 2026-03-09 12:23:33.451726+00 |  4 | test-hotel-1 | TESTCODE1  | test-user-2
+                0 |    80 | 2026-03-09 12:23:35.577563+00 |  5 | test-hotel-1 |            | test-user-3
+               10 |    90 | 2026-03-09 12:23:35.654025+00 |  6 | test-hotel-1 | TESTCODE1  | test-user-2
+                0 |    80 | 2026-03-09 12:32:04.266933+00 |  7 | test-hotel-1 |            | test-user-3
+               10 |    90 | 2026-03-09 12:32:04.331911+00 |  8 | test-hotel-1 | TESTCODE1  | test-user-2
+(8 rows)
