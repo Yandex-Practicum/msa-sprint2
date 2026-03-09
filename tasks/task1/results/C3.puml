@@ -1,0 +1,74 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+' === Внешний актор ===
+Person(user, "User", "Interacts with frontend")
+
+' === Новый микросервис: Booking ===
+System_Boundary(booking_ms, "Booking Microservice") {
+  ContainerDb(booking_db, "Booking DB", "PostgreSQL", "Stores bookings, payment status, audit log")
+
+  Container(booking_api, "Booking API", "Spring Boot", "Exposes REST /api/bookings") {
+    Component(booking_ctrl, "BookingController", "Spring MVC", "Handles HTTP requests")
+    Component(booking_svc, "BookingService", "Java Service", "Orchestrates booking flow")
+    Component(booking_repo, "BookingRepository", "Spring Data JPA", "Persistence layer")
+
+    Rel(booking_ctrl, booking_svc, "Uses")
+    Rel(booking_svc, booking_repo, "Uses")
+    Rel(booking_repo, booking_db, "Reads/Writes")
+  }
+}
+
+' === Оставшийся монолит ===
+System_Boundary(monolith, "Hotelio Monolith (Legacy)") {
+  ContainerDb(monolith_db, "Monolith DB", "PostgreSQL", "Users, hotels, promos, reviews")
+
+  Container(monolith_app, "Monolith Application", "Spring Boot", "Legacy services") {
+    Component(hotel_ctrl, "HotelController", "Spring MVC", "/api/hotels")
+    Component(user_ctrl, "UserController", "Spring MVC", "/api/users")
+    Component(promo_ctrl, "PromoController", "Spring MVC", "/api/promos")
+    Component(review_ctrl, "ReviewController", "Spring MVC", "/api/reviews")
+
+    Component(hotel_svc, "HotelService", "Java Service", "Hotel data access")
+    Component(user_svc, "UserService", "Java Service", "User validation")
+    Component(promo_svc, "PromoService", "Java Service", "Discount rules")
+    Component(review_svc, "ReviewService", "Java Service", "Reputation checks")
+
+    Rel(hotel_ctrl, hotel_svc, "Uses")
+    Rel(user_ctrl, user_svc, "Uses")
+    Rel(promo_ctrl, promo_svc, "Uses")
+    Rel(review_ctrl, review_svc, "Uses")
+
+    Rel(hotel_svc, monolith_db, "Reads")
+    Rel(user_svc, monolith_db, "Reads")
+    Rel(promo_svc, monolith_db, "Reads")
+    Rel(review_svc, monolith_db, "Reads/Writes")
+  }
+}
+
+' === Инфраструктура ===
+System_Ext(kafka, "Kafka", "Message Broker", "Async events: BookingCreated, PaymentProcessed")
+
+' === Взаимодействия ===
+Rel(user, booking_api, "POST /api/bookings", "HTTPS")
+Rel(user, monolith_app, "Browse hotels, manage profile", "HTTPS")
+
+' Booking MS → Monolith: синхронные проверки
+Rel(booking_svc, user_svc, "GET /api/users/{id}/status", "REST (sync)")
+Rel(booking_svc, hotel_svc, "GET /api/hotels/{id}/availability", "REST (sync)")
+Rel(booking_svc, promo_svc, "POST /api/promos/validate", "REST (sync)")
+Rel(booking_svc, review_svc, "GET /api/hotels/{id}/reputation", "REST (sync)")
+
+' Booking MS → Kafka: асинхронные события
+Rel(booking_svc, kafka, "Publishes", "BookingCreated")
+
+' Monolith → Kafka (опционально, для обратной связи)
+Rel(monolith_app, kafka, "Consumes/Publishes", "Events")
+
+' === Примечания ===
+Note right of booking_svc: Вынесен первым, т.к. содержит критичную бизнес-логику
+Note left of monolith_app: Остальные сервисы пока в монолите — будут выноситься итеративно
+
+@enduml

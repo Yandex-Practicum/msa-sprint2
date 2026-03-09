@@ -1,0 +1,58 @@
+2026-03-08 16:13:49.879 |
+2026-03-08 16:13:49.879 |   .   ____          _            __ _ _
+2026-03-08 16:13:49.879 |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+2026-03-08 16:13:49.879 | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+2026-03-08 16:13:49.879 |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+2026-03-08 16:13:49.879 |   '  |____| .__|_| |_|_| |_\__, | / / / /
+2026-03-08 16:13:49.879 |  =========|_|==============|___/=/_/_/_/
+2026-03-08 16:13:49.881 |  :: Spring Boot ::                (v3.2.5)
+2026-03-08 16:13:49.881 |
+2026-03-08 16:13:50.004 | 2026-03-08T13:13:50.001Z  INFO 1 --- [           main] c.hotelio.monolith.MonolithApplication   : Starting MonolithApplication v1.0.0 using Java 17.0.12 with PID 1 (/app/app.jar started by root in /app)
+2026-03-08 16:13:50.006 | 2026-03-08T13:13:50.005Z  INFO 1 --- [           main] c.hotelio.monolith.MonolithApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-03-08 16:13:50.826 | 2026-03-08T13:13:50.825Z  INFO 1 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-08 16:13:50.877 | 2026-03-08T13:13:50.876Z  INFO 1 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 44 ms. Found 5 JPA repository interfaces.
+2026-03-08 16:13:51.428 | 2026-03-08T13:13:51.427Z  INFO 1 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-03-08 16:13:51.451 | 2026-03-08T13:13:51.450Z  INFO 1 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-08 16:13:51.451 | 2026-03-08T13:13:51.451Z  INFO 1 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.20]
+2026-03-08 16:13:51.493 | 2026-03-08T13:13:51.493Z  INFO 1 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-03-08 16:13:51.495 | 2026-03-08T13:13:51.494Z  INFO 1 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1349 ms
+2026-03-08 16:13:51.680 | 2026-03-08T13:13:51.679Z  INFO 1 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-08 16:13:51.745 | 2026-03-08T13:13:51.744Z  INFO 1 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
+2026-03-08 16:13:51.784 | 2026-03-08T13:13:51.783Z  INFO 1 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-03-08 16:13:52.005 | 2026-03-08T13:13:52.005Z  INFO 1 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-08 16:13:52.032 | 2026-03-08T13:13:52.032Z  INFO 1 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-08 16:13:52.198 | 2026-03-08T13:13:52.198Z  INFO 1 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@d6b532f
+2026-03-08 16:13:52.200 | 2026-03-08T13:13:52.199Z  INFO 1 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-08 16:13:53.004 | 2026-03-08T13:13:53.003Z  INFO 1 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-08 16:13:53.015 | Hibernate: drop table if exists app_user cascade
+2026-03-08 16:13:53.019 | 2026-03-08T13:13:53.018Z  WARN 1 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-03-08 16:13:53.019 | 2026-03-08T13:13:53.018Z  WARN 1 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "app_user" does not exist, skipping
+2026-03-08 16:13:53.019 | Hibernate: drop table if exists booking cascade
+2026-03-08 16:13:53.020 | 2026-03-08T13:13:53.019Z  WARN 1 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-03-08 16:13:53.020 | 2026-03-08T13:13:53.019Z  WARN 1 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "booking" does not exist, skipping
+2026-03-08 16:13:53.020 | Hibernate: drop table if exists hotel cascade
+2026-03-08 16:13:53.020 | 2026-03-08T13:13:53.020Z  WARN 1 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-03-08 16:13:53.020 | 2026-03-08T13:13:53.020Z  WARN 1 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "hotel" does not exist, skipping
+2026-03-08 16:13:53.020 | Hibernate: drop table if exists promo_code cascade
+2026-03-08 16:13:53.021 | 2026-03-08T13:13:53.021Z  WARN 1 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-03-08 16:13:53.021 | 2026-03-08T13:13:53.021Z  WARN 1 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "promo_code" does not exist, skipping
+2026-03-08 16:13:53.021 | Hibernate: drop table if exists review cascade
+2026-03-08 16:13:53.021 | 2026-03-08T13:13:53.021Z  WARN 1 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-03-08 16:13:53.021 | 2026-03-08T13:13:53.021Z  WARN 1 --- [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "review" does not exist, skipping
+2026-03-08 16:13:53.025 | Hibernate: create table app_user (active boolean not null, blacklisted boolean not null, city varchar(255), email varchar(255), id varchar(255) not null, name varchar(255), status varchar(255), primary key (id))
+2026-03-08 16:13:53.052 | Hibernate: create table booking (discount_percent float(53), price float(53) not null, created_at timestamp(6) with time zone, id bigserial not null, hotel_id varchar(255), promo_code varchar(255), user_id varchar(255), primary key (id))
+2026-03-08 16:13:53.068 | Hibernate: create table hotel (fully_booked boolean not null, operational boolean not null, rating float(53) not null, description varchar(1000), city varchar(255), id varchar(255) not null, primary key (id))
+2026-03-08 16:13:53.083 | Hibernate: create table promo_code (discount float(53) not null, expired boolean not null, valid_until date, vip_only boolean not null, code varchar(255) not null, description varchar(255), primary key (code))
+2026-03-08 16:13:53.100 | Hibernate: create table review (created_at date, rating integer not null, text varchar(2000), hotel_id varchar(255), id varchar(255) not null, user_id varchar(255), primary key (id))
+2026-03-08 16:13:53.120 | 2026-03-08T13:13:53.120Z  INFO 1 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-08 16:13:53.459 | 2026-03-08T13:13:53.459Z  WARN 1 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-08 16:13:53.919 | 2026-03-08T13:13:53.919Z  INFO 1 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path ''
+2026-03-08 16:13:53.932 | 2026-03-08T13:13:53.931Z  INFO 1 --- [           main] c.hotelio.monolith.MonolithApplication   : Started MonolithApplication in 4.404 seconds (process running for 5.004)
+2026-03-08 16:13:53.936 | ➡️  BookingService beans:
+2026-03-08 16:13:53.936 |     - bookingService: class com.hotelio.monolith.service.BookingService
+2026-03-08 16:14:06.850 | 2026-03-08T13:14:06.849Z  INFO 1 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-08 16:14:06.850 | 2026-03-08T13:14:06.850Z  INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-08 16:14:06.851 | 2026-03-08T13:14:06.850Z  INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-03-08 16:14:14.359 | Hibernate: select b1_0.id,b1_0.created_at,b1_0.discount_percent,b1_0.hotel_id,b1_0.price,b1_0.promo_code,b1_0.user_id from booking b1_0
+2026-03-08 16:14:18.580 | Hibernate: select b1_0.id,b1_0.created_at,b1_0.discount_percent,b1_0.hotel_id,b1_0.price,b1_0.promo_code,b1_0.user_id from booking b1_0
+2026-03-08 16:14:21.631 | Hibernate: select b1_0.id,b1_0.created_at,b1_0.discount_percent,b1_0.hotel_id,b1_0.price,b1_0.promo_code,b1_0.user_id from booking b1_0
