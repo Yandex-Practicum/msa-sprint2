@@ -1,0 +1,8 @@
+pr@Asus:/mnt/c/personal/study/msa-sprint2/tasks/task4/helm/booking-service$ kubectl get pods
+NAME                                    READY   STATUS    RESTARTS   AGE
+booking-mock-service-8569554749-gkfwc   1/1     Running   0          6s
+
+pr@Asus:/mnt/c/personal/study/msa-sprint2/tasks/task4/helm/booking-service$ kubectl get services
+NAME                   TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+booking-mock-service   ClusterIP   10.106.92.115   <none>        80/TCP    22m
+kubernetes             ClusterIP   10.96.0.1       <none>        443/TCP   64m
