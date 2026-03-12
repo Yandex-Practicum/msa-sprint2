@@ -12,3 +12,7 @@
 1. Был сконфигурирован Helm чарт в соответствии с описанием
 2. Выполняем helm upgrade --install booking-mock-service . -f values-prod.yaml (без FEATURE_X флага)
 3. Выполняем helm upgrade --install booking-mock-service . -f values-staging.yaml (с FEATURE_X флагом)
+
+Третье задание
+1. Был подготовлен .gitlab-ci.yml файл
+2. Запуск сборки осуществлен командой gitlab-ci-local build test deploy tag
