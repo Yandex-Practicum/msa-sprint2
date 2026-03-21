@@ -1,0 +1,11 @@
+000
+*   Trying 192.168.49.2:30606...
+* Connected to 192.168.49.2 (192.168.49.2) port 30606 (#0)
+> GET /feature HTTP/1.1
+> Host: booking-service
+> User-Agent: curl/7.88.1
+> Accept: */*
+> X-Feature-Enabled: true
+> 
+* Empty reply from server
+* Closing connection 0

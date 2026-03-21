@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/rzn
+    username: pryabykh
+    password: pryabykh
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate.format_sql: false
+monolith:
+  base-url:
+    http://localhost:8084
+kafka:
+  bootstrap-servers: localhost:9092
+  consumer-group-id: booking-service
+  consumer-concurrency: 1
+  booking-topic:
+    name: BookingCreated
+    numPartitions: 2
+    replicationFactor: 1

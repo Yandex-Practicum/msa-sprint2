@@ -1,0 +1,2 @@
+pr@Asus:/mnt/c/personal/study/msa-sprint2$ curl http://localhost:8080/ping
+pong

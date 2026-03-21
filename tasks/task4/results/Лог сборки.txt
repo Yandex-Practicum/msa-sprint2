@@ -1,0 +1,99 @@
+pr@Asus:/mnt/c/personal/study/msa-sprint2/tasks/task4/results$ gitlab-ci-local build test deploy tag
+Using fallback git user.name
+  Command failed with exit code 1: git config user.name
+Using fallback git user.email
+  Command failed with exit code 1: git config user.email
+parsing and downloads finished in 88 ms.
+json schema validated in 198 ms
+build  starting shell (build)
+build  $ docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ../booking-service
+build  > #0 building with "default" instance using docker driver
+build  >
+build  > #1 [internal] load build definition from Dockerfile
+build  > #1 transferring dockerfile: 889B 0.0s done
+build  > #1 DONE 0.0s
+build  >
+build  > #2 [internal] load metadata for docker.io/library/golang:1.21-alpine
+build  > #2 DONE 7.6s
+build  >
+build  > #3 [internal] load .dockerignore
+build  > #3 transferring context: 2B 0.0s done
+build  > #3 DONE 0.0s
+build  >
+build  > #4 [1/7] FROM docker.io/library/golang:1.21-alpine@sha256:2414035b086e3c42b99654c8b26e6f5b1b1598080d65fd03c7f499552ff4dc94
+build  > #4 DONE 0.0s
+build  >
+build  > #5 [internal] load build context
+build  > #5 transferring context: 61B 0.0s done
+build  > #5 DONE 0.0s
+build  >
+build  > #6 [3/7] WORKDIR /app
+build  > #6 CACHED
+build  >
+build  > #7 [2/7] RUN apk add --no-cache curl
+build  > #7 CACHED
+build  >
+build  > #8 [4/7] COPY main.go .
+build  > #8 CACHED
+build  >
+build  > #9 [5/7] COPY check-dns.sh .
+build  > #9 CACHED
+build  >
+build  > #10 [6/7] RUN chmod +x check-dns.sh
+build  > #10 CACHED
+build  >
+build  > #11 [7/7] RUN go build -o booking-service main.go
+build  > #11 CACHED
+build  >
+build  > #12 exporting to image
+build  > #12 exporting layers done
+build  > #12 writing image sha256:3df37d8560a447183e2028cc5ae482f9a5322d7d5372903daf285a0d7fd2e1fd done
+build  > #12 naming to docker.io/library/booking-service:latest done
+build  > #12 DONE -5.9s
+build  finished in 3.13 s
+test   starting shell (test)
+test   $ docker run -d --name booking-test -p 8080:8080 -e ENABLE_FEATURE_X=true ${IMAGE_NAME}:${IMAGE_TAG}
+test   > f61da3aff721ab70e42fe8cc26794c1efa7dd6108d98da2ef073b0691973b728
+test   $ sleep 2
+test   $ curl -f http://localhost:8080/ping || (docker logs booking-test && exit 1)
+test   >   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+test   >                                  Dload  Upload   Total   Spent    Left  Speed
+100     4  100     4    0     0   2656      0 --:--:-- --:--:-- --:--:--  4000
+test   > pong<gclShellPromptPlaceholder> curl -f http://localhost:8080/feature || (docker logs booking-test && exit 1)
+test   >   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+test   >                                  Dload  Upload   Total   Spent    Left  Speed
+100    21  100    21    0     0  17384      0 --:--:-- --:--:-- --:--:-- 21000
+test   > Feature X is enabled!<gclShellPromptPlaceholder> docker stop booking-test
+test   > booking-test
+test   $ docker rm booking-test
+test   > booking-test
+test   finished in 2.89 s
+deploy starting shell (deploy)
+deploy $ helm upgrade --install booking-staging ../helm/booking-service -f values-staging.yaml --wait
+deploy > still running...
+deploy > Release "booking-staging" has been upgraded. Happy Helming!
+deploy > NAME: booking-staging
+deploy > LAST DEPLOYED: Thu Mar 12 22:05:28 2026
+deploy > NAMESPACE: default
+deploy > STATUS: deployed
+deploy > REVISION: 2
+deploy > DESCRIPTION: Upgrade complete
+deploy > TEST SUITE: None
+deploy $ helm upgrade --install booking-prod ../helm/booking-service -f values-prod.yaml --wait
+deploy > Release "booking-prod" does not exist. Installing it now.
+deploy > NAME: booking-prod
+deploy > LAST DEPLOYED: Thu Mar 12 22:05:39 2026
+deploy > NAMESPACE: default
+deploy > STATUS: deployed
+deploy > REVISION: 1
+deploy > DESCRIPTION: Install complete
+deploy > TEST SUITE: None
+deploy finished in 16 s
+tag    starting shell (tag)
+tag    $ git tag "release-$(date +%Y%m%d-%H%M%S)"
+tag    finished in 117 ms
+
+ PASS  build
+ PASS  test
+ PASS  deploy
+ PASS  tag

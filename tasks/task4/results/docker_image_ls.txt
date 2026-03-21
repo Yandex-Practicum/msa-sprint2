@@ -1,0 +1,5 @@
+pr@Asus:/mnt/c/WINDOWS/System32$ docker image ls | grep booking-service:latest
+
+booking-service:latest           3df37d8560a4        297MB             0B   U
+
+minikube image list (для этой команды ничего нет, так как очень плохо работает minikube, я использовал Docker Desktop)

@@ -1,0 +1,3 @@
+▶️ Running in-cluster DNS test...
+pongpod "dns-test" deleted
+✅ Success
