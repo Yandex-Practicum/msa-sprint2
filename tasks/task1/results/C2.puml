@@ -1,0 +1,32 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_WITH_LEGEND()
+' === Внешний актор ===
+Person(user, "User", "Interacts with frontend")
+' === Новый микросервис: Booking ===
+System_Boundary(booking_ms, "Booking Microservice") {
+ContainerDb(booking_db, "Booking DB", "PostgreSQL", "Stores bookings, payment status, audit log")
+Container(booking_api, "Booking API", "Spring Boot", "Exposes REST /api/bookings, orchestrates booking flow")
+Rel(booking_api, booking_db, "Reads/Writes", "JPA/HikariCP")
+}
+' === Оставшийся монолит ===
+System_Boundary(monolith, "Hotelio Monolith (Legacy)") {
+ContainerDb(monolith_db, "Monolith DB", "PostgreSQL", "Users, hotels, promos, reviews")
+Container(monolith_app, "Monolith Application", "Spring Boot", "Legacy services: hotels, users, promos, reviews")
+Rel(monolith_app, monolith_db, "Reads/Writes", "JPA/HikariCP")
+}
+' === Инфраструктура ===
+System_Ext(kafka, "Kafka", "Message Broker", "Async events: BookingCreated, PaymentProcessed")
+' === Взаимодействия ===
+Rel(user, booking_api, "POST /api/bookings", "HTTPS")
+Rel(user, monolith_app, "Browse hotels, manage profile", "HTTPS")
+' Booking MS → Monolith: синхронные проверки (агрегированные на уровне контейнеров)
+Rel(booking_api, monolith_app, "Sync validation calls:\n• GET /api/users/{id}/status\n• GET /api/hotels/{id}/availability\n• POST /api/promos/validate\n• GET /api/hotels/{id}/reputation", "REST/HTTPS")
+' Booking MS → Kafka: асинхронные события
+Rel(booking_api, kafka, "Publishes", "BookingCreated")
+' Monolith → Kafka (опционально, для обратной связи)
+Rel(monolith_app, kafka, "Consumes/Publishes", "Events")
+' === Примечания ===
+Note right of booking_api: Вынесен первым, т.к. содержит критичную бизнес-логику
+Note left of monolith_app: Остальные сервисы пока в монолите — будут выноситься итеративно
+@enduml
