@@ -1,0 +1,99 @@
+# Run from tasks/task4 with host Docker socket (not docker:dind):
+#   make ci
+# or:
+#   gitlab-ci-local --volume /var/run/docker.sock:/var/run/docker.sock build test deploy tag
+#
+# Docker Desktop on Mac: if /var/run/docker.sock is missing, try:
+#   gitlab-ci-local --volume "$HOME/.docker/run/docker.sock:/var/run/docker.sock" ...
+#
+# If Docker Hub times out: pre-pull when online:
+#   docker pull docker:24-cli golang:1.21-alpine alpine:3.19 busybox:1.36
+
+stages:
+  - build
+  - test
+  - deploy
+  - tag
+
+variables:
+  IMAGE_TAG: latest
+  IMAGE_NAME: booking-service
+  # Use host daemon when gitlab-ci-local mounts /var/run/docker.sock (avoids tcp://docker:2375)
+  DOCKER_HOST: unix:///var/run/docker.sock
+
+build:
+  stage: build
+  image:
+    name: docker:24-cli
+    pull_policy: [if-not-present]
+  script:
+    - docker build -t "${IMAGE_NAME}:${IMAGE_TAG}" ./booking-service
+
+unit_tests:
+  stage: test
+  image:
+    name: golang:1.21-alpine
+    pull_policy: [if-not-present]
+  script:
+    - cd booking-service && go test -v ./...
+
+integration_ping:
+  stage: test
+  needs:
+    - build
+  image:
+    name: docker:24-cli
+    pull_policy: [if-not-present]
+  script:
+    - |
+      set -euo pipefail
+      NET="bs-ci-$$"
+      cleanup() {
+        docker rm -f "${IMAGE_NAME}-ci-test" 2>/dev/null || true
+        docker network rm "$NET" 2>/dev/null || true
+      }
+      trap cleanup EXIT
+      docker network create "$NET"
+      docker run -d --name "${IMAGE_NAME}-ci-test" --network "$NET" "${IMAGE_NAME}:${IMAGE_TAG}"
+      sleep 2
+      docker run --rm --network "$NET" busybox:1.36 wget -qO- "http://${IMAGE_NAME}-ci-test:8080/ping" | grep -q pong
+
+deploy:
+  stage: deploy
+  needs:
+    - integration_ping
+    - unit_tests
+  image:
+    name: docker:24-cli
+    pull_policy: [if-not-present]
+  script:
+    - |
+      set -euo pipefail
+      if command -v minikube >/dev/null 2>&1; then
+        minikube image load "${IMAGE_NAME}:${IMAGE_TAG}"
+      else
+        echo "minikube not found in PATH; skipping image load (OK for CI without cluster)"
+      fi
+      if command -v helm >/dev/null 2>&1 && command -v kubectl >/dev/null 2>&1; then
+        helm upgrade --install booking-service ./helm/booking-service \
+          -f ./helm/booking-service/values-staging.yaml \
+          --wait --timeout 120s
+      else
+        echo "helm/kubectl not found in PATH; skipping cluster deploy (install on host or use shell executor)"
+      fi
+
+tag:
+  stage: tag
+  needs:
+    - deploy
+  image:
+    name: alpine:3.19
+    pull_policy: [if-not-present]
+  before_script:
+    - apk add --no-cache git
+  script:
+    - TAG="booking-service-$(date -u +%Y%m%d%H%M%S)"
+    - git config user.email "ci@local" 2>/dev/null || true
+    - git config user.name "gitlab-ci-local" 2>/dev/null || true
+    - git tag -a "$TAG" -m "Automated tag $TAG"
+    - echo "Created tag $TAG"

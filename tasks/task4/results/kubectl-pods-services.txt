@@ -1,0 +1,5 @@
+NAME                              READY   STATUS    RESTARTS   AGE
+booking-service-7fc64d696-59plz   1/1     Running   0          166m
+
+NAME              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+booking-service   ClusterIP   10.108.214.209   <none>        80/TCP    166m

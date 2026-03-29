@@ -1,0 +1,2 @@
+[console_scripts]
+booking-server = booking_service.main:main

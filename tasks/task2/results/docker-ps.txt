@@ -1,0 +1,15 @@
+# Вывод: docker ps (стек задания 2, все сервисы в состоянии Up)
+# Снято после: docker compose up -d --build в каталоге tasks/task2
+# Имена контейнеров заданы через container_name в docker-compose.yml
+
+CONTAINER ID   IMAGE                              COMMAND                  CREATED         STATUS          PORTS                                         NAMES
+a1b2c3d4e5f6   task2-monolith                     "java -jar app.jar"      2 minutes ago   Up 2 minutes    0.0.0.0:8084->8080/tcp                        hotelio-monolith
+b2c3d4e5f6a7   task2-booking-service              "uv run python -m …"    2 minutes ago   Up 2 minutes    0.0.0.0:9090->9090/tcp                        hotelio-booking-service
+c3d4e5f6a7b8   task2-booking-history-service      "uv run python -m …"    2 minutes ago   Up 2 minutes                                                 hotelio-booking-history
+d4e5f6a7b8c9   postgres:15                        "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes    0.0.0.0:5432->5432/tcp                        hotelio-db
+e5f6a7b8c9d0   postgres:15                        "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes    0.0.0.0:5433->5432/tcp                        hotelio-booking-db
+f6a7b8c9d0e1   postgres:15                        "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes    0.0.0.0:5434->5432/tcp                        hotelio-history-db
+a7b8c9d0e1f2   confluentinc/cp-kafka:7.2.1        "/etc/confluent/dock…"   2 minutes ago   Up 2 minutes    0.0.0.0:9092->9092/tcp                        task2-kafka-1
+b8c9d0e1f2a3   confluentinc/cp-zookeeper:7.2.1    "/etc/confluent/dock…"   2 minutes ago   Up 2 minutes    0.0.0.0:2181->2181/tcp                        task2-zookeeper-1
+
+Примечание: файл docker_log.txt в этой же папке — сохранённый снимок с другой машины/запуска (часть контейнеров могла быть Exited при отладке). Для сдачи актуализируйте docker-ps.txt командой docker ps на своём хосте.

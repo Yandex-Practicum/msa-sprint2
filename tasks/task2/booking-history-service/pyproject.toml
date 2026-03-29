@@ -1,0 +1,19 @@
+[project]
+name = "booking-history-service"
+version = "0.1.0"
+description = "Consumes booking Kafka events into analytics DB"
+requires-python = ">=3.12"
+dependencies = [
+    "kafka-python>=2.0.2",
+    "psycopg2-binary>=2.9.9",
+]
+
+[project.scripts]
+history-worker = "booking_history.main:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

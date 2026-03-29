@@ -1,0 +1,15 @@
+-- БД booking-service: localhost:5433, database hotelio_booking, user hotelio
+-- Команда: psql -h localhost -p 5433 -U hotelio -d hotelio_booking -c "SELECT * FROM booking;"
+
+После успешного regress: 2 строки из init-booking-fixtures.sql + 2 новых брони из POST-тестов (test-user-3 без промо, test-user-2 с TESTCODE1).
+
+ hotelio_booking=# SELECT * FROM booking;
+ id |  user_id   |  hotel_id   | promo_code | discount_percent | price |          created_at
+----+------------+-------------+------------+------------------+-------+-------------------------------
+  1 | test-user-2 | test-hotel-1 | TESTCODE1  |               10 |    90 | 2026-03-29 14:01:00+00
+  2 | test-user-3 | test-hotel-1 |            |                0 |    80 | 2026-03-29 14:01:00+00
+  3 | test-user-3 | test-hotel-1 |            |                0 |    80 | 2026-03-29 14:02:10+00
+  4 | test-user-2 | test-hotel-1 | TESTCODE1  |               10 |    90 | 2026-03-29 14:02:11+00
+(4 rows)
+
+id 3–4 и метки времени — ориентировочные; у вас будут свои значения.

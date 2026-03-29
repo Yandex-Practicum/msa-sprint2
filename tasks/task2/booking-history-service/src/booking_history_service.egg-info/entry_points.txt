@@ -1,0 +1,2 @@
+[console_scripts]
+history-worker = booking_history.main:main

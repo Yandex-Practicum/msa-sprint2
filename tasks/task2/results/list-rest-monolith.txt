@@ -1,0 +1,32 @@
+# Список бронирований через REST монолита (прокси к gRPC booking-service)
+
+$ curl -s "http://localhost:8084/api/bookings"
+
+Пример тела ответа (массив JSON, поля Spring/Jackson — camelCase):
+
+[
+  {
+    "id": 1,
+    "userId": "test-user-2",
+    "hotelId": "test-hotel-1",
+    "promoCode": "TESTCODE1",
+    "discountPercent": 10.0,
+    "price": 90.0,
+    "createdAt": "2026-03-29T14:01:00.000Z"
+  },
+  {
+    "id": 2,
+    "userId": "test-user-3",
+    "hotelId": "test-hotel-1",
+    "promoCode": null,
+    "discountPercent": 0.0,
+    "price": 80.0,
+    "createdAt": "2026-03-29T14:01:00.000Z"
+  }
+]
+
+Фильтр по пользователю:
+
+$ curl -s "http://localhost:8084/api/bookings?userId=test-user-2"
+
+Возвращается подмножество бронирований только для указанного userId.

@@ -1,0 +1,18 @@
+replicaCount: 2
+
+image:
+  name: booking-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+enableFeatureX: false
+
+env: []
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi

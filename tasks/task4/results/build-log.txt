@@ -1,0 +1,68 @@
+~/Doc/msa-sprint2/ta/task4 homework +29 ?29 ❯ gitlab-ci-local --volume /var/run/docker.sock:/var/run/docker.sock build test deploy
+
+Using fallback git user.name
+  Command failed with exit code 1: git config user.name
+parsing and downloads finished in 61 ms.
+json schema validated in 118 ms
+build  starting docker:24-cli (build)
+deploy starting docker:24-cli (deploy)
+deploy copied to docker volumes in 480 ms
+build  copied to docker volumes in 493 ms
+deploy $ set -euo pipefail # collapsed multi-line command
+deploy > minikube not found in PATH; skipping image load (OK for CI without cluster)
+deploy > helm/kubectl not found in PATH; skipping cluster deploy (install on host or use shell executor)
+build  $ docker build -t "${IMAGE_NAME}:${IMAGE_TAG}" ./booking-service
+deploy finished in 983 ms
+build  > #0 building with "default" instance using docker driver
+build  > 
+build  > #1 [internal] load build definition from Dockerfile
+build  > #1 transferring dockerfile: 384B done
+build  > #1 DONE 0.0s
+build  > 
+build  > #2 [internal] load metadata for docker.io/library/alpine:3.19
+build  > #2 DONE 0.0s
+build  > 
+build  > #3 [internal] load metadata for docker.io/library/golang:1.21-alpine
+build  > #3 DONE 0.0s
+build  > 
+build  > #4 [internal] load .dockerignore
+build  > #4 transferring context: 2B done
+build  > #4 DONE 0.0s
+build  > 
+build  > #5 [builder 1/4] FROM docker.io/library/golang:1.21-alpine
+build  > #5 DONE 0.0s
+build  > 
+build  > #6 [stage-1 1/4] FROM docker.io/library/alpine:3.19
+build  > #6 DONE 0.0s
+build  > 
+build  > #7 [internal] load build context
+build  > #7 transferring context: 902B done
+build  > #7 DONE 0.0s
+build  > 
+build  > #8 [stage-1 2/4] RUN adduser -D -u 65532 -g nobody appuser
+build  > #8 CACHED
+build  > 
+build  > #9 [builder 3/4] COPY go.mod main.go ./
+build  > #9 CACHED
+build  > 
+build  > #10 [builder 4/4] RUN CGO_ENABLED=0 go build -o booking-service -trimpath -ldflags="-s -w" .
+build  > #10 CACHED
+build  > 
+build  > #11 [stage-1 3/4] WORKDIR /app
+build  > #11 CACHED
+build  > 
+build  > #12 [builder 2/4] WORKDIR /app
+build  > #12 CACHED
+build  > 
+build  > #13 [stage-1 4/4] COPY --from=builder /app/booking-service .
+build  > #13 CACHED
+build  > 
+build  > #14 exporting to image
+build  > #14 exporting layers done
+build  > #14 writing image sha256:88a02bea825fbd52dbfdd37ddd4f81413819f993862cbdc105980900241e6f32 done
+build  > #14 naming to docker.io/library/booking-service:latest done
+build  > #14 DONE 0.0s
+build  finished in 1.38 s
+
+ PASS  build 
+ PASS  deploy
