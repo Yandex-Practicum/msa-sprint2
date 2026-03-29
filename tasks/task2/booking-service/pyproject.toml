@@ -1,0 +1,24 @@
+[project]
+name = "booking-service"
+version = "0.1.0"
+description = "Hotelio booking gRPC service"
+requires-python = ">=3.12"
+dependencies = [
+    "grpcio>=1.60.0",
+    "httpx>=0.27.0",
+    "psycopg2-binary>=2.9.9",
+    "kafka-python>=2.0.2",
+]
+
+[project.scripts]
+booking-server = "booking_service.main:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[dependency-groups]
+dev = ["grpcio-tools>=1.60.0"]

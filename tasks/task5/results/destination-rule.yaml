@@ -1,0 +1,33 @@
+# Subsets v1/v2 по лейблу version на Pod.
+# Circuit breaking: connectionPool + outlierDetection.
+# Retry на HTTP-маршруте задан в VirtualService; здесь — пулы соединений и таймаут TCP.
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: booking-service
+  namespace: default
+spec:
+  host: booking-service
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 100
+        connectTimeout: 5s
+      http:
+        http1MaxPendingRequests: 16
+        http2MaxRequests: 100
+        maxRequestsPerConnection: 10
+    loadBalancer:
+      simple: ROUND_ROBIN
+    outlierDetection:
+      consecutive5xxErrors: 3
+      interval: 5s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 100
+  subsets:
+    - name: v1
+      labels:
+        version: v1
+    - name: v2
+      labels:
+        version: v2

@@ -1,0 +1,8 @@
+~/Doc/msa-sprint2/ta/task5 homework +29 !4 ?37 ❯ ./check-fallback.sh
+▶️ Testing fallback / устойчивость после потери пода
+   Перед запуском: удалите один под v1, например:
+   kubectl delete pod -l app=booking-service,version=v1 --field-selector=status.phase=Running | head -1
+   Либо: kubectl delete pod -l version=v1
+   Port-forward: kubectl port-forward -n istio-system svc/istio-ingressgateway 9090:80
+
+pong v2     

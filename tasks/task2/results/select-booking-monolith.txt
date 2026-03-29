@@ -1,0 +1,13 @@
+-- БД монолита: localhost:5432, database hotelio, user hotelio
+-- Команда: psql -h localhost -p 5432 -U hotelio -d hotelio -c "SELECT * FROM booking;"
+
+Пояснение: при профиле grpc-booking новые брони пишутся только в booking-service. В таблице монолита остаются строки, загруженные init-fixtures.sql (регресс вставляет их напрямую в Postgres монолита). POST /api/bookings не добавляет строки сюда.
+
+ hotelio=# SELECT * FROM booking;
+ id |  user_id   |  hotel_id   | promo_code | discount_percent | price |          created_at
+----+------------+-------------+------------+------------------+-------+-------------------------------
+  1 | test-user-2 | test-hotel-1 | TESTCODE1  |               10 |    90 | 2026-03-29 12:00:00.123456+00
+  2 | test-user-3 | test-hotel-1 |            |                0 |    80 | 2026-03-29 12:00:00.123457+00
+(2 rows)
+
+Примечание: точные id и created_at зависят от прогона; при пустой таблице после чистого ddl без фикстур будет 0 строк.

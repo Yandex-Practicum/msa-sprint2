@@ -1,0 +1,32 @@
+# Профиль «нагрузка на v2»: больше реплик новой версии (тот же чарт, другие реплики).
+# Установка: helm upgrade --install booking-service ./helm/booking-service \
+#   -f ./helm/booking-service/values.yaml -f results/values-v2.yaml
+appName: booking-service
+
+image:
+  name: booking-service
+  tag: latest
+  pullPolicy: Never
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
+
+deployments:
+  - version: v1
+    replicaCount: 1
+    enableFeatureX: false
+  - version: v2
+    replicaCount: 2
+    enableFeatureX: true
+
+env: []

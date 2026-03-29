@@ -1,114 +1,132 @@
-# Подготовка окружения
-Перед началом убедитесь, что на машине установлены:
-Требуемое ПО:
-- Docker
-- Minikube
-- Helm
-- Node.js + npm — желательно через nvm
-- gitlab-ci-local
+# Task 4 — автоматизация развёртывания и тестирования (booking-service)
 
-# Команды установки (Ubuntu/WSL)
+## Требования
 
-## Установка nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-source ~/.bashrc
-nvm install --lts
+- Docker, Minikube, Helm, kubectl  
+- Node.js + npm (для `gitlab-ci-local`)  
+- Опционально: Go 1.21+ для локальных тестов
 
-## Установка gitlab-ci-local
+### Установка gitlab-ci-local
+
+```bash
 npm install -g gitlab-ci-local
+```
 
-## Запуск Minikube
+### Minikube
+
+```bash
 minikube start --driver=docker
+```
 
-# Структура проекта
+## Структура
 
-task4/
-├── booking-service/               # REST-сервис (Node/Java/etc)
-├── helm/
-│   └── booking-service/          # Helm-чарт сервиса
-├── .gitlab-ci.yml                # CI/CD пайплайн (требуется доработка)
-├── check-dns.sh                  # Проверка DNS внутри кластера
-├── check-status                  # Статус деплоя и curl локально
-├── README.md                     # Этот файл
+- `booking-service/` — HTTP-сервис на Go (`:8080`): `/ping` → `pong`, `/health`, `/ready`, при `ENABLE_FEATURE_X=true` — маршрут `/feature`
+- `helm/booking-service/` — Helm-чарт
+- `.gitlab-ci.yml` — пайплайн: build → test (unit + docker ping) → deploy → tag
 
-# Что нужно реализовать
+## Важно: имя релиза и DNS
 
-1. Docker-образ сервиса
-	- Либо на базе имеющегося booking-service, либо на базе предложенного в задаче
-- Собирается с помощью docker build
-- Открывает порт 8080
-- Возвращает /ping → pong
-- Поведение сервиса меняется при наличии переменной ENABLE_FEATURE_X=true
+Сервис в кластере должен называться **`booking-service`**, чтобы работали `http://booking-service/ping` и селекторы в скриптах.
 
-2. Helm-чарт:
+```bash
+helm upgrade --install booking-service ./helm/booking-service \
+  -f ./helm/booking-service/values-staging.yaml
+```
 
-- Deployment с пробами:
-	- livenessProbe и readinessProbe по /ping
-- Service типа ClusterIP (порт 80 → targetPort 8080)
-- Значения из values.yaml:
-	- replicaCount
-	- image.name, image.tag, image.pullPolicy
-	- env[] — переменные окружения	
-	- resources — requests и limits
-	- ENABLE_FEATURE_X — фича-флаг
+Имя Kubernetes Service = имя релиза (`{{ .Release.Name }}`).
 
-Обязательно сделайте два варианта values.yaml: для staging и prod
+## Сборка образа и загрузка в Minikube
 
-3. CI/CD пайплайн (.gitlab-ci.yml):
+Выполняйте команды из каталога **`tasks/task4`** (этот README).
 
-Стадии:
-- build: docker build
-- test: docker run, проверка /ping
-- deploy: minikube image load и helm upgrade
-- tag: создать git-тег с timestamp (можно сделать вручную)
+```bash
+docker build -t booking-service:latest ./booking-service
+minikube image load booking-service:latest
+```
 
-! Используйте gitlab-ci-local:
-gitlab-ci-local build test deploy tag
+Для staging в `values-staging.yaml` задано `imagePullPolicy: Never` — образ должен быть загружен в Minikube.
 
-4. 🔎 Service Discovery через DNS
+## Деплой (Helm)
 
-- Проверка: http://booking-service/ping работает из другого пода внутри Minikube
-- Используйте скрипт check-dns.sh
+Staging (локальный Minikube):
 
-# Проверка корректности
+```bash
+helm upgrade --install booking-service ./helm/booking-service \
+  -f ./helm/booking-service/values-staging.yaml \
+  --wait --timeout 120s
+```
 
-## Проверка сервисов:
+Prod-профиль (пример настроек под registry):
 
+```bash
+helm upgrade --install booking-service ./helm/booking-service \
+  -f ./helm/booking-service/values-prod.yaml
+```
+
+## Проверки
+
+```bash
+chmod +x ./check-dns.sh ./check-status ./check-status.sh
 ./check-status
-
-Пример вывода:
-
-▶️ Checking booking-service deployment...
-NAME                             READY   STATUS    RESTARTS   AGE
-booking-service-78d99d7dd5-abc   1/1     Running   0          1m
-
-▶️ Checking service...
-NAME              TYPE        CLUSTER-IP      PORT(S)   AGE
-booking-service   ClusterIP   10.96.170.171   80/TCP    1m
-
-▶️ Port-forward to test service locally:
-kubectl port-forward svc/booking-service 8080:80
-Then: curl http://localhost:8080/ping
-
-## Проверка DNS внутри кластера:
-
 ./check-dns.sh
+```
 
-Ожидаемый вывод:
+Проверка с хоста через port-forward:
 
-▶️ Running in-cluster DNS test...
-pong
-✅ Success
-
-
-# Подсказки:
-
-- imagePullPolicy: Never нужен для использования локального образа
-- minikube image load копирует образ внутрь Minikube
-- DNS имена booking-service работают только внутри кластера
-
-Для доступа снаружи используйте:
 ```bash
 kubectl port-forward svc/booking-service 8080:80
 curl http://localhost:8080/ping
 ```
+
+## CI локально (gitlab-ci-local)
+
+Запускайте из **этого каталога** (`tasks/task4`), чтобы пути `./booking-service` и `./helm/...` совпадали с `CI_PROJECT_DIR`.
+
+Job’ы с `docker` должны ходить в **Docker на хосте** через сокет (а не в несуществующий `docker:2375`). В `.gitlab-ci.yml` задано `DOCKER_HOST=unix:///var/run/docker.sock`; нужно **смонтировать сокет** при вызове:
+
+```bash
+cd tasks/task4
+make ci
+```
+
+Makefile вызывает `gitlab-ci-local --volume /var/run/docker.sock:/var/run/docker.sock ...`. На части установок Docker Desktop сокет лежит в `~/.docker/run/docker.sock`:
+
+```bash
+make ci DOCKER_SOCK="$HOME/.docker/run/docker.sock"
+```
+
+Вручную:
+
+```bash
+gitlab-ci-local --volume /var/run/docker.sock:/var/run/docker.sock build test deploy tag
+```
+
+**Deploy:** job использует `minikube` и `helm`/`kubectl` из `PATH` контейнера job’а. В типичном `gitlab-ci-local` с Docker-исполнителем этих бинарников нет — тогда шаги load/helm пропускаются с предупреждением, либо используйте [shell executor](https://github.com/firecow/gitlab-ci-local#shell-executor) / запуск `minikube image load` и `helm upgrade` вручную на хосте после успешного `build` и `test`.
+
+**Tag:** стадия `tag` создаёт аннотированный git-тег `booking-service-YYYYMMDDHHMMSS` (UTC).
+
+### Ошибка `docker pull ... context deadline exceeded`
+
+Это таймаут до **Docker Hub** (сеть, VPN, файрвол, DNS). В чарте и `.gitlab-ci.yml` для job-образов задано **`pull_policy: [if-not-present]`**: если образ уже есть локально, повторный pull не выполняется.
+
+Один раз, когда интернет до registry стабилен, подтяните образы:
+
+```bash
+docker pull docker:24-cli
+docker pull golang:1.21-alpine
+docker pull alpine/git:latest
+```
+
+Дополнительно можно вызывать:
+
+```bash
+gitlab-ci-local --pull-policy if-not-present build test deploy tag
+```
+
+(точное имя флага смотрите в `gitlab-ci-local --help` для вашей версии.)
+
+Если образов ещё нет и сеть до `registry-1.docker.io` не проходит — нужно починить доступ (другая сеть/VPN, зеркало registry в настройках Docker, корпоративный прокси).
+
+## Образ результата для сдачи
+
+Артефакты складываются в `results/`: что именно класть и какие команды выполнить — **[`results/CHECKLIST.md`](results/CHECKLIST.md)**; описание решения — [`results/report.md`](results/report.md).

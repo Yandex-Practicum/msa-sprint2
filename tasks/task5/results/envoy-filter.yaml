@@ -1,0 +1,38 @@
+# Lua на ingress gateway: X-Feature-Enabled: true → внутренний заголовок для VirtualService (маршрут на subset v2).
+# Ресурс в istio-system, workloadSelector — поды ingressgateway.
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: booking-feature-flag
+  namespace: istio-system
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+    - applyTo: HTTP_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+              subFilter:
+                name: envoy.filters.http.router
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.lua
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+            inline_code: |
+              function envoy_on_request(handle)
+                local raw = handle:headers():get("x-feature-enabled")
+                if raw == nil then
+                  return
+                end
+                raw = string.lower(raw)
+                if raw == "true" then
+                  handle:headers():add("x-booking-route-v2", "true")
+                end
+              end

@@ -1,0 +1,4 @@
+CONTAINER ID   IMAGE                      COMMAND                  CREATED         STATUS         PORTS                                         NAMES
+be59aba84766   task3-promocode-subgraph   "docker-entrypoint.s…"   4 seconds ago   Up 3 seconds   0.0.0.0:4003->4003/tcp, [::]:4003->4003/tcp   task3-promocode-subgraph-1
+25234aab3b8a   task3-hotel-subgraph       "docker-entrypoint.s…"   4 seconds ago   Up 3 seconds   0.0.0.0:4002->4002/tcp, [::]:4002->4002/tcp   task3-hotel-subgraph-1
+906b2e9b1441   task3-booking-subgraph     "docker-entrypoint.s…"   4 seconds ago   Up 3 seconds   0.0.0.0:4001->4001/tcp, [::]:4001->4001/tcp   task3-booking-subgraph-1

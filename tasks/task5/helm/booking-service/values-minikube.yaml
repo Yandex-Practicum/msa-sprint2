@@ -1,0 +1,4 @@
+# Use with: helm upgrade --install booking-service ./helm/booking-service \
+#   -f ./helm/booking-service/values.yaml -f ./helm/booking-service/values-minikube.yaml
+image:
+  pullPolicy: Never

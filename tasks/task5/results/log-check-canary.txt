@@ -1,0 +1,7 @@
+~/Doc/msa-sprint2/ta/task5 homework +29 !4 ?37 ❯ ./check-canary.sh      
+▶️ Checking canary release (90% v1, 10% v2) — 100 запросов к http://localhost:9090/ping
+   Убедитесь: kubectl port-forward -n istio-system svc/istio-ingressgateway 9090:80
+Ответы с v1: 88
+Ответы с v2: 12
+Прочие/ошибки: 0
+Ожидание (статистика): v1 ~90, v2 ~10

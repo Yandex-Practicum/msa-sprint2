@@ -1,0 +1,4 @@
+docker.io/library/booking-service:latest
+
+booking-service                                           latest                                     88a02bea825f   3 hours ago     12.1MB
+task2-booking-service                                     latest                                     a1dbd9c06583   4 hours ago     239MB

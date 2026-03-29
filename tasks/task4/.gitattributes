@@ -1,0 +1,5 @@
+# Force Unix line endings for shell entrypoints (CRLF breaks shebang: "bash\r")
+check-status text eol=lf
+check-status.sh text eol=lf
+check-dns.sh text eol=lf
+.gitlab-ci.yml text eol=lf
