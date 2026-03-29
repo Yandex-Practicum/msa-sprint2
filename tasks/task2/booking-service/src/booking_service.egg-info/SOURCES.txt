@@ -1,8 +1,0 @@
-pyproject.toml
-src/booking_service/__init__.py
-src/booking_service.egg-info/PKG-INFO
-src/booking_service.egg-info/SOURCES.txt
-src/booking_service.egg-info/dependency_links.txt
-src/booking_service.egg-info/entry_points.txt
-src/booking_service.egg-info/requires.txt
-src/booking_service.egg-info/top_level.txt
