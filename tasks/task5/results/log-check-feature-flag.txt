@@ -1,0 +1,7 @@
+~/Doc/msa-sprint2/ta/task5 homework +29 !4 ?37 ❯ ./check-feature-flag.sh        tee results/log-check-feature-flag.txt
+
+▶️ Проверка Feature Flag (X-Feature-Enabled: true) → маршрут на v2
+   Port-forward: kubectl port-forward -n istio-system svc/istio-ingressgateway 9090:80
+
+Ответ: pong v2
+OK: ответ указывает на v2

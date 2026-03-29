@@ -5,6 +5,8 @@ import com.hotelio.monolith.entity.PromoCode;
 import com.hotelio.monolith.repository.BookingRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.hotelio.monolith.grpc.GrpcBookingService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,27 +22,41 @@ public class BookingService {
     private final ReviewService reviewService;
     private final AppUserService userService;
     private final HotelService hotelService;
+    private final GrpcBookingService grpcBookingService;
 
     public BookingService(
             BookingRepository bookingRepository,
             PromoCodeService promoCodeService,
             ReviewService reviewService,
             AppUserService userService,
-            HotelService hotelService
+            HotelService hotelService,
+            @Autowired(required = false) GrpcBookingService grpcBookingService
     ) {
         this.bookingRepository = bookingRepository;
         this.promoCodeService = promoCodeService;
         this.reviewService = reviewService;
         this.userService = userService;
         this.hotelService = hotelService;
+        this.grpcBookingService = grpcBookingService;
+    }
+
+    private boolean useExternalBooking() {
+        return grpcBookingService != null;
     }
 
     public List<Booking> listAll(String userId) {
+        if (useExternalBooking()) {
+            return grpcBookingService.listBookings(userId);
+        }
         return userId != null ? bookingRepository.findByUserId(userId) : bookingRepository.findAll();
     }
 
     public Booking createBooking(String userId, String hotelId, String promoCode) {
         log.info("Creating booking: userId={}, hotelId={}, promoCode={}", userId, hotelId, promoCode);
+
+        if (useExternalBooking()) {
+            return grpcBookingService.createBooking(userId, hotelId, promoCode);
+        }
 
         validateUser(userId);
         validateHotel(hotelId);

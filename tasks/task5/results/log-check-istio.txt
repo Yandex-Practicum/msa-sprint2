@@ -1,0 +1,8 @@
+~/Doc/msa-sprint2/ta/task5 homework +29 !4 ?37 ❯ ./check-istio.sh   booking-service 00:27:43
+▶️ Проверка установки Istio...
+NAME                                    READY   STATUS    RESTARTS   AGE
+istio-egressgateway-7f67df695d-4grb8    1/1     Running   0          15m
+istio-ingressgateway-76768cbcf6-q6c7x   1/1     Running   0          15m
+istiod-76d6698857-d4b2r                 1/1     Running   0          16m
+▶️ Проверка Istio инъекции в default namespace...
+OK: namespace default has istio-injection=enabled

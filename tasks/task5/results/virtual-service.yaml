@@ -1,0 +1,64 @@
+# Gateway: вход через istio-ingressgateway (порт 80 сервиса).
+# После установки: kubectl port-forward -n istio-system svc/istio-ingressgateway 9090:80
+---
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: booking-gateway
+  namespace: default
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "*"
+---
+# Канареечный release 90/10, retry/timeout (устойчивость и «мягкий» fallback при сбоях соединения).
+# Приоритетный маршрут: внутренний заголовок x-booking-route-v2=true выставляет EnvoyFilter при X-Feature-Enabled: true.
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: booking-route
+  namespace: default
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - booking-gateway
+  http:
+    - match:
+        - headers:
+            x-booking-route-v2:
+              exact: "true"
+      route:
+        - destination:
+            host: booking-service
+            port:
+              number: 80
+            subset: v2
+      retries:
+        attempts: 2
+        perTryTimeout: 2s
+        retryOn: connect-failure,refused-stream,gateway-error,5xx
+    - route:
+        - destination:
+            host: booking-service
+            port:
+              number: 80
+            subset: v1
+          weight: 90
+        - destination:
+            host: booking-service
+            port:
+              number: 80
+            subset: v2
+          weight: 10
+      timeout: 15s
+      retries:
+        attempts: 3
+        perTryTimeout: 3s
+        retryOn: connect-failure,refused-stream,gateway-error,5xx

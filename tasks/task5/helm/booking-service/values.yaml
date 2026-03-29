@@ -1,0 +1,31 @@
+# Shared Kubernetes app label (Service selects only this; version splits Deployments for Istio subsets)
+appName: booking-service
+
+image:
+  name: booking-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
+
+# One entry per version: separate Deployment + Pod label version=v1|v2
+deployments:
+  - version: v1
+    replicaCount: 2
+    enableFeatureX: false
+  - version: v2
+    replicaCount: 1
+    enableFeatureX: true
+
+env: []
