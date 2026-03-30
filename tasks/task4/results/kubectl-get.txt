@@ -1,0 +1,5 @@
+﻿NAME                              READY   STATUS    RESTARTS   AGE   IP           NODE       NOMINATED NODE   READINESS GATES
+booking-service-6b67769cc-wcnh6   1/1     Running   0          19m   10.244.0.4   minikube   <none>           <none>
+NAME              TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE   SELECTOR
+booking-service   ClusterIP   10.110.207.62   <none>        80/TCP    19m   app=booking-service
+kubernetes        ClusterIP   10.96.0.1       <none>        443/TCP   21m   <none>
