@@ -1,0 +1,15 @@
+# v1: основная ветка
+replicaCount: 2
+appLabel: booking-service
+podLabels:
+  version: v1
+image:
+  name: booking-service
+  tag: latest
+service:
+  create: true
+  name: booking-service
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+ENABLE_FEATURE_X: false

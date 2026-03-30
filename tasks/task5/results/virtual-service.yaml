@@ -1,0 +1,65 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: booking-gateway
+  namespace: default
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: booking-service
+  namespace: default
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - booking-gateway
+  http:
+  # 1) Feature-flag: X-Feature-Enabled=true -> v2
+  - match:
+    - headers:
+        X-Feature-Enabled:
+          exact: "true"
+    route:
+    - destination:
+        host: booking-service.default.svc.cluster.local
+        subset: v2
+      weight: 100
+    retries:
+      attempts: 2
+      perTryTimeout: 1s
+      retryOn: 5xx,gateway-error,connect-failure,refused-stream,reset
+  # 2) Fallback: if request is a retry (x-envoy-attempt-count>=2), send to v2
+  - match:
+    - headers:
+        x-envoy-attempt-count:
+          regex: "^[2-9][0-9]*$"
+    route:
+    - destination:
+        host: booking-service.default.svc.cluster.local
+        subset: v2
+      weight: 100
+  # 3) Default canary: 90% v1, 10% v2
+  - route:
+    - destination:
+        host: booking-service.default.svc.cluster.local
+        subset: v1
+      weight: 90
+    - destination:
+        host: booking-service.default.svc.cluster.local
+        subset: v2
+      weight: 10
+    retries:
+      attempts: 2
+      perTryTimeout: 1s
+      retryOn: 5xx,gateway-error,connect-failure,refused-stream,reset

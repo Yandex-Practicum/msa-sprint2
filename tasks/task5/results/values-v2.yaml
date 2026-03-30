@@ -1,0 +1,11 @@
+# v2: новая версия, фича включена
+replicaCount: 1
+appLabel: booking-service
+podLabels:
+  version: v2
+image:
+  name: booking-service
+  tag: latest
+service:
+  create: false   # сервис создаёт v1
+ENABLE_FEATURE_X: true

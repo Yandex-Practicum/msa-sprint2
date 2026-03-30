@@ -1,0 +1,4 @@
+▶️ Checking canary on /feature (v1=404, v2=200). Expect ~90/10
+v1 (404): 91 (91%)
+v2 (200): 9 (9%)
+✅ Canary looks OK
