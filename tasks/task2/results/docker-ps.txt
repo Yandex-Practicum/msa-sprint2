@@ -1,0 +1,8 @@
+booking-service	task2-booking-service	Up 34 minutes
+booking-history-service	task2-booking-history-service	Up About an hour
+hotelio-monolith	task2-monolith	Up About an hour
+booking-db	postgres:15	Up About an hour
+history-db	postgres:15	Up About an hour
+hotelio-db	postgres:15	Up About an hour
+task2-zookeeper-1	confluentinc/cp-zookeeper:7.2.1	Up About an hour
+task2-kafka-1	confluentinc/cp-kafka:7.2.1	Up About an hour

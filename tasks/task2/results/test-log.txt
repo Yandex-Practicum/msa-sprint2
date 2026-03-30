@@ -1,0 +1,61 @@
+Дата: 2026-03-25T03:02:15+03:00
+
+# Проверка контейнеров
+$ docker.exe ps --format {{.Names}}\t{{.Image}}\t{{.Status}}
+booking-service	task2-booking-service	Up 34 minutes
+booking-history-service	task2-booking-history-service	Up About an hour
+hotelio-monolith	task2-monolith	Up About an hour
+booking-db	postgres:15	Up About an hour
+history-db	postgres:15	Up About an hour
+hotelio-db	postgres:15	Up About an hour
+task2-zookeeper-1	confluentinc/cp-zookeeper:7.2.1	Up About an hour
+task2-kafka-1	confluentinc/cp-kafka:7.2.1	Up About an hour
+
+# Загрузка тестовых фикстур в монолитную БД
+$ docker.exe exec -i hotelio-db psql -U hotelio -d hotelio -f - < "/c/Users/123/Desktop/практика/спринт 2/test/init-fixtures.sql"
+DELETE 4
+DELETE 3
+DELETE 12
+DELETE 3
+DELETE 2
+INSERT 0 4
+INSERT 0 3
+INSERT 0 12
+INSERT 0 3
+INSERT 0 2
+
+# Создание бронирований через монолит (REST)
+$ curl -sS -X POST http://localhost:8084/api/bookings?userId=test-user-2&hotelId=test-hotel-1&promoCode=TESTCODE1
+{"id":7,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":10.0,"price":90.0,"createdAt":"2026-03-25T00:02:16.470Z"}
+$ curl -sS -X POST http://localhost:8084/api/bookings?userId=test-user-3&hotelId=test-hotel-1&promoCode=TESTCODE-VIP
+{"id":8,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":"TESTCODE-VIP","discountPercent":20.0,"price":60.0,"createdAt":"2026-03-25T00:02:17.119Z"}
+
+# REST: список бронирований user-2
+$ curl -sS http://localhost:8084/api/bookings?userId=test-user-2
+[{"id":1,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":0.0,"price":100.0,"createdAt":"2026-03-24T22:44:41.015Z"},{"id":5,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":10.0,"price":90.0,"createdAt":"2026-03-24T22:47:41.410Z"},{"id":7,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":10.0,"price":90.0,"createdAt":"2026-03-25T00:02:16.470Z"}]
+
+# REST: список бронирований user-3
+$ curl -sS http://localhost:8084/api/bookings?userId=test-user-3
+[{"id":2,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":"TESTCODE-VIP","discountPercent":0.0,"price":80.0,"createdAt":"2026-03-24T22:44:48.411Z"},{"id":3,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":"TESTCODE-VIP","discountPercent":20.0,"price":60.0,"createdAt":"2026-03-24T22:46:55.815Z"},{"id":4,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":"TESTCODE-VIP","discountPercent":20.0,"price":60.0,"createdAt":"2026-03-24T22:46:56.628Z"},{"id":6,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":"TESTCODE-VIP","discountPercent":20.0,"price":60.0,"createdAt":"2026-03-24T22:48:15.666Z"},{"id":8,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":"TESTCODE-VIP","discountPercent":20.0,"price":60.0,"createdAt":"2026-03-25T00:02:17.119Z"}]
+
+# gRPC: список бронирований через grpcurl
+
+# gRPC fallback: клиент внутри контейнера
+$ docker.exe cp /c/Users/123/Desktop/практика/спринт 2/tasks/task2/booking-service/grpc-client.js booking-service:/app/grpc-client.js
+
+$ env MSYS_NO_PATHCONV=1 docker.exe exec booking-service node /app/grpc-client.js test-user-2
+{"bookings":[{"id":"1","user_id":"test-user-2","hotel_id":"test-hotel-1","promo_code":"TESTCODE1","discount_percent":0,"price":100,"created_at":"2026-03-24T22:44:41.015Z"},{"id":"5","user_id":"test-user-2","hotel_id":"test-hotel-1","promo_code":"TESTCODE1","discount_percent":10,"price":90,"created_at":"2026-03-24T22:47:41.410Z"},{"id":"7","user_id":"test-user-2","hotel_id":"test-hotel-1","promo_code":"TESTCODE1","discount_percent":10,"price":90,"created_at":"2026-03-25T00:02:16.470Z"}]}
+
+$ env MSYS_NO_PATHCONV=1 docker.exe exec booking-service node /app/grpc-client.js test-user-3
+{"bookings":[{"id":"2","user_id":"test-user-3","hotel_id":"test-hotel-1","promo_code":"TESTCODE-VIP","discount_percent":0,"price":80,"created_at":"2026-03-24T22:44:48.411Z"},{"id":"3","user_id":"test-user-3","hotel_id":"test-hotel-1","promo_code":"TESTCODE-VIP","discount_percent":20,"price":60,"created_at":"2026-03-24T22:46:55.815Z"},{"id":"4","user_id":"test-user-3","hotel_id":"test-hotel-1","promo_code":"TESTCODE-VIP","discount_percent":20,"price":60,"created_at":"2026-03-24T22:46:56.628Z"},{"id":"6","user_id":"test-user-3","hotel_id":"test-hotel-1","promo_code":"TESTCODE-VIP","discount_percent":20,"price":60,"created_at":"2026-03-24T22:48:15.666Z"},{"id":"8","user_id":"test-user-3","hotel_id":"test-hotel-1","promo_code":"TESTCODE-VIP","discount_percent":20,"price":60,"created_at":"2026-03-25T00:02:17.119Z"}]}
+
+
+# Снимки таблиц после тестов
+
+# Результат
+Логи команд и вывод: /c/Users/123/Desktop/практика/спринт 2/tasks/task2/results/test-log.txt
+Docker ps: /c/Users/123/Desktop/практика/спринт 2/tasks/task2/results/docker-ps.txt
+SELECT booking (новая БД): /c/Users/123/Desktop/практика/спринт 2/tasks/task2/results/select-booking-db.txt
+SELECT booking_history: /c/Users/123/Desktop/практика/спринт 2/tasks/task2/results/select-history-db.txt
+SELECT booking (монолит): /c/Users/123/Desktop/практика/спринт 2/tasks/task2/results/select-monolith-db.txt
+✅ Готово
