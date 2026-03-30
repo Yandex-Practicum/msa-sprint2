@@ -1,0 +1,14 @@
+docker ps -a
+CONTAINER ID   IMAGE                             COMMAND                  CREATED          STATUS          PORTS                                         NAMES
+917013fe732d   task3-booking-subgraph            "docker-entrypoint.s…"   4 minutes ago    Up 3 minutes    0.0.0.0:4001->4001/tcp, [::]:4001->4001/tcp   task3-booking-subgraph-1
+afa963fbf061   task3-apollo-gateway              "docker-entrypoint.s…"   15 minutes ago   Up 15 minutes   0.0.0.0:4000->4000/tcp, [::]:4000->4000/tcp   task3-apollo-gateway-1
+a33baafff4dd   task3-promocode-subgraph          "docker-entrypoint.s…"   19 minutes ago   Up 19 minutes   0.0.0.0:4003->4003/tcp, [::]:4003->4003/tcp   task3-promocode-subgraph-1
+4e82b1aec6ab   task3-hotel-subgraph              "docker-entrypoint.s…"   26 minutes ago   Up 26 minutes   0.0.0.0:4002->4002/tcp, [::]:4002->4002/tcp   task3-hotel-subgraph-1
+c45101290d30   task2-booking-service             "docker-entrypoint.s…"   2 hours ago      Up 2 hours      9090/tcp                                      booking-service
+5bbd94023c5c   task2-booking-history-service     "docker-entrypoint.s…"   2 hours ago      Up 2 hours                                                    booking-history-service
+1cb6e9330720   task2-monolith                    "java -jar app.jar"      2 hours ago      Up 2 hours      0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp   hotelio-monolith
+1edff9b0082d   postgres:15                       "docker-entrypoint.s…"   3 hours ago      Up 3 hours      0.0.0.0:5433->5432/tcp, [::]:5433->5432/tcp   booking-db
+48af2923b7de   postgres:15                       "docker-entrypoint.s…"   3 hours ago      Up 3 hours      0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp   history-db
+3ccc0e79e978   postgres:15                       "docker-entrypoint.s…"   3 hours ago      Up 3 hours      0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   hotelio-db
+dfd3af61aadb   confluentinc/cp-zookeeper:7.2.1   "/etc/confluent/dock…"   3 hours ago      Up 3 hours      0.0.0.0:2181->2181/tcp, [::]:2181->2181/tcp   task2-zookeeper-1
+76ff751d0911   confluentinc/cp-kafka:7.2.1       "/etc/confluent/dock…"   3 hours ago      Up 3 hours      0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp   task2-kafka-1

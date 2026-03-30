@@ -1,0 +1,11 @@
+﻿{
+  "name": "booking-history-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "kafkajs": "^2.2.4",
+    "pg": "^8.11.3"
+  }
+}

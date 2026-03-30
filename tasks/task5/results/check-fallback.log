@@ -1,0 +1,2 @@
+▶️ Testing fallback route on /feature (expect 200 if v1 down)
+✅ Fallback OK: v2 served /feature (200)

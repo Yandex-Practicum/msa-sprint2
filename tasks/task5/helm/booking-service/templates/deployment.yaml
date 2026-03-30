@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.podLabels.version | default "v1" }}
+  labels:
+    app: {{ .Values.appLabel | default .Release.Name }}
+    version: {{ .Values.podLabels.version | default "v1" }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appLabel | default .Release.Name }}
+      version: {{ .Values.podLabels.version | default "v1" }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appLabel | default .Release.Name }}
+        version: {{ .Values.podLabels.version | default "v1" }}
+        {{- with .Values.podLabels }}
+        {{- range $k, $v := . }}
+        {{- if ne $k "version" }}{{ $k }}: {{ $v | quote }}{{ end }}
+        {{- end }}
+        {{- end }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          env:
+            - name: ENABLE_FEATURE_X
+              value: "{{ .Values.ENABLE_FEATURE_X | default false }}"
+          {{- with .Values.env }}
+            {{- range . }}
+            - name: {{ .name }}
+              value: "{{ .value }}"
+            {{- end }}
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: {{ default 5 .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ default 10 .Values.livenessProbe.periodSeconds }}
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: {{ default 2 .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ default 5 .Values.readinessProbe.periodSeconds }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}

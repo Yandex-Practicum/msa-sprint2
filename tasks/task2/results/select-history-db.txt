@@ -1,0 +1,13 @@
+-- history-db.booking_history
+ id |   user_id   |   hotel_id   |  promo_code  | discount_percent | price |         created_at         
+----+-------------+--------------+--------------+------------------+-------+----------------------------
+  1 | test-user-2 | test-hotel-1 | TESTCODE1    |                0 |   100 | 2026-03-24 22:44:41.015+00
+  2 | test-user-3 | test-hotel-1 | TESTCODE-VIP |                0 |    80 | 2026-03-24 22:44:48.411+00
+  3 | test-user-3 | test-hotel-1 | TESTCODE-VIP |               20 |    60 | 2026-03-24 22:46:55.815+00
+  4 | test-user-3 | test-hotel-1 | TESTCODE-VIP |               20 |    60 | 2026-03-24 22:46:56.628+00
+  5 | test-user-2 | test-hotel-1 | TESTCODE1    |               10 |    90 | 2026-03-24 22:47:41.41+00
+  6 | test-user-3 | test-hotel-1 | TESTCODE-VIP |               20 |    60 | 2026-03-24 22:48:15.666+00
+  7 | test-user-2 | test-hotel-1 | TESTCODE1    |               10 |    90 | 2026-03-25 00:02:16.47+00
+  8 | test-user-3 | test-hotel-1 | TESTCODE-VIP |               20 |    60 | 2026-03-25 00:02:17.119+00
+(8 rows)
+

@@ -1,0 +1,9 @@
+docker compose logs -f booking-subgraph
+
+booking-subgraph-1  | Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+booking-subgraph-1  | ✅ Booking subgraph ready at http://localhost:4001/
+booking-subgraph-1  | [ACL] Allow: userId=user2
+booking-subgraph-1  | [ACL] Deny: requester=user2 tried to access userId=user1
+booking-subgraph-1  | [ACL] Deny: requester=user2 tried to access userId=user1
+booking-subgraph-1  | [ACL] Allow: userId=user1
+booking-subgraph-1  | [ACL] Deny: requester=user1 tried to access userId=user2

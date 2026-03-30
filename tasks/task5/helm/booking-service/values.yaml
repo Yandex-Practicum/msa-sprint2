@@ -1,0 +1,41 @@
+replicaCount: 1
+
+# Stable logical app label to group v1/v2 under one Service
+appLabel: booking-service
+
+image:
+  name: booking-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  create: true
+  name: booking-service
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+# Additional pod labels; set version here
+podLabels: {}
+
+# Additional environment variables as list
+# env:
+#   - name: LOG_LEVEL
+#     value: info
+env: []
+
+# Resource requests/limits
+resources: {}
+#  limits:
+#    cpu: 200m
+#    memory: 256Mi
+#  requests:
+#    cpu: 100m
+#    memory: 128Mi
+
+# Feature flag
+ENABLE_FEATURE_X: false
+
+# Probe tuning (optional overrides)
+livenessProbe: {}
+readinessProbe: {}
