@@ -1,0 +1,116 @@
+﻿# Журнал проверки - Задание 1 (Монолит)
+
+## Окружение
+- ОС: Windows (PowerShell)
+- Docker: Client 29.3.0, Server 29.3.0 (Docker Desktop 4.66.0)
+- Compose-файл: `tasks/task1/docker-compose.yml`
+- Сеть: `hotelio-net`
+- Образы:
+  - `postgres:15`
+  - `task1-monolith:latest` (собран FROM `eclipse-temurin:17-jre`)
+- Контейнеры:
+  - `hotelio-db` → 5432:5432
+  - `hotelio-monolith` → 8084:8080
+
+## Запуск
+Команды:
+```
+docker network create hotelio-net
+docker compose -f tasks/task1/docker-compose.yml up -d --build
+```
+Проверка состояния:
+```
+docker ps
+CONTAINER ID   IMAGE            COMMAND                  STATUS   PORTS                                         NAMES
+bbb77a317867   postgres:15      "docker-entrypoint.s…"   Up       0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   hotelio-db
+8dee0e56b2f9   task1-monolith   "java -jar app.jar"      Up       0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp   hotelio-monolith
+```
+Фрагмент логов приложения:
+```
+Started MonolithApplication … Tomcat started on port 8080 (http)
+```
+
+## Загрузка фикстур
+Команды:
+```
+docker cp test/init-fixtures.sql hotelio-db:/init-fixtures.sql
+docker exec -it hotelio-db psql -U hotelio -d hotelio -f /init-fixtures.sql
+```
+Вывод psql:
+```
+DELETE 0
+DELETE 0
+DELETE 0
+DELETE 0
+DELETE 0
+INSERT 0 4
+INSERT 0 3
+INSERT 0 12
+INSERT 0 3
+INSERT 0 2
+```
+
+## Проверки API
+1) GET /api/hotels/by-city?city=Seoul
+```
+Запрос:  GET http://localhost:8084/api/hotels/by-city?city=Seoul
+Ответ:   200 OK
+Тело:
+[{"id":"test-hotel-1","operational":true,"fullyBooked":false,"city":"Seoul","rating":4.7,"description":"Modern hotel in Seoul downtown with spa and skybar."}]
+```
+
+2) POST /api/bookings (пользователь в чёрном списке)
+```
+Запрос:  POST http://localhost:8084/api/bookings?userId=test-user-1&hotelId=test-hotel-1&promoCode=TESTPROMO10
+Ответ:   500 Internal Server Error
+Тело:
+{"timestamp":"2026-03-24T22:15:45.696+00:00","status":500,"error":"Internal Server Error","path":"/api/bookings"}
+Наблюдение: бизнес-ошибка (blacklisted user) возвращается как 500; ожидается код 4xx.
+```
+
+3) POST /api/bookings (успешно, обычный пользователь)
+```
+Запрос:  POST http://localhost:8084/api/bookings?userId=test-user-2&hotelId=test-hotel-1&promoCode=TESTCODE1
+Ответ:   200 OK
+Тело:
+{"id":3,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":10.0,"price":90.0,"createdAt":null}
+```
+
+4) POST /api/bookings (успешно, VIP)
+```
+Запрос:  POST http://localhost:8084/api/bookings?userId=test-user-3&hotelId=test-hotel-1&promoCode=TESTCODE-VIP
+Ответ:   200 OK
+Тело:
+{"id":4,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":"TESTCODE-VIP","discountPercent":20.0,"price":60.0,"createdAt":null}
+```
+
+5) Проверки зависимостей
+```
+GET  /api/users/test-user-2/authorized                -> true
+GET  /api/hotels/test-hotel-1/operational             -> true
+GET  /api/reviews/hotel/test-hotel-1/trusted          -> true
+```
+
+6) Дополнительные наблюдения
+```
+GET /api/bookings (без userId) → получен 500 в текущем прогоне
+GET /api/bookings?userId=test-user-2 → 200 OK (список возвращается)
+```
+
+## Как воспроизвести
+```
+# Запуск
+docker network create hotelio-net
+docker compose -f tasks/task1/docker-compose.yml up -d --build
+
+# Фикстуры
+docker cp test/init-fixtures.sql hotelio-db:/init-fixtures.sql
+docker exec -it hotelio-db psql -U hotelio -d hotelio -f /init-fixtures.sql
+
+# Запросы
+curl.exe "http://localhost:8084/api/hotels/by-city?city=Seoul"
+curl.exe -X POST "http://localhost:8084/api/bookings?userId=test-user-1&hotelId=test-hotel-1&promoCode=TESTPROMO10"
+curl.exe -X POST "http://localhost:8084/api/bookings?userId=test-user-2&hotelId=test-hotel-1&promoCode=TESTCODE1"
+curl.exe -X POST "http://localhost:8084/api/bookings?userId=test-user-3&hotelId=test-hotel-1&promoCode=TESTCODE-VIP"
+```
+

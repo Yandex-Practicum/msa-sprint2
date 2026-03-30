@@ -1,0 +1,53 @@
+﻿@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Целевая архитектура Hotelio (микросервисы)
+
+Person(client, "Клиент", "Веб/Мобильные/Партнёры")
+
+System_Boundary(hotelio, "Платформа Hotelio") {
+  Container(gateway, "API Шлюз / Edge", "Nginx/Ingress", "Маршрутизация внешнего трафика; в перспективе — GraphQL/BFF")
+  Container(booking, "Сервис Бронирований", "Spring Boot", "Оркестрация потока брони")
+  Container(user, "Сервис Пользователей", "Spring Boot", "Статус, чёрный список, VIP")
+  Container(hotel, "Сервис Отелей", "Spring Boot", "Каталог отелей и атрибуты")
+  Container(promo, "Сервис Промокодов", "Spring Boot", "Проверка и правила промокодов")
+  Container(review, "Сервис Отзывов", "Spring Boot", "Отзывы и доверие к отелям")
+
+  ContainerDb(dbBooking, "БД Бронирований", "PostgreSQL", "Собственная схема")
+  ContainerDb(dbUser, "БД Пользователей", "PostgreSQL", "Собственная схема")
+  ContainerDb(dbHotel, "БД Отелей", "PostgreSQL", "Собственная схема")
+  ContainerDb(dbPromo, "БД Промокодов", "PostgreSQL", "Собственная схема")
+  ContainerDb(dbReview, "БД Отзывов", "PostgreSQL", "Собственная схема")
+
+  ' Синхронные взаимодействия (этап 1)
+  Rel(gateway, booking, "/api/bookings")
+  Rel(booking, user, "GET /users/{id}")
+  Rel(booking, hotel, "GET /hotels/{id}")
+  Rel(booking, promo, "POST /promos/validate")
+  Rel(booking, review, "GET /reviews/hotel/{id}/trusted")
+
+  Rel(booking, dbBooking, "Чтение/Запись")
+  Rel(user, dbUser, "Чтение")
+  Rel(hotel, dbHotel, "Чтение")
+  Rel(promo, dbPromo, "Чтение")
+  Rel(review, dbReview, "Чтение/Запись")
+}
+
+Rel(client, gateway, "Использует")
+
+' Примечания о будущем состоянии
+note right of gateway
+Будущее: GraphQL/BFF на границе
+end note
+
+note bottom of booking
+Будущее: события в Kafka (BookingCreated)
+end note
+
+note right of user
+Сервисная mesh, mTLS, трассировки
+end note
+
+@enduml
