@@ -1,0 +1,65 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(user, "User", "Interacts with frontend")
+
+System_Boundary(hotelio, "Hotelio Platform - Step 1") {
+
+  Container(monolith, "Hotelio Monolith", "Spring Boot", "Legacy app after first migration step") {
+
+    ' Controllers
+    Component(bookingController, "BookingController", "Spring MVC", "/api/bookings")
+    Component(hotelController, "HotelController", "Spring MVC", "/api/hotels")
+    Component(reviewController, "ReviewController", "Spring MVC", "/api/reviews")
+    Component(userController, "UserController", "Spring MVC", "/api/users")
+    Component(promoProxyController, "PromoProxyController", "Spring MVC", "Temporary proxy for /api/promos")
+
+    ' Services
+    Component(bookingService, "BookingService", "Java Service", "Validates and creates bookings")
+    Component(hotelService, "HotelService", "Java Service", "Retrieves hotel details")
+    Component(userService, "UserService", "Java Service", "Validates user status and blacklist")
+    Component(reviewService, "ReviewService", "Java Service", "Manages hotel reviews")
+
+    ' Integration adapter
+    Component(promoGatewayClient, "PromoGatewayClient", "HTTP Client", "Calls external Promo Service")
+
+    ' DB
+    ComponentDb(postgres, "Monolith DB", "PostgreSQL", "Stores users, hotels, bookings, reviews")
+  }
+
+  Container(promoServiceContainer, "Promo Service", "Spring Boot", "Dedicated microservice for promo validation") {
+    Component(promoController, "PromoController", "Spring MVC", "/api/promos")
+    Component(promoService, "PromoService", "Java Service", "Validates promos and calculates discounts")
+    ComponentDb(promoDb, "Promo DB", "PostgreSQL", "Stores promo codes")
+  }
+}
+
+Rel(user, bookingController, "Uses")
+Rel(user, hotelController, "Uses")
+Rel(user, reviewController, "Uses")
+Rel(user, userController, "Uses")
+Rel(user, promoProxyController, "Uses during transition")
+
+Rel(bookingController, bookingService, "Uses")
+Rel(hotelController, hotelService, "Uses")
+Rel(reviewController, reviewService, "Uses")
+Rel(userController, userService, "Uses")
+Rel(promoProxyController, promoGatewayClient, "Uses")
+
+Rel(bookingService, hotelService, "Calls")
+Rel(bookingService, userService, "Calls")
+Rel(bookingService, reviewService, "Calls")
+Rel(bookingService, promoGatewayClient, "Calls")
+
+Rel(bookingService, postgres, "Reads/Writes")
+Rel(userService, postgres, "Reads")
+Rel(hotelService, postgres, "Reads")
+Rel(reviewService, postgres, "Reads/Writes")
+
+Rel(promoGatewayClient, promoController, "Calls", "HTTPS/REST")
+Rel(promoController, promoService, "Uses")
+Rel(promoService, promoDb, "Reads/Writes")
+
+@enduml

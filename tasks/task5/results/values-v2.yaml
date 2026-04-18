@@ -1,0 +1,25 @@
+replicaCount: 1
+
+image:
+  name: booking-service
+  tag: latest
+  pullPolicy: Never
+
+service:
+  port: 80
+  targetPort: 8080
+
+featureX:
+  enabled: true
+
+version: v2
+
+env: []
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "64Mi"
+  limits:
+    cpu: "200m"
+    memory: "128Mi"

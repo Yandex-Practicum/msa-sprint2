@@ -1,0 +1,55 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(user, "User", "Пользователь веб- или мобильного клиента")
+
+System_Boundary(hotelio, "Hotelio Platform (To-Be)") {
+
+    Container(bff, "BFF / API Gateway", "Spring Cloud Gateway / BFF", "Единая точка входа, маршрутизация и адаптация API")
+
+    Container(bookingService, "Booking Service", "Spring Boot", "Создание и получение бронирований")
+    ContainerDb(bookingDb, "Booking DB", "PostgreSQL", "Хранение бронирований")
+
+    Container(userService, "User Service", "Spring Boot", "Пользователи, статусы, blacklist, VIP")
+    ContainerDb(userDb, "User DB", "PostgreSQL", "Хранение пользователей")
+
+    Container(hotelService, "Hotel Service", "Spring Boot", "Отели, доступность, поиск по городу, рейтинг")
+    ContainerDb(hotelDb, "Hotel DB", "PostgreSQL", "Хранение отелей")
+
+    Container(promoService, "Promo Service", "Spring Boot", "Промокоды и скидки")
+    ContainerDb(promoDb, "Promo DB", "PostgreSQL", "Хранение промокодов")
+
+    Container(reviewService, "Review Service", "Spring Boot", "Отзывы и trusted-статус")
+    ContainerDb(reviewDb, "Review DB", "PostgreSQL", "Хранение отзывов")
+
+    Container(observability, "Monitoring / Logging", "Prometheus/Grafana/Loki/Zipkin", "Наблюдаемость")
+}
+
+Rel(user, bff, "Uses", "HTTPS")
+Rel(bff, bookingService, "Routes", "HTTPS/REST")
+Rel(bff, userService, "Routes", "HTTPS/REST")
+Rel(bff, hotelService, "Routes", "HTTPS/REST")
+Rel(bff, promoService, "Routes", "HTTPS/REST")
+Rel(bff, reviewService, "Routes", "HTTPS/REST")
+
+Rel(bookingService, bookingDb, "Reads/Writes", "JPA")
+Rel(userService, userDb, "Reads/Writes", "JPA")
+Rel(hotelService, hotelDb, "Reads/Writes", "JPA")
+Rel(promoService, promoDb, "Reads/Writes", "JPA")
+Rel(reviewService, reviewDb, "Reads/Writes", "JPA")
+
+Rel(bookingService, userService, "Checks user", "HTTPS/REST")
+Rel(bookingService, hotelService, "Checks hotel", "HTTPS/REST")
+Rel(bookingService, promoService, "Validates promo", "HTTPS/REST")
+Rel(bookingService, reviewService, "Checks trust", "HTTPS/REST")
+
+Rel(bff, observability, "Logs / Metrics / Traces")
+Rel(bookingService, observability, "Logs / Metrics / Traces")
+Rel(userService, observability, "Logs / Metrics / Traces")
+Rel(hotelService, observability, "Logs / Metrics / Traces")
+Rel(promoService, observability, "Logs / Metrics / Traces")
+Rel(reviewService, observability, "Logs / Metrics / Traces")
+
+@enduml

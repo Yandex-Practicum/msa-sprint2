@@ -1,0 +1,39 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(user, "User", "Пользователь веб- или мобильного клиента")
+
+System_Boundary(hotelio_boundary, "Hotelio Platform (To-Be)") {
+    System(bff, "BFF / API Gateway", "Единая точка входа и адаптация API под клиентов")
+    System(bookingService, "Booking Service", "Сервис бронирований")
+    System(userService, "User Service", "Сервис пользователей")
+    System(hotelService, "Hotel Service", "Сервис отелей")
+    System(promoService, "Promo Service", "Сервис промокодов")
+    System(reviewService, "Review Service", "Сервис отзывов")
+}
+
+System_Ext(observability, "Monitoring / Logging", "Централизованные логи, метрики, трассировка")
+
+Rel(user, bff, "Uses", "HTTPS/JSON")
+
+Rel(bff, bookingService, "Routes requests", "HTTPS/REST")
+Rel(bff, userService, "Routes requests", "HTTPS/REST")
+Rel(bff, hotelService, "Routes requests", "HTTPS/REST")
+Rel(bff, promoService, "Routes requests", "HTTPS/REST")
+Rel(bff, reviewService, "Routes requests", "HTTPS/REST")
+
+Rel(bookingService, userService, "Checks user status", "HTTPS/REST")
+Rel(bookingService, hotelService, "Checks hotel data", "HTTPS/REST")
+Rel(bookingService, promoService, "Validates promo", "HTTPS/REST")
+Rel(bookingService, reviewService, "Checks trust/reputation", "HTTPS/REST")
+
+Rel(bookingService, observability, "Logs / Metrics / Traces")
+Rel(userService, observability, "Logs / Metrics / Traces")
+Rel(hotelService, observability, "Logs / Metrics / Traces")
+Rel(promoService, observability, "Logs / Metrics / Traces")
+Rel(reviewService, observability, "Logs / Metrics / Traces")
+Rel(bff, observability, "Logs / Metrics / Traces")
+
+@enduml

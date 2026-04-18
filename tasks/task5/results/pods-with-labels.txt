@@ -1,0 +1,4 @@
+NAME                                  READY   STATUS    RESTARTS   AGE     LABELS
+booking-service-67b87987d7-xkk4g      2/2     Running   0          3m14s   app=booking-service,pod-template-hash=67b87987d7,security.istio.io/tlsMode=istio,service.istio.io/canonical-name=booking-service,service.istio.io/canonical-revision=v1,version=v1
+booking-service-v2-845d447b76-774n9   2/2     Running   0          34m     app=booking-service,pod-template-hash=845d447b76,security.istio.io/tlsMode=istio,service.istio.io/canonical-name=booking-service,service.istio.io/canonical-revision=v2,version=v2
+curl-test                             2/2     Running   0          20m     run=curl-test,security.istio.io/tlsMode=istio,service.istio.io/canonical-name=curl-test,service.istio.io/canonical-revision=latest

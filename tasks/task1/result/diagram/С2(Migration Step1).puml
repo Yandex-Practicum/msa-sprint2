@@ -1,0 +1,27 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(user, "User", "Пользователь системы бронирования")
+
+System_Boundary(hotelio, "Hotelio Platform - Step 1") {
+
+    Container(monolith, "Hotelio Monolith", "Spring Boot", "Монолит с модулями Booking, User, Hotel, Review и интеграцией с Promo Service")
+
+    ContainerDb(monolithDb, "Monolith DB", "PostgreSQL", "Данные пользователей, бронирований, отелей, отзывов")
+
+    Container(promoService, "Promo Service", "Spring Boot", "Выделенный микросервис для проверки промокодов и расчёта скидок")
+
+    ContainerDb(promoDb, "Promo DB", "PostgreSQL", "Данные промокодов")
+
+}
+
+Rel(user, monolith, "Uses", "HTTPS/REST")
+
+Rel(monolith, monolithDb, "Reads/Writes", "JPA")
+Rel(monolith, promoService, "Checks promo / validates discount", "HTTPS/REST")
+Rel(promoService, promoDb, "Reads/Writes", "JPA")
+
+
+@enduml

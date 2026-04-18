@@ -1,0 +1,41 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"networking.istio.io/v1","kind":"VirtualService","metadata":{"annotations":{},"creationTimestamp":"2026-04-18T12:32:39Z","generation":4,"name":"booking-service","namespace":"default","resourceVersion":"7352","uid":"dc65b8f3-154b-4228-ac06-e5afa5fa92ff"},"spec":{"hosts":["booking-service"],"http":[{"match":[{"headers":{"x-feature-enabled":{"exact":"true"}}}],"retries":{"attempts":5,"perTryTimeout":"2s","retryOn":"5xx,connect-failure,refused-stream,gateway-error,unavailable"},"route":[{"destination":{"host":"booking-service","subset":"v2"}}]},{"retries":{"attempts":5,"perTryTimeout":"2s","retryOn":"5xx,connect-failure,refused-stream,gateway-error,unavailable"},"route":[{"destination":{"host":"booking-service","subset":"v1"},"weight":90},{"destination":{"host":"booking-service","subset":"v2"},"weight":10}]}]}}
+  creationTimestamp: "2026-04-18T13:15:36Z"
+  generation: 1
+  name: booking-service
+  namespace: default
+  resourceVersion: "8542"
+  uid: c71aad5e-17d3-4dda-a7e5-3c3e75b3690b
+spec:
+  hosts:
+  - booking-service
+  http:
+  - match:
+    - headers:
+        x-feature-enabled:
+          exact: "true"
+    retries:
+      attempts: 5
+      perTryTimeout: 2s
+      retryOn: 5xx,connect-failure,refused-stream,gateway-error,unavailable
+    route:
+    - destination:
+        host: booking-service
+        subset: v2
+  - retries:
+      attempts: 5
+      perTryTimeout: 2s
+      retryOn: 5xx,connect-failure,refused-stream,gateway-error,unavailable
+    route:
+    - destination:
+        host: booking-service
+        subset: v1
+      weight: 90
+    - destination:
+        host: booking-service
+        subset: v2
+      weight: 10

@@ -1,0 +1,3 @@
+▶️ Checking canary release (90% v1, 10% v2)...
+v1(pong): 90
+v2(pong-feature-x): 10

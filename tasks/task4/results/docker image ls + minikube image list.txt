@@ -1,0 +1,30 @@
+minikube image list
+registry.k8s.io/pause:3.10.1
+registry.k8s.io/kube-scheduler:v1.35.1
+registry.k8s.io/kube-proxy:v1.35.1
+registry.k8s.io/kube-controller-manager:v1.35.1
+registry.k8s.io/kube-apiserver:v1.35.1
+registry.k8s.io/etcd:3.6.6-0
+registry.k8s.io/coredns/coredns:v1.13.1
+gcr.io/k8s-minikube/storage-provisioner:v5
+
+docker image ls
+i Info →   U  In Use
+IMAGE                                              ID             DISK USAGE   CONTENT SIZE   EXTRA
+booking-service:latest                             db4a247d180f       23.2MB         7.67MB    U
+confluentinc/cp-kafka:7.2.1                        7494848da233       1.23GB          413MB    U
+confluentinc/cp-zookeeper:7.2.1                    a09fad082e13       1.23GB          413MB    U
+docker/desktop-cloud-provider-kind:v0.5.0          4ad59ce20658        595MB          162MB    U
+docker/desktop-containerd-registry-mirror:v0.0.3   179a9ea3ae47       50.3MB         16.1MB    U
+envoyproxy/envoy:v1.36.4                           08acc53db6f4        248MB         62.1MB
+gcr.io/k8s-minikube/kicbase:v0.0.50                b97074569ae9       1.94GB          545MB    U
+kindest/node:v1.31.14                              6f86cf509dbb       1.42GB          405MB    U
+postgres:15                                        3e43515057e1        633MB          164MB    U
+task2-booking-history-service:latest               6cf4b4106aef        564MB          206MB    U
+task2-booking-service:latest                       7246a087751d        614MB          230MB    U
+task2-monolith:latest                              77b8dd987df3        752MB          254MB    U
+task3-booking-service:latest                       73e59bcec2cb        614MB          230MB
+task3-booking-subgraph:latest                      a1b583df295f        284MB         63.3MB    U
+task3-gateway:latest                               ef7fbbf6b4fd        336MB         73.1MB    U
+task3-hotel-subgraph:latest                        083836f30208        284MB         63.3MB    U
+task3-promocode-subgraph:latest                    09007f1e106e        284MB         63.3MB    U

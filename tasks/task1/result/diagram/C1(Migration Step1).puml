@@ -1,0 +1,17 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(user, "User", "Пользователь системы бронирования")
+
+System_Boundary(hotelio_boundary, "Hotelio Platform") {
+    System(monolith, "Hotelio Monolith", "Основное приложение, содержащее Booking, User, Hotel, Review")
+    System(promoService, "Promo Service", "Выделенный микросервис для промокодов")
+}
+
+Rel(user, monolith, "Использует", "HTTPS/JSON")
+Rel(monolith, promoService, "Проверяет промокоды и получает скидки", "HTTPS/REST")
+
+
+@enduml

@@ -1,0 +1,42 @@
+REST:
+curl -s "http://localhost:8084/api/bookings?userId=test-user-2"
+[{"id":2,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":10.0,"price":423.0,"createdAt":"2026-04-18T08:17:17.828480443Z"},{"id":1,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"","discountPercent":0.0,"price":470.0,"createdAt":"2026-04-18T08:17:17.690592678Z"}]
+
+ curl -s "http://localhost:8084/api/bookings?userId=test-user-2"
+[{"id":2,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":10.0,"price":423.0,"createdAt":"2026-04-18T08:17:17.828480443Z"},{"id":1,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"","discountPercent":0.0,"price":470.0,"createdAt":"2026-04-18T08:17:17.690592678Z"}]
+
+gRPC:
+grpcurl -plaintext \
+-import-path ./booking-service/src/main/proto \
+-proto booking.proto \
+-d '{"user_id":""}' \
+localhost:9090 booking.BookingService/ListBookings
+{
+  "bookings": [
+    {
+      "id": "3",
+      "userId": "test-user-3",
+      "hotelId": "test-hotel-1",
+      "promoCode": "TESTCODE-VIP",
+      "discountPercent": 20,
+      "price": 376,
+      "createdAt": "2026-04-18T08:17:17.882424668Z"
+    },
+    {
+      "id": "2",
+      "userId": "test-user-2",
+      "hotelId": "test-hotel-1",
+      "promoCode": "TESTCODE1",
+      "discountPercent": 10,
+      "price": 423,
+      "createdAt": "2026-04-18T08:17:17.828480443Z"
+    },
+    {
+      "id": "1",
+      "userId": "test-user-2",
+      "hotelId": "test-hotel-1",
+      "price": 470,
+      "createdAt": "2026-04-18T08:17:17.690592678Z"
+    }
+  ]
+}

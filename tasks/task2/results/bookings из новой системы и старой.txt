@@ -1,0 +1,16 @@
+Из новой системы:
+docker exec -it booking-db psql -U booking -d bookingdb -c "select * from booking order by id;"
+ id |   user_id   |   hotel_id   |  promo_code  | discount_percent | price |           created_at
+----+-------------+--------------+--------------+------------------+-------+--------------------------------
+  1 | test-user-2 | test-hotel-1 |              |                0 |   470 | 2026-04-18T08:17:17.690592678Z
+  2 | test-user-2 | test-hotel-1 | TESTCODE1    |               10 |   423 | 2026-04-18T08:17:17.828480443Z
+  3 | test-user-3 | test-hotel-1 | TESTCODE-VIP |               20 |   376 | 2026-04-18T08:17:17.882424668Z
+(3 rows)
+
+Из старой системы:
+docker exec -it hotelio-db psql -U hotelio -d hotelio -c "select * from booking order by id;"
+ discount_percent | price |          created_at           | id |   hotel_id   | promo_code |   user_id
+------------------+-------+-------------------------------+----+--------------+------------+-------------
+               10 |    90 | 2026-04-18 08:17:16.927336+00 | 13 | test-hotel-1 | TESTCODE1  | test-user-2
+                0 |    80 | 2026-04-18 08:17:16.927336+00 | 14 | test-hotel-1 |            | test-user-3
+(2 rows)

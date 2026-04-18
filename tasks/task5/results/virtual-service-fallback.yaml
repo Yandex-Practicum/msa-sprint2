@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: booking-service
+spec:
+  hosts:
+    - booking-service
+  http:
+    - route:
+        - destination:
+            host: booking-service
+            subset: v2
+      retries:
+        attempts: 5
+        perTryTimeout: 2s
+        retryOn: 5xx,connect-failure,refused-stream,gateway-error,unavailable
