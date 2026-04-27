@@ -1,0 +1,4 @@
+[INFO] Testing fallback route through http://localhost:19090
+[INFO] Sending X-Force-Fail=true: Envoy calls v1, observes 5xx, then falls back to v2
+[INFO] success=5, v2=5, fallback_header=5, errors=0
+[PASS] Envoy fallback recovered failed v1 traffic on v2

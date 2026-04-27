@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#f6f8fa"/>
+  <rect x="48" y="40" width="1184" height="640" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="80" y="88" font-family="Arial, sans-serif" font-size="28" fill="#0969da">GraphQL Gateway - successful call</text>
+  <text x="80" y="126" font-family="Arial, sans-serif" font-size="16" fill="#57606a">Header: userid: test-user-2</text>
+  <rect x="80" y="156" width="1120" height="488" rx="6" fill="#0d1117"/>
+  <text x="104" y="196" font-family="Menlo, Consolas, monospace" font-size="18" fill="#c9d1d9">{</text>
+  <text x="104" y="226" font-family="Menlo, Consolas, monospace" font-size="18" fill="#c9d1d9">  "data": {</text>
+  <text x="104" y="256" font-family="Menlo, Consolas, monospace" font-size="18" fill="#c9d1d9">    "bookingsByUser": [</text>
+  <text x="104" y="286" font-family="Menlo, Consolas, monospace" font-size="18" fill="#c9d1d9">      {</text>
+  <text x="104" y="316" font-family="Menlo, Consolas, monospace" font-size="18" fill="#c9d1d9">        "id": "1", "userId": "test-user-2",</text>
+  <text x="104" y="346" font-family="Menlo, Consolas, monospace" font-size="18" fill="#c9d1d9">        "hotel": { "id": "test-hotel-1", "name": "Modern hotel in Seoul downtown with spa and skybar.",</text>
+  <text x="104" y="376" font-family="Menlo, Consolas, monospace" font-size="18" fill="#c9d1d9">                   "city": "Seoul" },</text>
+  <text x="104" y="406" font-family="Menlo, Consolas, monospace" font-size="18" fill="#c9d1d9">        "promoCode": "TESTCODE1",</text>
+  <text x="104" y="436" font-family="Menlo, Consolas, monospace" font-size="18" fill="#c9d1d9">        "discountPercent": 10,</text>
+  <text x="104" y="466" font-family="Menlo, Consolas, monospace" font-size="18" fill="#c9d1d9">        "discountInfo": { "isValid": true, "finalDiscount": 10 }</text>
+  <text x="104" y="496" font-family="Menlo, Consolas, monospace" font-size="18" fill="#c9d1d9">      }</text>
+  <text x="104" y="526" font-family="Menlo, Consolas, monospace" font-size="18" fill="#c9d1d9">    ]</text>
+  <text x="104" y="556" font-family="Menlo, Consolas, monospace" font-size="18" fill="#c9d1d9">  }</text>
+  <text x="104" y="586" font-family="Menlo, Consolas, monospace" font-size="18" fill="#c9d1d9">}</text>
+</svg>

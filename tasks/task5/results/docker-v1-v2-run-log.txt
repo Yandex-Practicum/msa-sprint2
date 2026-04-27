@@ -1,0 +1,11 @@
+[INFO] Starting v1 container
+0622ba93c0e74a013d44d8364343d47cbd9c043de5300bf6cf9d166078835689
+[INFO] v1 /ping: pong v1
+[INFO] v1 /feature status: 404
+[INFO] v1 forced failure status: 500
+[INFO] Starting v2 container
+ad9f75f9ecb1223cda35bf1ab986633183b0c5602bd8babfa69ecdb9685f20a0
+[INFO] v2 /ping: pong v2
+[INFO] v2 forced-fail header /ping: pong v2
+[INFO] v2 /feature: Feature X is enabled on v2
+[PASS] v1/v2 container checks completed

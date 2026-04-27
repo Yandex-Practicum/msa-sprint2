@@ -1,0 +1,64 @@
+docker build -t "booking-service:latest" booking-service
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 513B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/golang:1.21-alpine
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/alpine:3.20
+#3 DONE 1.3s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [stage-1 1/4] FROM docker.io/library/alpine:3.20@sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc
+#5 resolve docker.io/library/alpine:3.20@sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc 0.0s done
+#5 DONE 0.0s
+
+#6 [builder 1/6] FROM docker.io/library/golang:1.21-alpine@sha256:2414035b086e3c42b99654c8b26e6f5b1b1598080d65fd03c7f499552ff4dc94
+#6 resolve docker.io/library/golang:1.21-alpine@sha256:2414035b086e3c42b99654c8b26e6f5b1b1598080d65fd03c7f499552ff4dc94 0.0s done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 2.36kB done
+#7 DONE 0.0s
+
+#8 [builder 5/6] RUN go test ./...
+#8 CACHED
+
+#9 [stage-1 2/4] RUN adduser -D -H appuser
+#9 CACHED
+
+#10 [stage-1 3/4] WORKDIR /app
+#10 CACHED
+
+#11 [builder 4/6] COPY main.go main_test.go ./
+#11 CACHED
+
+#12 [builder 2/6] WORKDIR /src
+#12 CACHED
+
+#13 [builder 3/6] COPY go.mod ./
+#13 CACHED
+
+#14 [builder 6/6] RUN CGO_ENABLED=0 GOOS=linux go build -o /out/booking-service .
+#14 CACHED
+
+#15 [stage-1 4/4] COPY --from=builder /out/booking-service ./booking-service
+#15 CACHED
+
+#16 exporting to image
+#16 exporting layers done
+#16 exporting manifest sha256:11ff1f78ae59eaa2184cad6e2fd086b3e068dde282e4033cc7f9e43bbe5d9121 done
+#16 exporting config sha256:34abbe5f860c59586b3181064c31a544daa8ffc54367eabafc8d10319d63b576 done
+#16 exporting attestation manifest sha256:541c7b99291b388cf444b631e6fc6eb05a8ebbde2ce16a6423eff7e3958cb7cf done
+#16 exporting manifest list sha256:86f6a12e1a4e59b437ede5348cbfb240a8cdea1000eb852b61e30db291a83742 done
+#16 naming to docker.io/library/booking-service:latest done
+#16 unpacking to docker.io/library/booking-service:latest 0.0s done
+#16 DONE 0.0s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/v1rjbloe6289yrify7bsbywrw

@@ -1,0 +1,9 @@
+NAMES                     STATUS         PORTS
+hotelio-monolith          Up 4 minutes   0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp
+booking-service           Up 4 minutes   0.0.0.0:9090->9090/tcp, [::]:9090->9090/tcp
+booking-history-service   Up 4 minutes   
+task2-kafka-1             Up 4 minutes   0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp
+booking-db                Up 4 minutes   0.0.0.0:5433->5432/tcp, [::]:5433->5432/tcp
+booking-history-db        Up 4 minutes   0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp
+hotelio-db                Up 4 minutes   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+task2-zookeeper-1         Up 4 minutes   0.0.0.0:2181->2181/tcp, [::]:2181->2181/tcp

@@ -3,18 +3,46 @@ version: '3.8'
 services:
   apollo-gateway:
     build: ./gateway
+    restart: on-failure
     ports:
       - "4000:4000"
+    networks:
+      - hotelio-net
     depends_on:
       - booking-subgraph
       - hotel-subgraph
+      - promocode-subgraph
 
   booking-subgraph:
     build: ./booking-subgraph
+    restart: on-failure
     ports:
       - "4001:4001"
+    environment:
+      MONOLITH_URL: http://hotelio-monolith:8080
+    networks:
+      - hotelio-net
 
   hotel-subgraph:
     build: ./hotel-subgraph
+    restart: on-failure
     ports:
       - "4002:4002"
+    environment:
+      MONOLITH_URL: http://hotelio-monolith:8080
+    networks:
+      - hotelio-net
+
+  promocode-subgraph:
+    build: ./promocode-subgraph
+    restart: on-failure
+    ports:
+      - "4003:4003"
+    environment:
+      MONOLITH_URL: http://hotelio-monolith:8080
+    networks:
+      - hotelio-net
+
+networks:
+  hotelio-net:
+    external: true

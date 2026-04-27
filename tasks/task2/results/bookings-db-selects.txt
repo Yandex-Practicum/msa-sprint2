@@ -1,0 +1,17 @@
+-- old monolith booking table
+ id |   user_id   |   hotel_id   | promo_code | discount_percent | price |          created_at           
+----+-------------+--------------+------------+------------------+-------+-------------------------------
+  3 | test-user-2 | test-hotel-1 | TESTCODE1  |               10 |    90 | 2026-04-27 18:20:04.795843+00
+  4 | test-user-3 | test-hotel-1 |            |                0 |    80 | 2026-04-27 18:20:04.795843+00
+(2 rows)
+
+
+-- new booking-service bookings table
+ id |   user_id   |   hotel_id   | promo_code | discount_percent | price |          created_at           
+----+-------------+--------------+------------+------------------+-------+-------------------------------
+  1 | test-user-2 | test-hotel-1 | TESTCODE1  |               10 |    90 | 2026-04-27 18:20:04.820902+00
+  2 | test-user-3 | test-hotel-1 |            |                0 |    80 | 2026-04-27 18:20:04.820902+00
+  3 | test-user-3 | test-hotel-1 |            |                0 |    80 | 2026-04-27 18:20:05.0678+00
+  4 | test-user-2 | test-hotel-1 | TESTCODE1  |               10 |    90 | 2026-04-27 18:20:05.100482+00
+(4 rows)
+

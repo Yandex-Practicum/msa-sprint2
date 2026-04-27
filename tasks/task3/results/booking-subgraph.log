@@ -1,0 +1,7 @@
+Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+✅ Booking subgraph ready at http://localhost:4001/
+ACL allow: userid=test-user-2
+Loading bookings from monolith REST for userId=test-user-2
+ACL deny: header userid=test-user-3, requested userId=test-user-2
+ACL allow: userid=user1
+Loading bookings from monolith REST for userId=user1

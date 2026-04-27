@@ -1,0 +1,105 @@
+# Task 1 verification log
+
+Date: 2026-04-27 20:49 MSK
+Workspace: /Users/at/projects/yapracticum/msa-sprint2
+
+## Environment
+
+Docker version 29.1.3, build f52814d
+Docker Compose version v2.40.3-desktop.1
+
+## Commands
+
+```bash
+docker network create hotelio-net
+cd tasks/task1
+docker compose up -d --build
+cd ../../test
+docker build -t hotelio-tester .
+docker run --rm --network hotelio-net \
+  -e DB_HOST=hotelio-db \
+  -e DB_PORT=5432 \
+  -e DB_NAME=hotelio \
+  -e DB_USER=hotelio \
+  -e DB_PASSWORD=hotelio \
+  -e API_URL=http://hotelio-monolith:8080 \
+  hotelio-tester
+```
+
+## Container status
+
+```text
+NAMES              STATUS          PORTS
+hotelio-db         Up              0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+hotelio-monolith   Up              0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp
+```
+
+## Smoke check
+
+```text
+docker exec hotelio-monolith curl -i http://localhost:8080/api/bookings
+
+HTTP/1.1 200
+Content-Type: application/json
+
+[]
+```
+
+## Regression output
+
+```text
+🏁 Регрессионный тест до миграции Hotelio
+🧪 Проверка подключения к БД...
+🧪 Загрузка фикстур...
+DELETE 0
+DELETE 0
+DELETE 0
+DELETE 0
+DELETE 0
+INSERT 0 4
+INSERT 0 3
+INSERT 0 12
+INSERT 0 3
+INSERT 0 2
+🧪 Выполнение HTTP-тестов...
+
+Тесты пользователей...
+✅ Получение test-user-1 по ID работает
+✅ Статус test-user-1: ACTIVE
+✅ test-user-1 в блэклисте
+✅ test-user-1 активен
+✅ test-user-1 не авторизован (в блэклисте)
+✅ test-user-3 — VIP-пользователь
+✅ test-user-2 авторизован
+
+Тесты отелей...
+✅ test-hotel-1 получен по ID
+✅ test-hotel-1 работает
+✅ test-hotel-3 не работает
+✅ test-hotel-2 полностью забронирован
+✅ Поиск отелей в Сеуле работает
+✅ Топ-отели в Сеуле загружены
+
+Тесты ревью...
+✅ Отзывы test-hotel-1 найдены
+✅ test-hotel-1 признан надёжным
+✅ test-hotel-3 НЕ признан надёжным (ожидаемо)
+
+Тесты промокодов...
+✅ Промокод TESTCODE1 найден
+✅ VIP-промо доступен VIP
+✅ VIP-промо недоступен обычному
+✅ Обычный промо доступен
+✅ Истекший промо недоступен
+✅ POST /validate промо прошёл
+
+Тесты бронирования...
+✅ Все бронирования получены
+✅ Бронирования test-user-2 найдены
+✅ Бронирование прошло (без промо)
+✅ Бронирование с промо прошло
+✅ Отклонено: неактивный пользователь
+✅ Отклонено: недоверенный отель
+✅ Отклонено: отель полностью забронирован
+✅ Все HTTP-тесты пройдены!
+```

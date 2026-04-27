@@ -1,0 +1,15 @@
+[INFO] Checking Istio control plane...
+NAME                                    READY   STATUS    RESTARTS   AGE
+istio-egressgateway-7cfdd9d9d9-ml829    1/1     Running   0          5h5m
+istio-ingressgateway-5dc7cd84df-fvz5d   1/1     Running   0          5h5m
+istiod-79c4fcbd96-q7rh2                 1/1     Running   0          5h5m
+
+[INFO] Checking default namespace sidecar injection label...
+[INFO] istio-injection=enabled
+
+[INFO] Checking booking-service pods and sidecars...
+NAME                                  READY   STATUS    RESTARTS   AGE     LABELS
+booking-service-v1-5dff8d45d-jhccw    2/2     Running   0          4h54m   app=booking-service,pod-template-hash=5dff8d45d,security.istio.io/tlsMode=istio,service.istio.io/canonical-name=booking-service,service.istio.io/canonical-revision=v1,version=v1
+booking-service-v1-5dff8d45d-w5lqp    2/2     Running   0          4h54m   app=booking-service,pod-template-hash=5dff8d45d,security.istio.io/tlsMode=istio,service.istio.io/canonical-name=booking-service,service.istio.io/canonical-revision=v1,version=v1
+booking-service-v2-7667f5949f-d82db   2/2     Running   0          4h54m   app=booking-service,pod-template-hash=7667f5949f,security.istio.io/tlsMode=istio,service.istio.io/canonical-name=booking-service,service.istio.io/canonical-revision=v2,version=v2
+[PASS] Istio is installed and sidecar injection is enabled

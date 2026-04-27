@@ -1,0 +1,3 @@
+[INFO] Checking canary release through http://localhost:19090 (200 requests)
+[INFO] v1=184, v2=16, other=0
+[PASS] Canary traffic is weighted toward v1 and reaches v2

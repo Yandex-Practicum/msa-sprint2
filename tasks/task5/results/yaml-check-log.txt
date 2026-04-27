@@ -1,0 +1,5 @@
+destinationrule.networking.istio.io/booking-service unchanged (dry run)
+envoyfilter.networking.istio.io/booking-feature-flag-route unchanged (dry run)
+gateway.networking.istio.io/booking-service-gateway unchanged (dry run)
+virtualservice.networking.istio.io/booking-service-gateway unchanged (dry run)
+virtualservice.networking.istio.io/booking-service-mesh unchanged (dry run)

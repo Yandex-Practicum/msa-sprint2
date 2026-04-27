@@ -1,6 +1,9 @@
 {
   "name": "booking-ci",
   "version": "1.0.0",
+  "scripts": {
+    "ci": "gitlab-ci-local unit_test build test deploy tag"
+  },
   "devDependencies": {
     "gitlab-ci-local": "^4.36.1"
   }

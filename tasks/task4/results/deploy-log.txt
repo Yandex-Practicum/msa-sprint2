@@ -1,0 +1,13 @@
+minikube image load "booking-service:latest"
+helm upgrade --install "booking-service" "helm/booking-service" -f "helm/booking-service/values-staging.yaml" --set image.name="booking-service" --set image.tag="latest"
+Release "booking-service" does not exist. Installing it now.
+NAME: booking-service
+LAST DEPLOYED: Tue Apr 28 14:38:01 2026
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+kubectl rollout status "deployment/booking-service"
+Waiting for deployment "booking-service" rollout to finish: 0 of 1 updated replicas are available...
+deployment "booking-service" successfully rolled out

@@ -1,0 +1,1 @@
+{"data":{"bookingsByUser":[{"id":"1","userId":"test-user-2","hotel":{"id":"test-hotel-1","name":"Modern hotel in Seoul downtown with spa and skybar.","city":"Seoul"},"promoCode":"TESTCODE1","discountPercent":10,"discountInfo":{"isValid":true,"finalDiscount":10}}]}}

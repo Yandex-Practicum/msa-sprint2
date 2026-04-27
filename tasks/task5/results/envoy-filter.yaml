@@ -1,0 +1,87 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: booking-feature-flag-route
+  namespace: istio-system
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+    - applyTo: HTTP_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+              subFilter:
+                name: envoy.filters.http.router
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.http.lua
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+            inlineCode: |
+              function envoy_on_request(request_handle)
+                local force_fail = request_handle:headers():get("x-force-fail")
+                if force_fail ~= nil and string.lower(force_fail) == "true" then
+                  local path = request_handle:headers():get(":path") or "/ping"
+                  local method = request_handle:headers():get(":method") or "GET"
+                  local authority = "booking-service.default.svc.cluster.local"
+                  local v1_cluster = "outbound|80|v1|booking-service.default.svc.cluster.local"
+                  local v2_cluster = "outbound|80|v2|booking-service.default.svc.cluster.local"
+
+                  local v1_headers, v1_body = request_handle:httpCall(
+                    v1_cluster,
+                    {
+                      [":method"] = method,
+                      [":path"] = path,
+                      [":authority"] = authority,
+                      ["x-force-fail"] = "true"
+                    },
+                    "",
+                    2000
+                  )
+
+                  local v1_status = tonumber(v1_headers[":status"] or "503")
+                  if v1_status >= 500 then
+                    local v2_headers, v2_body = request_handle:httpCall(
+                      v2_cluster,
+                      {
+                        [":method"] = method,
+                        [":path"] = path,
+                        [":authority"] = authority
+                      },
+                      "",
+                      2000
+                    )
+
+                    request_handle:respond(
+                      {
+                        [":status"] = v2_headers[":status"] or "200",
+                        ["content-type"] = "text/plain",
+                        ["x-fallback-from"] = "v1"
+                      },
+                      v2_body
+                    )
+                    return
+                  end
+
+                  request_handle:respond(
+                    {
+                      [":status"] = v1_headers[":status"] or "200",
+                      ["content-type"] = "text/plain"
+                    },
+                    v1_body
+                  )
+                  return
+                end
+
+                local enabled = request_handle:headers():get("x-feature-enabled")
+                if enabled ~= nil and string.lower(enabled) == "true" then
+                  request_handle:headers():replace("x-version-route", "v2")
+                  request_handle:clearRouteCache()
+                end
+              end

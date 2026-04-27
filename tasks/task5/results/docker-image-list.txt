@@ -1,0 +1,7 @@
+[INFO] Docker images
+WARNING: This output is designed for human readability. For machine-readable output, please use --format.
+IMAGE                   ID             DISK USAGE   CONTENT SIZE   EXTRA
+booking-service:task5   7bb81a67a3f7       23.7MB         7.75MB
+
+[INFO] Minikube images
+docker.io/library/booking-service:task5

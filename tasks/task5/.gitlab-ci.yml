@@ -1,0 +1,64 @@
+stages:
+  - unit_test
+  - build
+  - test
+  - deploy
+  - tag
+
+variables:
+  IMAGE_TAG: task5
+  IMAGE_NAME: booking-service
+  TEST_NAME: booking-service-ci-test
+  TEST_PORT: "18080"
+  HELM_RELEASE_V1: booking-service-v1
+  HELM_RELEASE_V2: booking-service-v2
+  HELM_CHART: helm/booking-service
+  VALUES_FILE_V1: helm/booking-service/values-v1.yaml
+  VALUES_FILE_V2: helm/booking-service/values-v2.yaml
+
+unit_test:
+  stage: unit_test
+  script:
+    - docker run --rm -v "$PWD/booking-service:/src" -w /src golang:1.21-alpine go test ./...
+
+build:
+  stage: build
+  script:
+    - docker build -t "$IMAGE_NAME:$IMAGE_TAG" booking-service
+
+test:
+  stage: test
+  script:
+    - docker rm -f "$TEST_NAME" || true
+    - docker run -d --name "$TEST_NAME" -p "$TEST_PORT:8080" "$IMAGE_NAME:$IMAGE_TAG"
+    - |
+      for i in $(seq 1 30); do
+        if docker exec "$TEST_NAME" wget -qO- http://localhost:8080/ping | grep -q '^pong '; then
+          break
+        fi
+        sleep 1
+      done
+    - docker exec "$TEST_NAME" wget -qO- http://localhost:8080/ping | grep -q '^pong '
+    - test "$(docker exec "$TEST_NAME" wget -qO- http://localhost:8080/ready)" = "ready"
+    - docker rm -f "$TEST_NAME"
+  after_script:
+    - docker rm -f "$TEST_NAME" || true
+
+deploy:
+  stage: deploy
+  script:
+    - minikube image load "$IMAGE_NAME:$IMAGE_TAG"
+    - istioctl install --set profile=demo -y
+    - kubectl label namespace default istio-injection=enabled --overwrite
+    - helm upgrade --install "$HELM_RELEASE_V1" "$HELM_CHART" -f "$VALUES_FILE_V1" --set image.name="$IMAGE_NAME" --set image.tag="$IMAGE_TAG"
+    - helm upgrade --install "$HELM_RELEASE_V2" "$HELM_CHART" -f "$VALUES_FILE_V2" --set image.name="$IMAGE_NAME" --set image.tag="$IMAGE_TAG"
+    - kubectl apply -f istio/
+    - kubectl rollout status "deployment/$HELM_RELEASE_V1"
+    - kubectl rollout status "deployment/$HELM_RELEASE_V2"
+
+tag:
+  stage: tag
+  script:
+    - export RELEASE_TAG="task5-$(date +%Y%m%d%H%M%S)"
+    - git tag "$RELEASE_TAG"
+    - echo "Created tag $RELEASE_TAG"

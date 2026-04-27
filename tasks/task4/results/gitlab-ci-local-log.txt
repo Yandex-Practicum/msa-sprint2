@@ -1,0 +1,105 @@
+parsing and downloads finished in 43 ms.
+json schema validated in 92 ms
+unit_test starting shell (unit_test)
+unit_test $ docker run --rm -v "$PWD/booking-service:/src" -w /src golang:1.21-alpine go test ./...
+unit_test > ok  	booking-service	0.001s
+unit_test finished in 3.76 s
+build     starting shell (build)
+build     $ docker build -t "$IMAGE_NAME:$IMAGE_TAG" booking-service
+build     > #0 building with "desktop-linux" instance using docker driver
+build     > 
+build     > #1 [internal] load build definition from Dockerfile
+build     > #1 transferring dockerfile: 513B done
+build     > #1 DONE 0.0s
+build     > 
+build     > #2 [internal] load metadata for docker.io/library/golang:1.21-alpine
+build     > #2 DONE 0.1s
+build     > 
+build     > #3 [internal] load metadata for docker.io/library/alpine:3.20
+build     > #3 DONE 0.7s
+build     > 
+build     > #4 [internal] load .dockerignore
+build     > #4 transferring context: 2B done
+build     > #4 DONE 0.0s
+build     > 
+build     > #5 [stage-1 1/4] FROM docker.io/library/alpine:3.20@sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc
+build     > #5 resolve docker.io/library/alpine:3.20@sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc 0.0s done
+build     > #5 DONE 0.0s
+build     > 
+build     > #6 [builder 1/6] FROM docker.io/library/golang:1.21-alpine@sha256:2414035b086e3c42b99654c8b26e6f5b1b1598080d65fd03c7f499552ff4dc94
+build     > #6 resolve docker.io/library/golang:1.21-alpine@sha256:2414035b086e3c42b99654c8b26e6f5b1b1598080d65fd03c7f499552ff4dc94 0.0s done
+build     > #6 DONE 0.0s
+build     > 
+build     > #7 [internal] load build context
+build     > #7 transferring context: 86B done
+build     > #7 DONE 0.0s
+build     > 
+build     > #8 [stage-1 3/4] WORKDIR /app
+build     > #8 CACHED
+build     > 
+build     > #9 [builder 6/6] RUN CGO_ENABLED=0 GOOS=linux go build -o /out/booking-service .
+build     > #9 CACHED
+build     > 
+build     > #10 [builder 3/6] COPY go.mod ./
+build     > #10 CACHED
+build     > 
+build     > #11 [builder 2/6] WORKDIR /src
+build     > #11 CACHED
+build     > 
+build     > #12 [builder 4/6] COPY main.go main_test.go ./
+build     > #12 CACHED
+build     > 
+build     > #13 [stage-1 2/4] RUN adduser -D -H appuser
+build     > #13 CACHED
+build     > 
+build     > #14 [builder 5/6] RUN go test ./...
+build     > #14 CACHED
+build     > 
+build     > #15 [stage-1 4/4] COPY --from=builder /out/booking-service ./booking-service
+build     > #15 CACHED
+build     > 
+build     > #16 exporting to image
+build     > #16 exporting layers done
+build     > #16 exporting manifest sha256:11ff1f78ae59eaa2184cad6e2fd086b3e068dde282e4033cc7f9e43bbe5d9121 done
+build     > #16 exporting config sha256:34abbe5f860c59586b3181064c31a544daa8ffc54367eabafc8d10319d63b576 done
+build     > #16 exporting attestation manifest sha256:afcd2869bb46e603d550988a3b250f90a91f29ea65bd75aac3011cbc72c9733e done
+build     > #16 exporting manifest list sha256:f0692a518648e5392d2bff4b750b2f38af7407eea03b1c3d161926b5f0e654fb done
+build     > #16 naming to docker.io/library/booking-service:latest done
+build     > #16 unpacking to docker.io/library/booking-service:latest done
+build     > #16 DONE 0.0s
+build     > 
+build     > View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/wy3gn8fenleho1j4h9vx4juvy
+build     finished in 1.15 s
+test      starting shell (test)
+test      $ docker rm -f "$TEST_NAME" || true
+test      > Error response from daemon: No such container: booking-service-ci-test
+test      $ docker run -d --name "$TEST_NAME" -p "$TEST_PORT:8080" "$IMAGE_NAME:$IMAGE_TAG"
+test      > d1a99635f8bd4d1d2708b5c20c4101105f4685eae597579e4bc5633f6e22707e
+test      $ for i in $(seq 1 30); do # collapsed multi-line command
+test      $ test "$(docker exec "$TEST_NAME" wget -qO- http://localhost:8080/ping)" = "pong"
+test      $ test "$(docker exec "$TEST_NAME" wget -qO- http://localhost:8080/ready)" = "ready"
+test      $ docker rm -f "$TEST_NAME"
+test      > booking-service-ci-test
+test      Running after script...
+test      $ docker rm -f "$TEST_NAME" || true
+test      > Error response from daemon: No such container: booking-service-ci-test
+test      finished in 462 ms
+deploy    starting shell (deploy)
+deploy    $ minikube image load "$IMAGE_NAME:$IMAGE_TAG"
+deploy    $ helm upgrade --install "$HELM_RELEASE" "$HELM_CHART" -f "$VALUES_FILE" --set image.name="$IMAGE_NAME" --set image.tag="$IMAGE_TAG"
+deploy    > Release "booking-service" has been upgraded. Happy Helming!
+deploy    > NAME: booking-service
+deploy    > LAST DEPLOYED: Tue Apr 28 14:40:04 2026
+deploy    > NAMESPACE: default
+deploy    > STATUS: deployed
+deploy    > REVISION: 2
+deploy    > DESCRIPTION: Upgrade complete
+deploy    > TEST SUITE: None
+deploy    $ kubectl rollout status "deployment/$HELM_RELEASE"
+deploy    > deployment "booking-service" successfully rolled out
+deploy    finished in 2.56 s
+
+ PASS  unit_test
+ PASS  build    
+ PASS  test     
+ PASS  deploy   

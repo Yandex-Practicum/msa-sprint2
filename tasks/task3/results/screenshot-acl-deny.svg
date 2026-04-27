@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#f6f8fa"/>
+  <rect x="48" y="40" width="1184" height="640" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+  <text x="80" y="88" font-family="Arial, sans-serif" font-size="28" fill="#cf222e">GraphQL Gateway - ACL deny</text>
+  <text x="80" y="126" font-family="Arial, sans-serif" font-size="16" fill="#57606a">Header: userid: test-user-3; requested userId: test-user-2</text>
+  <rect x="80" y="156" width="1120" height="488" rx="6" fill="#0d1117"/>
+  <text x="104" y="208" font-family="Menlo, Consolas, monospace" font-size="22" fill="#c9d1d9">{</text>
+  <text x="104" y="246" font-family="Menlo, Consolas, monospace" font-size="22" fill="#c9d1d9">  "data": {</text>
+  <text x="104" y="284" font-family="Menlo, Consolas, monospace" font-size="22" fill="#c9d1d9">    "bookingsByUser": []</text>
+  <text x="104" y="322" font-family="Menlo, Consolas, monospace" font-size="22" fill="#c9d1d9">  }</text>
+  <text x="104" y="360" font-family="Menlo, Consolas, monospace" font-size="22" fill="#c9d1d9">}</text>
+  <text x="104" y="424" font-family="Menlo, Consolas, monospace" font-size="18" fill="#8b949e">ACL blocked cross-user access and returned an empty list.</text>
+</svg>

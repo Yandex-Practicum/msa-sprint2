@@ -1,0 +1,13 @@
+{
+  "name": "hotelio-booking-history-service",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/consumer.js",
+  "scripts": {
+    "start": "node src/consumer.js"
+  },
+  "dependencies": {
+    "kafkajs": "2.2.4",
+    "pg": "8.12.0"
+  }
+}

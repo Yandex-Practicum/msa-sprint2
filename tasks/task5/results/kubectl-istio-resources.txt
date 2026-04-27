@@ -1,0 +1,20 @@
+NAME                                      READY   STATUS    RESTARTS   AGE     IP            NODE       NOMINATED NODE   READINESS GATES
+pod/booking-service-v1-5dff8d45d-jhccw    2/2     Running   0          4h56m   10.244.0.24   minikube   <none>           <none>
+pod/booking-service-v1-5dff8d45d-w5lqp    2/2     Running   0          4h56m   10.244.0.25   minikube   <none>           <none>
+pod/booking-service-v2-7667f5949f-d82db   2/2     Running   0          4h56m   10.244.0.23   minikube   <none>           <none>
+
+NAME                      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE     SELECTOR
+service/booking-service   ClusterIP   10.106.184.252   <none>        80/TCP    5h6m    app=booking-service
+service/kubernetes        ClusterIP   10.96.0.1        <none>        443/TCP   5h29m   <none>
+
+NAME                                                  AGE
+gateway.networking.istio.io/booking-service-gateway   5h6m
+
+NAME                                                         GATEWAYS                      HOSTS                                                             AGE
+virtualservice.networking.istio.io/booking-service-gateway   ["booking-service-gateway"]   ["*"]                                                             5h6m
+virtualservice.networking.istio.io/booking-service-mesh      ["mesh"]                      ["booking-service","booking-service.default.svc.cluster.local"]   5h6m
+
+NAME                                                  HOST              AGE
+destinationrule.networking.istio.io/booking-service   booking-service   5h6m
+NAMESPACE      NAME                         AGE
+istio-system   booking-feature-flag-route   5h6m

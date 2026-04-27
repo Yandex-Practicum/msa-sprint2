@@ -1,0 +1,88 @@
+@startuml
+title Hotelio To-Be Architecture: first Strangler Fig stage
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam wrapWidth 180
+skinparam maxMessageSize 160
+
+actor "Client / Partner API" as client
+actor "Frontend" as frontend
+
+rectangle "Hotelio public API boundary" {
+  component "Monolith REST API\nSpring Boot\n/api/users\n/api/hotels\n/api/promos\n/api/reviews\n/api/bookings" as monolith
+  component "Booking Strangler Adapter\nfeature flag:\nlocal/external" as adapter
+}
+
+rectangle "Booking domain" {
+  component "booking-service\nSpring Boot / gRPC\nOwns booking write model" as booking
+  database "booking-db\nPostgreSQL" as bookingDb
+}
+
+rectangle "Legacy domains still inside monolith" {
+  component "User module" as user
+  component "Hotel module" as hotel
+  component "PromoCode module" as promo
+  component "Review module" as review
+  database "monolith-db\nPostgreSQL\nusers, hotels,\npromos, reviews,\nlegacy bookings" as monolithDb
+}
+
+queue "Kafka\nbooking.created" as kafka
+
+rectangle "Analytics / read models" {
+  component "booking-history-service\nConsumes BookingCreated" as history
+  database "booking-history-db\nPostgreSQL / OLAP-ready schema" as historyDb
+}
+
+rectangle "Future frontend API" {
+  component "GraphQL Gateway / BFF\nApollo Federation" as gateway
+  component "booking-subgraph" as bookingSubgraph
+  component "hotel-subgraph" as hotelSubgraph
+  component "promocode-subgraph" as promoSubgraph
+}
+
+client --> monolith : REST
+frontend --> gateway : GraphQL queries
+frontend --> monolith : Existing REST during migration
+
+monolith --> adapter : POST /api/bookings
+adapter --> booking : CreateBooking gRPC
+adapter --> monolith : fallback to local BookingService
+
+booking --> bookingDb : read/write bookings
+booking --> monolith : REST validation calls\nusers, hotels, promos, reviews
+booking --> kafka : publish BookingCreated
+
+monolith --> user
+monolith --> hotel
+monolith --> promo
+monolith --> review
+user --> monolithDb
+hotel --> monolithDb
+promo --> monolithDb
+review --> monolithDb
+monolith --> monolithDb : legacy reads and fallback writes
+
+kafka --> history
+history --> historyDb
+
+gateway --> bookingSubgraph
+gateway --> hotelSubgraph
+gateway --> promoSubgraph
+bookingSubgraph --> booking : booking data
+hotelSubgraph --> monolith : temporary hotel REST API
+promoSubgraph --> monolith : temporary promo REST API
+
+note right of booking
+First extracted module.
+New booking features are implemented here,
+not in the monolith.
+end note
+
+note bottom of adapter
+Traffic migration:
+shadow -> canary -> 100%.
+Rollback switches the flag to local.
+end note
+
+@enduml

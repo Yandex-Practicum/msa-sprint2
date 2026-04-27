@@ -7,21 +7,33 @@ import (
 	"os"
 )
 
-func main() {
-	enableFeatureX := os.Getenv("ENABLE_FEATURE_X") == "true"
+func newRouter(enableFeatureX bool) http.Handler {
+	mux := http.NewServeMux()
 
-	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "pong")
 	})
 
-	// TODO: Feature flag route
-	// if ENABLE_FEATURE_X=true, expose /feature
+	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "ok")
+	})
+
+	mux.HandleFunc("/ready", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "ready")
+	})
+
 	if enableFeatureX {
-		http.HandleFunc("/feature", func(w http.ResponseWriter, r *http.Request) {
+		mux.HandleFunc("/feature", func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "Feature X is enabled!")
 		})
 	}
 
+	return mux
+}
+
+func main() {
+	enableFeatureX := os.Getenv("ENABLE_FEATURE_X") == "true"
+
 	log.Println("Server running on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8080", newRouter(enableFeatureX)))
 }

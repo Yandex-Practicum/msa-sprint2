@@ -1,0 +1,30 @@
+istioctl install --set profile=demo -y
+        |\          
+        | \         
+        |  \        
+        |   \       
+      /||    \      
+     / ||     \     
+    /  ||      \    
+   /   ||       \   
+  /    ||        \  
+ /     ||         \ 
+/______||__________\
+____________________
+  \__       _____/  
+     \_____/        
+
+
+- Processing resources for Istio core.
+✔ Istio core installed ⛵️
+- Processing resources for Istiod.
+- Processing resources for Istiod. Waiting for Deployment/istio-system/istiod
+✔ Istiod installed 🧠
+- Processing resources for Egress gateways, Ingress gateways.
+- Processing resources for Egress gateways, Ingress gateways. Waiting for Deployment/istio-system...
+✔ Ingress gateways installed 🛬
+- Processing resources for Egress gateways. Waiting for Deployment/istio-system/istio-egressgateway
+✔ Egress gateways installed 🛫
+- Pruning removed resources
+✔ Installation completekubectl label namespace default istio-injection=enabled --overwrite
+namespace/default labeled

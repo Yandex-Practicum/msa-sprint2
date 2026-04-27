@@ -1,0 +1,94 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: booking-service-gateway
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - booking-service-gateway
+  http:
+    - name: feature-flag-to-v2
+      match:
+        - headers:
+            x-version-route:
+              exact: v2
+      route:
+        - destination:
+            host: booking-service
+            subset: v2
+            port:
+              number: 80
+          weight: 100
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+        retryOn: 5xx,gateway-error,connect-failure,refused-stream,reset,retriable-status-codes
+      timeout: 6s
+    - name: canary-with-retries
+      route:
+        - destination:
+            host: booking-service
+            subset: v1
+            port:
+              number: 80
+          weight: 90
+        - destination:
+            host: booking-service
+            subset: v2
+            port:
+              number: 80
+          weight: 10
+      retries:
+        attempts: 60
+        perTryTimeout: 2s
+        retryOn: 5xx,gateway-error,connect-failure,refused-stream,reset,retriable-status-codes
+      timeout: 15s
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: booking-service-mesh
+spec:
+  hosts:
+    - booking-service
+    - booking-service.default.svc.cluster.local
+  gateways:
+    - mesh
+  http:
+    - name: feature-flag-to-v2
+      match:
+        - headers:
+            x-version-route:
+              exact: v2
+      route:
+        - destination:
+            host: booking-service
+            subset: v2
+            port:
+              number: 80
+          weight: 100
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+        retryOn: 5xx,gateway-error,connect-failure,refused-stream,reset,retriable-status-codes
+      timeout: 6s
+    - name: canary-with-retries
+      route:
+        - destination:
+            host: booking-service
+            subset: v1
+            port:
+              number: 80
+          weight: 90
+        - destination:
+            host: booking-service
+            subset: v2
+            port:
+              number: 80
+          weight: 10
+      retries:
+        attempts: 60
+        perTryTimeout: 2s
+        retryOn: 5xx,gateway-error,connect-failure,refused-stream,reset,retriable-status-codes
+      timeout: 15s

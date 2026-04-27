@@ -1,0 +1,22 @@
+-- booking_history
+ booking_id |   user_id   |   hotel_id   | promo_code | discount_percent | price |         created_at         
+------------+-------------+--------------+------------+------------------+-------+----------------------------
+          3 | test-user-3 | test-hotel-1 |            |                0 |    80 | 2026-04-27 18:20:05.067+00
+          4 | test-user-2 | test-hotel-1 | TESTCODE1  |               10 |    90 | 2026-04-27 18:20:05.1+00
+(2 rows)
+
+
+-- booking_stats_by_user
+   user_id   | booking_count | total_price |      last_booking_at       
+-------------+---------------+-------------+----------------------------
+ test-user-2 |             1 |          90 | 2026-04-27 18:20:05.1+00
+ test-user-3 |             1 |          80 | 2026-04-27 18:20:05.067+00
+(2 rows)
+
+
+-- booking_stats_by_hotel
+   hotel_id   | booking_count | total_price |     last_booking_at      
+--------------+---------------+-------------+--------------------------
+ test-hotel-1 |             2 |         170 | 2026-04-27 18:20:05.1+00
+(1 row)
+

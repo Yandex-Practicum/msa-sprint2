@@ -1,0 +1,3 @@
+[INFO] Checking feature flag routing through http://localhost:19090
+[INFO] v2=20, other=0
+[PASS] EnvoyFilter-backed X-Feature-Enabled=true routing sends all traffic to v2

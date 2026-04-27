@@ -1,0 +1,31 @@
+minikube image load "booking-service:task5"
+kubectl label namespace default istio-injection=enabled --overwrite
+namespace/default not labeled
+helm upgrade --install "booking-service-v1" "helm/booking-service" -f "helm/booking-service/values-v1.yaml" --set image.name="booking-service" --set image.tag="task5"
+Release "booking-service-v1" has been upgraded. Happy Helming!
+NAME: booking-service-v1
+LAST DEPLOYED: Tue Apr 28 19:52:16 2026
+NAMESPACE: default
+STATUS: deployed
+REVISION: 6
+DESCRIPTION: Upgrade complete
+TEST SUITE: None
+helm upgrade --install "booking-service-v2" "helm/booking-service" -f "helm/booking-service/values-v2.yaml" --set image.name="booking-service" --set image.tag="task5"
+Release "booking-service-v2" has been upgraded. Happy Helming!
+NAME: booking-service-v2
+LAST DEPLOYED: Tue Apr 28 19:52:17 2026
+NAMESPACE: default
+STATUS: deployed
+REVISION: 6
+DESCRIPTION: Upgrade complete
+TEST SUITE: None
+kubectl apply -f istio/
+destinationrule.networking.istio.io/booking-service unchanged
+envoyfilter.networking.istio.io/booking-feature-flag-route unchanged
+gateway.networking.istio.io/booking-service-gateway unchanged
+virtualservice.networking.istio.io/booking-service-gateway unchanged
+virtualservice.networking.istio.io/booking-service-mesh unchanged
+kubectl rollout status "deployment/booking-service-v1"
+deployment "booking-service-v1" successfully rolled out
+kubectl rollout status "deployment/booking-service-v2"
+deployment "booking-service-v2" successfully rolled out

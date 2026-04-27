@@ -1,0 +1,12 @@
+[INFO] Starting booking-service without feature flag
+05c6a95c25122265001faf23a177b66250a5b218de1b480390230cf58d6fc983
+[INFO] /ping response: pong
+[INFO] /ready response: ready
+[INFO] /feature disabled status: 404
+[INFO] Starting booking-service with ENABLE_FEATURE_X=true
+c3bced01ae4f2f6ba01f2deb2cf248345a5ce746c3972de9beda30f86df6d110
+[INFO] /feature enabled response: Feature X is enabled!
+WARNING: This output is designed for human readability. For machine-readable output, please use --format.
+IMAGE                    ID             DISK USAGE   CONTENT SIZE   EXTRA
+booking-service:latest   86f6a12e1a4e       23.7MB         7.75MB        
+[PASS] Docker run checks completed

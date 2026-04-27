@@ -1,0 +1,10 @@
+docker rm -f "booking-service-ci-test" || true
+Error response from daemon: No such container: booking-service-ci-test
+docker run -d --name "booking-service-ci-test" -p "18080:8080" "booking-service:latest"
+c60fad6233503a4cc3d95c7ac68d66d6aa1dcf747e3f5fe452a36f673ab1a2ed
+docker exec "booking-service-ci-test" wget -qO- http://localhost:8080/ping | grep '^pong$'
+pong
+docker exec "booking-service-ci-test" wget -qO- http://localhost:8080/ready | grep '^ready$'
+ready
+docker rm -f "booking-service-ci-test"
+booking-service-ci-test
