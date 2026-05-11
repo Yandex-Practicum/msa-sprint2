@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  booking-history-db:
+    image: postgres:15
+    container_name: booking-history-db
+    environment:
+      POSTGRES_USER: history
+      POSTGRES_PASSWORD: history
+      POSTGRES_DB: history_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - history-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+
+volumes:
+  history-db-data:
+
+networks:
+  hotelio-net:
+    external: true
