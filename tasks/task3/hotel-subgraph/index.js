@@ -11,6 +11,11 @@ const typeDefs = gql`
     stars: Int
   }
 
+  extend type Booking @key(fields: "id") {
+    id: ID! @external
+    hotel: Hotel
+  }
+
   type Query {
     hotelsByIds(ids: [ID!]!): [Hotel]
   }
@@ -19,12 +24,39 @@ const typeDefs = gql`
 const resolvers = {
   Hotel: {
     __resolveReference: async ({ id }) => {
-      // TODO: Реальный вызов к hotel-сервису или заглушка
+      const response = await fetch(`http://host.docker.internal:8084/api/hotels/${id}`);
+      const data = await response.json();
+      return {
+        id: data.id,
+        name: data.name,
+        city: data.city,
+        stars: data.rating,
+      };
+    },
+  },
+  Booking: {
+    hotel: async (parent) => {
+      const response = await fetch(`http://host.docker.internal:8084/api/hotels/${parent.hotelId}`);
+      const data = await response.json();
+      return {
+        id: data.id,
+        name: data.name,
+        city: data.city,
+        stars: data.rating,
+      };
     },
   },
   Query: {
     hotelsByIds: async (_, { ids }) => {
-      // TODO: Заглушка или REST-запрос
+      const promises = ids.map(id => fetch(`http://host.docker.internal:8084/api/hotels/${id}`));
+      const responses = await Promise.all(promises);
+      const datas = await Promise.all(responses.map(r => r.json()));
+      return datas.map(data => ({
+        id: data.id,
+        name: data.name,
+        city: data.city,
+        stars: data.rating,
+      }));
     },
   },
 };
