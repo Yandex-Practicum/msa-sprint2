@@ -1,0 +1,22 @@
+{
+  "name": "booking-service",
+  "version": "1.0.0",
+  "description": "Booking microservice for Hotelio",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.9.0",
+    "@grpc/proto-loader": "^0.7.0",
+    "@grpc/reflection": "^1.0.4",
+    "axios": "^1.4.0",
+    "dotenv": "^16.0.3",
+    "kafkajs": "^2.2.4",
+    "pg": "^8.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}

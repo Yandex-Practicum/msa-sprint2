@@ -1,0 +1,8 @@
+ id |   user_id   |   hotel_id   | promo_code | discount_percent | price |         created_at         
+----+-------------+--------------+------------+------------------+-------+----------------------------
+  4 | test-user-2 | test-hotel-1 | TESTCODE1  |                  |   NaN | 2026-05-11 09:12:18.196731
+  3 | test-user-3 | test-hotel-1 |            |             0.00 | 80.00 | 2026-05-11 09:12:18.163304
+  2 | test-user-2 | test-hotel-1 | TESTCODE1  |                  |   NaN | 2026-05-11 09:10:07.889308
+  1 | test-user-3 | test-hotel-1 |            |             0.00 | 80.00 | 2026-05-11 09:10:07.850572
+(4 rows)
+

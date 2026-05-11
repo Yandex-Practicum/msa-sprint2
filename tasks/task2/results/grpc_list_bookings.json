@@ -1,0 +1,36 @@
+{
+  "bookings": [
+    {
+      "id": "4",
+      "userId": "test-user-2",
+      "hotelId": "test-hotel-1",
+      "promoCode": "TESTCODE1",
+      "discountPercent": "NaN",
+      "price": "NaN",
+      "createdAt": "2026-05-11T09:12:18.196Z"
+    },
+    {
+      "id": "3",
+      "userId": "test-user-3",
+      "hotelId": "test-hotel-1",
+      "price": 80,
+      "createdAt": "2026-05-11T09:12:18.163Z"
+    },
+    {
+      "id": "2",
+      "userId": "test-user-2",
+      "hotelId": "test-hotel-1",
+      "promoCode": "TESTCODE1",
+      "discountPercent": "NaN",
+      "price": "NaN",
+      "createdAt": "2026-05-11T09:10:07.889Z"
+    },
+    {
+      "id": "1",
+      "userId": "test-user-3",
+      "hotelId": "test-hotel-1",
+      "price": 80,
+      "createdAt": "2026-05-11T09:10:07.850Z"
+    }
+  ]
+}
