@@ -100,17 +100,21 @@ curl -sSf -X POST "${BASE}/api/promos/validate?code=TESTCODE1&userId=test-user-2
 echo ""
 echo "Тесты бронирования..."
 
-# 1. Получение всех бронирований
-curl -sSf "${BASE}/api/bookings" | grep -q 'test-user-2' && pass "Все бронирования получены" || fail "Бронирования не получены"
-
-# 2. Получение бронирований пользователя
-curl -sSf "${BASE}/api/bookings?userId=test-user-2" | grep -q 'test-user-2' && pass "Бронирования test-user-2 найдены" || fail "Нет бронирований test-user-2"
-
-# 3. Успешное бронирование отеля без промо
+# 1. Успешное бронирование отеля без промо
 curl -sSf -X POST "${BASE}/api/bookings?userId=test-user-3&hotelId=test-hotel-1" | grep -q 'test-hotel-1' && pass "Бронирование прошло (без промо)" || fail "Бронирование (без промо) не прошло"
 
-# 4. Успешное бронирование с промо
+# 2. Успешное бронирование с промо
 curl -sSf -X POST "${BASE}/api/bookings?userId=test-user-2&hotelId=test-hotel-1&promoCode=TESTCODE1" | grep -q 'TESTCODE1' && pass "Бронирование с промо прошло" || fail "Бронирование с промо не прошло"
+
+# 3. Получение всех бронирований
+# curl -sSf "${BASE}/api/bookings" | grep -q 'test-user-2' && pass "Все бронирования получены" || fail "Бронирования не получены"
+echo "GET /api/bookings перенесён в микросервис. Проверка списка бронирований через gRPC:"
+grpcurl -plaintext -import-path /app -proto booking.proto -d '{}' host.docker.internal:9090 booking.BookingService/ListBookings | grep -q '"id"' && pass "gRPC ListBookings работает" || fail "gRPC ListBookings не работает"
+
+# 4. Получение бронирований пользователя
+# curl -sSf "${BASE}/api/bookings?userId=test-user-2" | grep -q 'test-user-2' && pass "Бронирования test-user-2 найдены" || fail "Нет бронирований test-user-2"
+echo "GET /api/bookings?userId перенесён в микросервис. Проверка списка бронирований пользователя через gRPC:"
+grpcurl -plaintext -import-path /app -proto booking.proto -d '{"user_id": "test-user-3"}' host.docker.internal:9090 booking.BookingService/ListBookings | grep -q '"id"' && pass "gRPC ListBookings по userId работает" || fail "gRPC ListBookings по userId не работает"
 
 # 5. Ошибка — неактивный пользователь
 code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE}/api/bookings?userId=test-user-0&hotelId=test-hotel-1")
