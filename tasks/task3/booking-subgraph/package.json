@@ -3,9 +3,19 @@
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
-    "@apollo/server": "^4.8.1",
-    "@apollo/subgraph": "^2.4.0",
-    "graphql": "^16.8.1",
+    "@apollo/server": "^4.13.0",
+    "@apollo/subgraph": "^2.14.0",
+    "@grpc/grpc-js": "^1.14.3",
+    "@grpc/proto-loader": "^0.8.1",
+    "graphql": "^16.14.0",
     "graphql-tag": "^2.12.6"
-  }
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
