@@ -1,0 +1,34 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  IMAGE_NAME: booking-service
+  IMAGE_TAG: latest
+
+build:
+  stage: build
+  script:
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG ./booking-service
+
+test:
+  stage: test
+  script:
+    - docker rm -f test-booking 2>/dev/null || true
+    - docker run -d --name test-booking -p 8081:8080 $IMAGE_NAME:$IMAGE_TAG
+    - sleep 3
+    - curl --fail http://localhost:8081/health
+    - docker stop test-booking
+    - docker rm test-booking
+  tags:
+    - docker
+
+deploy:
+  stage: deploy
+  script:
+    - cd helm/booking-service
+    - helm dependency build
+    - cd ../..
+    - minikube image load $IMAGE_NAME:$IMAGE_TAG
+    - helm upgrade --install booking-service ./helm/booking-service
