@@ -1,0 +1,27 @@
+=== История бронирований (Kafka → booking-history-service) ===
+2026-05-15 17:03:49 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:19:34 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:22:12 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:22:27 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:24:25 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:25:04 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:26:29 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:28:37 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:29:02 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:31:12 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:32:00 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:34:12 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:34:32 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:38:31 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:42:38 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:47:05 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:51:36 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:52:40 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:54:46 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:55:24 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:56:25 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:56:25 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:57:57 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 19:57:57 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 20:05:33 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:
+2026-05-15 20:07:56 [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] INFO  c.h.h.s.BookingStatisticsService - 📊 Статистика бронирований обновлена:

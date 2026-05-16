@@ -1,3 +1,15 @@
-build/
 .idea/
+*.iml
 .gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+bin/
+out/
+*.class
+*.jar
+*.war
+*.log
+*.tmp
+.env

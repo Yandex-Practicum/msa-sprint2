@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  booking-history-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: booking-history-service
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    networks:
+      - hotelio-net
+
+networks:
+  hotelio-net:
+    external: true

@@ -1,0 +1,22 @@
+@startuml C1_Context_Hotelio
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Контекст системы — Hotelio Platform (C1)
+
+Person(guest, "Гость", "Ищет и бронирует отели")
+Person(admin, "Администратор", "Управляет отелями и пользователями")
+Person(manager, "Менеджер отеля", "Управляет номерами и удобствами")
+
+System(hotelio, "Hotelio Platform", "Платформа бронирования отелей")
+
+System_Ext(smtp, "SMTP Server", "Отправка email-уведомлений")
+
+Rel(guest, hotelio, "Использует GraphQL API для поиска/бронирования", "HTTPS/GraphQL")
+Rel(admin, hotelio, "Управляет контентом через GraphQL API", "HTTPS/GraphQL")
+Rel(manager, hotelio, "Управляет номерами через GraphQL API", "HTTPS/GraphQL")
+
+Rel(hotelio, smtp, "Отправляет email-уведомления", "SMTP")
+
+@enduml

@@ -1,0 +1,63 @@
+@startuml C2_Container_Hotelio
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_TOP_DOWN()
+LAYOUT_WITH_LEGEND()
+
+title Контейнеры системы — Hotelio Platform (C2)
+
+Person(guest, "Гость", "Пользователь")
+Person(admin, "Администратор", "Управляющий")
+
+System_Boundary(hotelio, "Hotelio Platform") {
+
+    Container(gateway, "GraphQL Gateway", "Apollo Router / Spring GraphQL", "Единая точка входа для клиентов. Федерация запросов к сервисам")
+
+    Container(hotel_svc, "Hotel Service", "Java 21, Spring Boot", "CRUD отелей и номеров, поиск. Кэширование данных в Redis")
+    Container(booking_svc, "Booking Service", "Java 21, Spring Boot", "Создание и управление бронированиями, Saga-оркестратор")
+    Container(loyalty_svc, "Loyalty Service", "Java 21, Spring Boot, Kafka Streams", "Программа лояльности, уровни, скидки, начисление баллов")
+    Container(user_svc, "User Service", "Java 21, Spring Boot", "Регистрация, аутентификация (JWT), профили пользователей")
+    Container(notification_svc, "Notification Service", "Java 21, Spring Boot", "Отправка email и push-уведомлений")
+
+    ContainerDb(hotel_db, "Hotel DB", "PostgreSQL", "Схема hotel_db: отели, номера, удобства")
+    ContainerDb(booking_db, "Booking DB", "PostgreSQL", "Схема booking_db: бронирования, статусы")
+    ContainerDb(loyalty_db, "Loyalty DB", "PostgreSQL", "Схема loyalty_db: уровни, баллы, транзакции")
+    ContainerDb(user_db, "User DB", "PostgreSQL", "Схема user_db: пользователи, роли, сессии")
+
+    Container(redis, "Redis Cache", "Redis", "Кэш поиска и карточек отелей для Hotel Service")
+
+    ContainerQueue(kafka, "Event Bus", "Apache Kafka", "Асинхронная шина доменных событий")
+}
+
+System_Ext(smtp, "SMTP Server", "Внешний email-сервер")
+
+' === Отношения клиентов ===
+Rel(guest, gateway, "Запросы GraphQL", "HTTPS/GraphQL")
+Rel(admin, gateway, "Запросы GraphQL", "HTTPS/GraphQL")
+
+' === Отношения Gateway к сервисам ===
+Rel(gateway, hotel_svc, "Федерация запросов к отелям", "REST/JSON")
+Rel(gateway, booking_svc, "Федерация запросов к бронированиям", "REST/JSON")
+Rel(gateway, loyalty_svc, "Федерация запросов к лояльности", "REST/JSON")
+Rel(gateway, user_svc, "Федерация запросов к пользователям / auth", "REST/JSON")
+
+' === Отношения сервисов к БД ===
+Rel(hotel_svc, hotel_db, "Чтение/запись данных отелей", "JDBC")
+Rel(booking_svc, booking_db, "Чтение/запись бронирований", "JDBC")
+Rel(loyalty_svc, loyalty_db, "Чтение/запись данных лояльности", "JDBC")
+Rel(user_svc, user_db, "Чтение/запись пользователей", "JDBC")
+
+' === Отношения сервисов к Redis ===
+Rel(hotel_svc, redis, "Кэширование и инвалидация", "RESP")
+
+' === Асинхронные события через Kafka ===
+Rel(hotel_svc, kafka, "Публикует: hotel.updated, room.updated", "Kafka Protocol")
+Rel(booking_svc, kafka, "Публикует: booking.created, booking.confirmed, booking.cancelled", "Kafka Protocol")
+Rel(loyalty_svc, kafka, "Публикует: loyalty.points_awarded; Потребляет: booking.*", "Kafka Protocol")
+Rel(user_svc, kafka, "Публикует: user.registered", "Kafka Protocol")
+Rel(notification_svc, kafka, "Потребляет: booking.*, loyalty.*", "Kafka Protocol")
+
+' === Внешние интеграции ===
+Rel(notification_svc, smtp, "Отправляет email", "SMTP")
+
+@enduml
