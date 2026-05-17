@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs (исключая папку results)
+*.log
+!results/*.log
+
+# Docker
+docker-compose.override.yml
+
+# Environment
+.env
+.env.local

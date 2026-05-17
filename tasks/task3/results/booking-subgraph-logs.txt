@@ -1,0 +1,50 @@
+task3-booking-subgraph-1  |       "created_at": "2026-05-17T18:54:28.317Z"
+task3-booking-subgraph-1  |     },
+task3-booking-subgraph-1  |     {
+task3-booking-subgraph-1  |       "id": "1778873060134",
+task3-booking-subgraph-1  |       "user_id": "123",
+task3-booking-subgraph-1  |       "hotel_id": "3",
+task3-booking-subgraph-1  |       "promo_code": "",
+task3-booking-subgraph-1  |       "discount_percent": 0,
+task3-booking-subgraph-1  |       "price": 300,
+task3-booking-subgraph-1  |       "created_at": "2026-05-17T18:54:28.317Z"
+task3-booking-subgraph-1  |     },
+task3-booking-subgraph-1  |     {
+task3-booking-subgraph-1  |       "id": "1778873060135",
+task3-booking-subgraph-1  |       "user_id": "123",
+task3-booking-subgraph-1  |       "hotel_id": "4",
+task3-booking-subgraph-1  |       "promo_code": "SUMMER2024",
+task3-booking-subgraph-1  |       "discount_percent": 0,
+task3-booking-subgraph-1  |       "price": 220,
+task3-booking-subgraph-1  |       "created_at": "2026-05-17T18:54:28.317Z"
+task3-booking-subgraph-1  |     }
+task3-booking-subgraph-1  |   ]
+task3-booking-subgraph-1  | }
+task3-booking-subgraph-1  | 📦 Response type: object
+task3-booking-subgraph-1  | 📦 Response keys: [ 'bookings' ]
+task3-booking-subgraph-1  | 📊 bookings is array: true
+task3-booking-subgraph-1  | 📊 bookings length: 4
+task3-booking-subgraph-1  | 🔍 First booking: {
+task3-booking-subgraph-1  |   "id": "1778873060132",
+task3-booking-subgraph-1  |   "user_id": "123",
+task3-booking-subgraph-1  |   "hotel_id": "1",
+task3-booking-subgraph-1  |   "promo_code": "SUMMER2024",
+task3-booking-subgraph-1  |   "discount_percent": 0,
+task3-booking-subgraph-1  |   "price": 250,
+task3-booking-subgraph-1  |   "created_at": "2026-05-17T18:54:28.317Z"
+task3-booking-subgraph-1  | }
+task3-booking-subgraph-1  | 🔍 First booking keys: [
+task3-booking-subgraph-1  |   'id',
+task3-booking-subgraph-1  |   'user_id',
+task3-booking-subgraph-1  |   'hotel_id',
+task3-booking-subgraph-1  |   'promo_code',
+task3-booking-subgraph-1  |   'discount_percent',
+task3-booking-subgraph-1  |   'price',
+task3-booking-subgraph-1  |   'created_at'
+task3-booking-subgraph-1  | ]
+task3-booking-subgraph-1  | 🔄 Mapping booking 0: {"id":"1778873060132","user_id":"123","hotel_id":"1","promo_code":"SUMMER2024","discount_percent":0,"price":250,"created_at":"2026-05-17T18:54:28.317Z"}
+task3-booking-subgraph-1  | 🔄 Mapping booking 1: {"id":"1778873060133","user_id":"123","hotel_id":"2","promo_code":"WELCOME10","discount_percent":0,"price":180,"created_at":"2026-05-17T18:54:28.317Z"}
+task3-booking-subgraph-1  | 🔄 Mapping booking 2: {"id":"1778873060134","user_id":"123","hotel_id":"3","promo_code":"","discount_percent":0,"price":300,"created_at":"2026-05-17T18:54:28.317Z"}
+task3-booking-subgraph-1  | 🔄 Mapping booking 3: {"id":"1778873060135","user_id":"123","hotel_id":"4","promo_code":"SUMMER2024","discount_percent":0,"price":220,"created_at":"2026-05-17T18:54:28.317Z"}
+task3-booking-subgraph-1  | ✅ Mapped 4 bookings
+task3-booking-subgraph-1  | ✅ Found 4 bookings for user 123

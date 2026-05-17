@@ -1,0 +1,10 @@
+CONTAINER ID   IMAGE                             COMMAND                  CREATED          STATUS          PORTS                                            NAMES
+b4836e8e8231   task3-apollo-gateway              "docker-entrypoint.s…"   12 minutes ago   Up 12 minutes   0.0.0.0:4000->4000/tcp                           task3-apollo-gateway-1
+5292c8bb44bd   task3-booking-subgraph            "docker-entrypoint.s…"   12 minutes ago   Up 12 minutes   0.0.0.0:4001->4001/tcp                           task3-booking-subgraph-1
+62de3f43a13a   task3-hotel-subgraph              "docker-entrypoint.s…"   12 minutes ago   Up 12 minutes   0.0.0.0:4002->4002/tcp                           task3-hotel-subgraph-1
+973361cf6f0e   task3-promocode-subgraph          "docker-entrypoint.s…"   12 minutes ago   Up 12 minutes   0.0.0.0:4003->4003/tcp                           task3-promocode-subgraph-1
+64703100a365   booking-service-booking-service   "java -jar app.jar"      7 hours ago      Up 27 minutes   0.0.0.0:8081->8081/tcp, 0.0.0.0:9090->9090/tcp   booking-service
+8395500a9643   postgres:15                       "docker-entrypoint.s…"   7 hours ago      Up 35 minutes   0.0.0.0:5433->5432/tcp                           booking-db
+8baefdb48e30   confluentinc/cp-zookeeper:7.2.1   "/etc/confluent/dock…"   7 hours ago      Up 35 minutes   2888/tcp, 0.0.0.0:2181->2181/tcp, 3888/tcp       hotelio-monolith-zookeeper-1
+1f5c615985fd   postgres:15                       "docker-entrypoint.s…"   7 hours ago      Up 35 minutes   0.0.0.0:5432->5432/tcp                           hotelio-db
+0a4772cda594   hotelio-monolith-monolith         "java -jar app.jar"      7 hours ago      Up 35 minutes   0.0.0.0:8084->8080/tcp                           hotelio-monolith

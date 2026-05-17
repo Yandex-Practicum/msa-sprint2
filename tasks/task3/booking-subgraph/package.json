@@ -2,9 +2,15 @@
   "name": "booking-subgraph",
   "version": "1.0.0",
   "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
   "dependencies": {
     "@apollo/server": "^4.8.1",
     "@apollo/subgraph": "^2.4.0",
+    "@grpc/grpc-js": "^1.14.3",
+    "@grpc/proto-loader": "^0.7.15",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6"
   }

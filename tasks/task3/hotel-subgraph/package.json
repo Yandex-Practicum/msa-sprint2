@@ -2,10 +2,14 @@
   "name": "hotel-subgraph",
   "version": "1.0.0",
   "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
-    "@apollo/server": "^4.8.1",
-    "@apollo/subgraph": "^2.4.1",
-    "graphql": "^16.8.1",
-	"graphql-tag": "^2.12.6"
+    "@apollo/server": "^4.13.0",
+    "@apollo/subgraph": "^2.9.0",
+    "graphql": "^16.9.0",
+    "graphql-tag": "^2.12.6",
+    "dataloader": "^2.2.2"
   }
 }
