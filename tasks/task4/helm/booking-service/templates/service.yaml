@@ -4,6 +4,7 @@ metadata:
   name: {{ .Release.Name }}
   labels:
     app: {{ .Release.Name }}
+    environment: {{ .Values.environment | default "development" }}
 spec:
   type: {{ .Values.service.type }}
   ports:
