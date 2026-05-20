@@ -1,0 +1,26 @@
+# istio/envoy-filter.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: booking-feature-filter
+spec:
+  workloadSelector:
+    labels:
+      app: test          # фильтр только для тестового пода
+  configPatches:
+    - applyTo: HTTP_ROUTE
+      match:
+        context: SIDECAR_OUTBOUND
+        routeConfiguration:
+          vhost:
+            name: "booking-service:80"
+      patch:
+        operation: INSERT_BEFORE   # новое правило перед канареечным
+        value:
+          name: "feature_flag_route"
+          match:
+            headers:
+              - name: X-Feature-Enabled
+                exactMatch: "true"
+          route:
+            cluster: "outbound|80|v2|booking-service.default.svc.cluster.local"
