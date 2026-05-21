@@ -1,10 +1,12 @@
-FROM node:18
+FROM node:18-alpine
 
 WORKDIR /app
 
-COPY package.json ./
-RUN npm install
+COPY package*.json ./
+RUN npm ci --only=production
 
-COPY . .
+COPY index.js ./
+
+EXPOSE 4002
 
 CMD ["node", "index.js"]

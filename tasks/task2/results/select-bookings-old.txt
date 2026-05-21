@@ -1,0 +1,7 @@
+=== SELECT * FROM booking (СТАРАЯ СИСТЕМА - hotelio-db) ===
+ discount_percent | price |          created_at           | id |   hotel_id   | promo_code |   user_id   
+------------------+-------+-------------------------------+----+--------------+------------+-------------
+               10 |    90 | 2026-05-15 19:57:56.963422+00 | 31 | test-hotel-1 | TESTCODE1  | test-user-2
+                0 |    80 | 2026-05-15 19:57:56.963422+00 | 32 | test-hotel-1 |            | test-user-3
+(2 rows)
+

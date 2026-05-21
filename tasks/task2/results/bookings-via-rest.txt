@@ -1,0 +1,6 @@
+=== Бронирования через REST API монолита ===
+GET /api/bookings временно недоступен (баг в монолите: BookingListRequest.setUserId(null))
+Создание бронирований работает через POST /api/bookings (проксируется в booking-service)
+
+=== Пример создания бронирования через REST ===
+{"id":1778873060130,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":"","discountPercent":0.0,"price":100.0,"createdAt":"2026-05-15T20:05:33.641Z"}

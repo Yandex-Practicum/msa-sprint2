@@ -1,0 +1,61 @@
+=========================================
+ISTIO SERVICE MESH - TEST RESULTS
+Date: Wed May 20 23:31:33 MSK 2026
+=========================================
+
+=== 1. CHECK ISTIO INSTALLATION ===
+▶️ Проверка установки Istio...
+NAME                                    READY   STATUS    RESTARTS        AGE
+istio-egressgateway-64dfb7fbbf-wwnqv    1/1     Running   2 (5h56m ago)   10h
+istio-ingressgateway-5d775fd8d5-8x6x6   1/1     Running   2 (5h56m ago)   10h
+istiod-746bbbd4f6-6987z                 1/1     Running   2 (62m ago)     10h
+▶️ Проверка Istio инъекции в default namespace...
+"enabled"
+
+=== 2. CHECK CANARY RELEASE (90/10) ===
+▶️ Checking canary release (90% v1, 10% v2)...
+Sending 100 requests...
+v1: 91 requests
+v2: 9 requests
+Expected: ~90 v1, ~10 v2
+
+▶️ Проверка Feature Flag (X-Feature-Enabled: true)...
+
+Без заголовка:
+▶️ Проверка Feature Flag (X-Feature-Enabled: true)...
+
+Без заголовка (ожидается 404 на v1):
+wget: server returned error: HTTP/1.1 404 Not Found
+command terminated with exit code 1
+404 (expected)
+
+С заголовком X-Feature-Enabled: true (ожидается Feature X is enabled on v2!):
+Feature X is enabled on v2!
+Проверка /ping с заголовком (ожидается x-version: v2):
+  x-version: v2
+
+▶️ Начинаем тестирование Fallback-маршрута...
+Создаем изолированный тестовый под с Istio-sidecar...
+pod/test created
+pod/test labeled
+Ожидаем запуск тестового пода...
+pod/test condition met
+⚠️ Симулируем аварию: масштабируем v1 в 0 реплик...
+deployment.apps/booking-service-v1 scaled
+🚀 Проверяем автоматическое перенаправление трафика на v2...
+Запрос 1: Ошибка! (Ответ: no healthy upstream) ❌
+Запрос 2: Успешно! (Ответ: pong) ✅
+Запрос 3: Ошибка! (Ответ: no healthy upstream) ❌
+Запрос 4: Успешно! (Ответ: pong) ✅
+Запрос 5: Успешно! (Ответ: pong) ✅
+Запрос 6: Ошибка! (Ответ: no healthy upstream) ❌
+Запрос 7: Ошибка! (Ответ: no healthy upstream) ❌
+Запрос 8: Ошибка! (Ответ: no healthy upstream) ❌
+Запрос 9: Ошибка! (Ответ: no healthy upstream) ❌
+Запрос 10: Ошибка! (Ответ: no healthy upstream) ❌
+
+🔄 Восстанавливаем стабильное окружение: возвращаем реплики v1...
+deployment.apps/booking-service-v1 scaled
+--------------------------------------------------
+🚨 ИТОГ: Успешно 3 из 10 запросов
+--------------------------------------------------

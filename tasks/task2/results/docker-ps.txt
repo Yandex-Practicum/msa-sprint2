@@ -1,0 +1,8 @@
+NAMES                          IMAGE                                             STATUS              PORTS
+booking-history-service        booking-history-service-booking-history-service   Up 42 seconds       0.0.0.0:8082->8082/tcp
+booking-service                booking-service-booking-service                   Up 55 seconds       0.0.0.0:8081->8081/tcp, 0.0.0.0:9090->9090/tcp
+booking-db                     postgres:15                                       Up 55 seconds       0.0.0.0:5433->5432/tcp
+hotelio-db                     postgres:15                                       Up About a minute   0.0.0.0:5432->5432/tcp
+hotelio-monolith-kafka-1       confluentinc/cp-kafka:7.2.1                       Up About a minute   0.0.0.0:9092->9092/tcp
+hotelio-monolith-zookeeper-1   confluentinc/cp-zookeeper:7.2.1                   Up About a minute   2888/tcp, 0.0.0.0:2181->2181/tcp, 3888/tcp
+hotelio-monolith               hotelio-monolith-monolith                         Up About a minute   0.0.0.0:8084->8080/tcp
