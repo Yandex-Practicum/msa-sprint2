@@ -41,7 +41,7 @@ Hotelio представляет собой монолитное Java-прило
 
 #### Диаграмма контекста (C1) - Основное решение
 
-> 📄 **Файл диаграммы:** [`../task1/results/context-diagram-primary.puml`](../task1/results/context-diagram-primary.puml)
+> 📄 **Файл диаграммы:** [`../results/context-diagram-primary.puml`](../results/context-diagram-primary.puml)
 
 ---
 
@@ -110,7 +110,7 @@ Hotelio представляет собой монолитное Java-прило
 
 #### Диаграмма контейнеров (C2) - Основное решение
 
-> 📄 **Файл диаграммы:** [`../task1/results/container-diagram-primary.puml`](../task1/results/container-diagram-primary.puml)
+> 📄 **Файл диаграммы:** [`../results/container-diagram-primary.puml`](../results/container-diagram-primary.puml)
 
 ---
 
