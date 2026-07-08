@@ -8,13 +8,37 @@ services:
     depends_on:
       - booking-subgraph
       - hotel-subgraph
+      - promo-subgraph
+    networks:
+      - graphql-network
 
   booking-subgraph:
     build: ./booking-subgraph
     ports:
       - "4001:4001"
+    networks:
+      - graphql-network
+      - hotelio-net  # ← нужна для подключения к booking-service через gRPC
+    environment:
+      - BOOKING_SERVICE_URL=booking-service:9090
 
   hotel-subgraph:
     build: ./hotel-subgraph
     ports:
       - "4002:4002"
+    networks:
+      - graphql-network
+
+  promo-subgraph:
+    build: ./promo-subgraph
+    ports:
+      - "4003:4003"
+    networks:
+      - graphql-network
+
+networks:
+  graphql-network:
+    driver: bridge
+
+  hotelio-net:
+    external: true

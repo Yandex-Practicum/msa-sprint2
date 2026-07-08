@@ -1,0 +1,5 @@
+﻿NAME                       IMAGE                    COMMAND                  SERVICE            CREATED          STATUS          PORTS
+task3-apollo-gateway-1     task3-apollo-gateway     "docker-entrypoint.s…"   apollo-gateway     27 minutes ago   Up 27 minutes   0.0.0.0:4000->4000/tcp, [::]:4000->4000/tcp
+task3-booking-subgraph-1   task3-booking-subgraph   "docker-entrypoint.s…"   booking-subgraph   27 minutes ago   Up 27 minutes   0.0.0.0:4001->4001/tcp, [::]:4001->4001/tcp
+task3-hotel-subgraph-1     task3-hotel-subgraph     "docker-entrypoint.s…"   hotel-subgraph     27 minutes ago   Up 27 minutes   0.0.0.0:4002->4002/tcp, [::]:4002->4002/tcp
+task3-promo-subgraph-1     task3-promo-subgraph     "docker-entrypoint.s…"   promo-subgraph     27 minutes ago   Up 27 minutes   0.0.0.0:4003->4003/tcp, [::]:4003->4003/tcp

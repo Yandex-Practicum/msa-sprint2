@@ -1,0 +1,5 @@
+ Id |   UserId    |   HotelId    | PromoCode | DiscountPercent | Price |           CreatedAt           | Status
+----+-------------+--------------+-----------+-----------------+-------+-------------------------------+---------
+ 1  | test-user-3 | test-hotel-1 |           |               0 |   100 | 2026-07-06 10:09:25.155151+00 | Created
+ 2  | test-user-2 | test-hotel-1 |           |               0 |   100 | 2026-07-06 10:09:25.560058+00 | Created
+(2 rows)

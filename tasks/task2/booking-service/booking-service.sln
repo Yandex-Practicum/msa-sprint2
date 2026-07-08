@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.39000.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "booking-service", "booking-service.csproj", "{0A357F45-5826-8260-DAB7-BCA20AFDA7BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "booking-history-service", "..\booking-history-service\booking-history-service.csproj", "{DE6DB5EB-7239-495B-AEB3-13EBC9E34612}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0A357F45-5826-8260-DAB7-BCA20AFDA7BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A357F45-5826-8260-DAB7-BCA20AFDA7BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A357F45-5826-8260-DAB7-BCA20AFDA7BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A357F45-5826-8260-DAB7-BCA20AFDA7BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE6DB5EB-7239-495B-AEB3-13EBC9E34612}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE6DB5EB-7239-495B-AEB3-13EBC9E34612}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE6DB5EB-7239-495B-AEB3-13EBC9E34612}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE6DB5EB-7239-495B-AEB3-13EBC9E34612}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {24CD94F2-62BD-4B82-AABB-1F26874578DB}
+	EndGlobalSection
+EndGlobal

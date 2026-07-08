@@ -1,0 +1,14 @@
+﻿Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+✅ Booking subgraph ready at http://localhost:4001/
+🔌 Connected to booking-service at booking-service:9090
+📞 Calling gRPC ListBookings for userId: test-user-3
+✅ Got 1 bookings from gRPC
+🚫 ACL DENIED: authUserId=undefined, requestedUserId=test-user-3
+🚫 ACL DENIED: authUserId=test-user-1, requestedUserId=test-user-3
+📞 Calling gRPC ListBookings for userId: test-user-3
+✅ Got 1 bookings from gRPC
+🚫 ACL DENIED: authUserId=undefined, requestedUserId=test-user-3
+🚫 ACL DENIED: authUserId=test-user-1, requestedUserId=test-user-3
+📞 Calling gRPC ListBookings for userId: test-user-1
+✅ Got 0 bookings from gRPC
+🚫 ACL DENIED: authUserId=test-user-2, requestedUserId=test-user-1

@@ -1,0 +1,2 @@
+﻿IMAGE                    ID             DISK USAGE   CONTENT SIZE   EXTRA
+booking-service:latest   dfafef9f9818        437MB         92.5MB        
