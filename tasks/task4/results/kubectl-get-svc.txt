@@ -1,0 +1,2 @@
+﻿NAME              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+booking-service   ClusterIP   10.104.244.107   <none>        80/TCP    115m
