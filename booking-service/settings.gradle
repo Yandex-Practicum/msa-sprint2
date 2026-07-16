@@ -1,0 +1,4 @@
+rootProject.name = 'booking-service'
+
+include 'middleware'
+project(':middleware').projectDir = file('../middleware')

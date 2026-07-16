@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="bookingservice" target="21" />
+      <module name="bookingservice.main" target="21" />
+      <module name="bookingservice.test" target="21" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="booking-history-service" options="-parameters" />
+      <module name="booking-history-service.main" options="-parameters" />
+      <module name="booking-history-service.test" options="-parameters" />
+      <module name="booking-service" options="-parameters" />
+      <module name="booking-service.main" options="-parameters" />
+      <module name="booking-service.test" options="-parameters" />
+      <module name="bookingservice" options="-parameters" />
+      <module name="bookingservice.main" options="-parameters" />
+      <module name="bookingservice.test" options="-parameters" />
+      <module name="com.hotelio.booking-service" options="-parameters" />
+      <module name="com.hotelio.booking-service.main" options="-parameters" />
+      <module name="com.hotelio.booking-service.test" options="-parameters" />
+      <module name="hotelio-monolith" options="-parameters" />
+      <module name="hotelio-monolith.main" options="-parameters" />
+      <module name="hotelio-monolith.test" options="-parameters" />
+      <module name="task5.booking-service" options="-parameters" />
+      <module name="task5.booking-service.main" options="-parameters" />
+      <module name="task5.booking-service.test" options="-parameters" />
+    </option>
+  </component>
+</project>

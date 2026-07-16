@@ -1,0 +1,4 @@
+rootProject.name = 'booking-history-service'
+
+include 'middleware'
+project(':middleware').projectDir = file('../middleware')

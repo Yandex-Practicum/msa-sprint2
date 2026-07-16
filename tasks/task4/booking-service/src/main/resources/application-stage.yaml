@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: booking-service
+
+logging:
+  level:
+    com.hotelio: DEBUG
+
+enable:
+  feature:
+    x: true

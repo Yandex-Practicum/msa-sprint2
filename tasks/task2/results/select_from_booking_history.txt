@@ -1,0 +1,6 @@
+select * from booking_history;
+ discount_percent | price | booking_id | id |           created_at           |   hotel_id   | promo_code |   user_id   
+------------------+-------+------------+----+--------------------------------+--------------+------------+-------------
+                0 |   100 |          1 |  1 | 2026-07-04T11:05:06.897317898Z | test-hotel-1 |            | test-user-3
+               10 |    90 |          2 |  2 | 2026-07-04T11:05:10.438073924Z | test-hotel-1 | TESTCODE1  | test-user-2
+(2 rows)

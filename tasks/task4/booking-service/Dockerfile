@@ -1,25 +1,12 @@
-# Используем официальный минимальный образ Go
-FROM golang:1.21-alpine
-
-# TODO: Добавить необходимые пакеты (например, curl)
-# Ожидаемый код:
-RUN apk add --no-cache curl
-
-# Устанавливаем рабочую директорию
+FROM gradle:8.5-jdk21 AS build
 WORKDIR /app
+COPY booking-service ./booking-service
 
-# Копируем Go-файл и скрипт проверки DNS
-COPY main.go .
-COPY check-dns.sh .
+WORKDIR /app/booking-service
+RUN ./gradlew --no-daemon bootJar -x test
 
-# TODO: Сделать скрипт исполняемым
-# Ожидаемый код:
-RUN chmod +x check-dns.sh
-
-# TODO: Собрать бинарник из main.go
-# Ожидаемый код:
-RUN go build -o booking-service main.go
-
-# TODO: Задать команду запуска
-# Ожидаемый код:
-CMD ["./booking-service"]
+FROM openjdk:21-ea-1-slim
+WORKDIR /app
+COPY --from=build /app/booking-service/build/libs/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]

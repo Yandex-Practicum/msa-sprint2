@@ -16,15 +16,24 @@ const typeDefs = gql`
   }
 `;
 
+const MOCK_HOTELS = [
+  { id: 'test-hotel-1', name: 'Grand Hotel', city: 'Berlin', stars: 5 },
+  { id: 'test-hotel-2', name: 'Seaside Resort', city: 'Limassol', stars: 4 },
+];
+
+async function fetchHotelById(id) {
+  return MOCK_HOTELS.find((h) => h.id === id) || null;
+}
+
 const resolvers = {
   Hotel: {
     __resolveReference: async ({ id }) => {
-      // TODO: Реальный вызов к hotel-сервису или заглушка
+        return fetchHotelById(id);
     },
   },
   Query: {
     hotelsByIds: async (_, { ids }) => {
-      // TODO: Заглушка или REST-запрос
+      return Promise.all(ids.map((id) => fetchHotelById(id)));
     },
   },
 };

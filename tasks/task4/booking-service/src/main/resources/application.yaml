@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: booking-service
+
+logging:
+  level:
+    com.hotelio: INFO
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true

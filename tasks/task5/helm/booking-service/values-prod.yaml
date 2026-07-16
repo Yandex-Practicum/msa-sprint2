@@ -1,0 +1,6 @@
+replicaCount: 3
+
+env:
+  springProfile: prod
+  enableFeatureX: "false"
+

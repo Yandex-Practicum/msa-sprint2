@@ -1,0 +1,8 @@
+replicaCount: 1
+
+version: v2
+service:
+  enabled: false
+env:
+  springProfile: stage
+  enableFeatureX: "true"

@@ -3,8 +3,8 @@ version: "3.8"
 services:
   monolith:
     build:
-      context: ../monolith
-      dockerfile: Dockerfile
+      context: ../tasks/monolith
+      dockerfile: ../../monolith/Dockerfile
     container_name: hotelio-monolith
     ports:
       - "8084:8080"
@@ -24,6 +24,34 @@ services:
       POSTGRES_USER: hotelio
       POSTGRES_PASSWORD: hotelio
       POSTGRES_DB: hotelio
+    ports:
+      - "5432:5432"
+    volumes:
+      - monolith-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+
+  booking-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: booking-service
+    ports:
+      - "9090:8080"
+    networks:
+      - hotelio-net
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://booking-db:5432/booking
+      SPRING_DATASOURCE_USERNAME: booking
+      SPRING_DATASOURCE_PASSWORD: booking
+
+  booking-db:
+    image: postgres:15
+    container_name: booking-db
+    environment:
+      POSTGRES_USER: booking
+      POSTGRES_PASSWORD: booking
+      POSTGRES_DB: booking
     ports:
       - "5432:5432"
     volumes:

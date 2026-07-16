@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1732118148/booking-history-service.middleware.main.iml" filepath="$PROJECT_DIR$/.idea/modules/1732118148/booking-history-service.middleware.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/booking-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/booking-service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1732118148/booking-service.middleware.main.iml" filepath="$PROJECT_DIR$/.idea/modules/1732118148/booking-service.middleware.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/middleware.main.iml" filepath="$PROJECT_DIR$/.idea/modules/middleware.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/msa-sprint2.iml" filepath="$PROJECT_DIR$/.idea/msa-sprint2.iml" />
+    </modules>
+  </component>
+</project>

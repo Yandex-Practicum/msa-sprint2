@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: feature-flag-routing
+spec:
+  workloadSelector:
+    labels:
+      app: booking-service
+  configPatches:
+    - applyTo: VIRTUAL_HOST
+      match:
+        context: SIDECAR_INBOUND
+        routeConfiguration:
+          vhost:
+            name: "booking-service.default.svc.cluster.local:8080"
+      patch:
+        operation: MERGE
+        value:
+          routes:
+            - match:
+                prefix: "/"
+                headers:
+                  - name: "X-Feature-Enabled"
+                    string_match:
+                      exact: "true"
+              route:
+                cluster: "outbound|8080|v2|booking-service.default.svc.cluster.local"
