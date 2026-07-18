@@ -1,0 +1,63 @@
+@startuml
+!include <C4/C4_Container>
+
+title Hotelio - Финальное целевое состояние
+
+Person(customer, "Клиент")
+Person(admin, "Администратор")
+
+Container_Boundary(client_apps, "Client Applications") {
+  Container(web, "Web App", "Web client", "Клиентское приложение")
+}
+
+Container_Boundary(edge, "API Layer") {
+  Container(api_gw, "API Gateway", "Gateway", "Маршрутизация, базовые политики доступа")
+}
+
+Container_Boundary(services, "Microservices") {
+  Container(user_svc, "User Service", "Spring Boot", "Статусы, blacklist, профиль")
+  Container(hotel_svc, "Hotel Service", "Spring Boot", "Каталог, доступность")
+  Container(review_svc, "Review Service", "Spring Boot", "Отзывы, рейтинг")
+  Container(promo_svc, "Promo Service", "Spring Boot", "Промокоды и правила")
+  Container(booking_svc, "Booking Service", "Spring Boot", "Оркестрация бронирования")
+}
+
+Container_Boundary(data_layer, "Data Layer") {
+  ContainerDb(user_db, "User DB", "PostgreSQL", "Данные пользователей")
+  ContainerDb(hotel_db, "Hotel DB", "PostgreSQL", "Данные отелей")
+  ContainerDb(review_db, "Review DB", "PostgreSQL", "Отзывы и агрегаты")
+  ContainerDb(promo_db, "Promo DB", "PostgreSQL", "Промо-кампании")
+  ContainerDb(booking_db, "Booking DB", "PostgreSQL", "Бронирования и цены")
+}
+
+Container_Boundary(integration, "Integration") {
+  Container(event_bus, "Event Bus", "Kafka or equivalent", "Асинхронные доменные события")
+}
+
+Rel(customer, web, "Использует", "HTTPS")
+Rel(admin, web, "Администрирует", "HTTPS")
+Rel(web, api_gw, "API", "HTTPS/REST")
+
+Rel(api_gw, user_svc, "User API", "HTTP/REST")
+Rel(api_gw, hotel_svc, "Hotel API", "HTTP/REST")
+Rel(api_gw, review_svc, "Review API", "HTTP/REST")
+Rel(api_gw, promo_svc, "Promo API", "HTTP/REST")
+Rel(api_gw, booking_svc, "Booking API", "HTTP/REST")
+
+Rel(booking_svc, user_svc, "Валидация пользователя", "HTTP/REST")
+Rel(booking_svc, hotel_svc, "Проверка доступности", "HTTP/REST")
+Rel(booking_svc, review_svc, "Проверка доверия", "HTTP/REST")
+Rel(booking_svc, promo_svc, "Применение промо", "HTTP/REST")
+
+Rel(user_svc, user_db, "Read/Write", "JDBC")
+Rel(hotel_svc, hotel_db, "Read/Write", "JDBC")
+Rel(review_svc, review_db, "Read/Write", "JDBC")
+Rel(promo_svc, promo_db, "Read/Write", "JDBC")
+Rel(booking_svc, booking_db, "Read/Write", "JDBC")
+
+Rel(review_svc, event_bus, "ReviewChanged", "Events")
+Rel(booking_svc, event_bus, "BookingCreated", "Events")
+Rel(promo_svc, event_bus, "PromoChanged", "Events")
+Rel(hotel_svc, event_bus, "Consumes relevant events", "Events")
+
+@enduml

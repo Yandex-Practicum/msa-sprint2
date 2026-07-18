@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Context>
+
+title Hotelio - Контекстная диаграмма
+
+Person(customer, "Клиент", "Ищет отели, создает бронирования, читает отзывы")
+Person(admin, "Администратор", "Управляет промокодами и контентом")
+
+System(hotelio, "Hotelio Platform", "Платформа онлайн-бронирования отелей")
+
+Rel(customer, hotelio, "Использует", "HTTPS")
+Rel(admin, hotelio, "Администрирует", "HTTPS")
+
+@enduml
