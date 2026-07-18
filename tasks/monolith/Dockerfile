@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-slim
+FROM bellsoft/liberica-openjre-alpine-musl:17
 
 WORKDIR /app
 
