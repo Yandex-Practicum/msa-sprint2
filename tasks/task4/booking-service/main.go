@@ -5,17 +5,29 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
+var startTime time.Time
+
 func main() {
+	startTime = time.Now()
 	enableFeatureX := os.Getenv("ENABLE_FEATURE_X") == "true"
 
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "pong")
 	})
 
-	// TODO: Feature flag route
-	// if ENABLE_FEATURE_X=true, expose /feature
+	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "healthy")
+	})
+
+	http.HandleFunc("/ready", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "ready")
+	})
+
 	if enableFeatureX {
 		http.HandleFunc("/feature", func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "Feature X is enabled!")

@@ -1,0 +1,3 @@
+NAME              TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+booking-staging   ClusterIP   10.109.76.138   <none>        80/TCP    7m26s
+kubernetes        ClusterIP   10.96.0.1       <none>        443/TCP   19m
