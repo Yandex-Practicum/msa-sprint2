@@ -10,4 +10,5 @@ dependencies = [
     "aiokafka>=0.12.0",
     "sqlalchemy[asyncio]>=2.0.51",
     "asyncpg>=0.31.0",
+    "httpx>=0.28.1",
 ]

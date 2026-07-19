@@ -6,6 +6,7 @@ import com.hotelio.monolith.repository.BookingRepository;
 import io.grpc.StatusRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,16 +25,16 @@ public class BookingService {
     private final ReviewService reviewService;
     private final AppUserService userService;
     private final HotelService hotelService;
-    private final BookingGrpcClient bookingGrpcClient;
+    private BookingGrpcClient bookingGrpcClient; // Removed final so it can be optional in legacy constructor
 
+    @Autowired
     public BookingService(
             BookingRepository bookingRepository,
             PromoCodeService promoCodeService,
             ReviewService reviewService,
             AppUserService userService,
             HotelService hotelService,
-            BookingGrpcClient bookingGrpcClient
-    ) {
+            BookingGrpcClient bookingGrpcClient) {
         this.bookingRepository = bookingRepository;
         this.promoCodeService = promoCodeService;
         this.reviewService = reviewService;
@@ -42,22 +43,46 @@ public class BookingService {
         this.bookingGrpcClient = bookingGrpcClient;
     }
 
+    // 2. Legacy Overloaded Constructor (Added strictly to satisfy the external p-o-y-1.0.0.jar library)
+    public BookingService(
+            BookingRepository bookingRepository,
+            PromoCodeService promoCodeService,
+            ReviewService reviewService,
+            AppUserService userService,
+            HotelService hotelService) {
+        this.bookingRepository = bookingRepository;
+        this.promoCodeService = promoCodeService;
+        this.reviewService = reviewService;
+        this.userService = userService;
+        this.hotelService = hotelService;
+        // bookingGrpcClient stays null here, meaning it will safely fallback to local repositories
+    }
+
     public List<Booking> listAll(String userId) {
-        if (bookingGrpcClient.isEnabled() && userId != null) {
+        boolean hasText = org.springframework.util.StringUtils.hasText(userId);
+        boolean isIdValid = hasText && !"null".equalsIgnoreCase(userId.trim());
+        boolean grpcEnabled = bookingGrpcClient != null && bookingGrpcClient.isEnabled();
+    
+        if (grpcEnabled && isIdValid) {
             try {
-                return bookingGrpcClient.listBookings(userId);
+                return bookingGrpcClient.listBookings(userId.trim());
             } catch (StatusRuntimeException ex) {
                 throw remoteBookingUnavailable(ex);
             }
         }
-
-        return userId != null ? bookingRepository.findByUserId(userId) : bookingRepository.findAll();
+    
+        if (isIdValid) {
+            return bookingRepository.findByUserId(userId.trim());
+        } 
+        
+        return bookingRepository.findAll();
     }
+
 
     public Booking createBooking(String userId, String hotelId, String promoCode) {
         log.info("Creating booking: userId={}, hotelId={}, promoCode={}", userId, hotelId, promoCode);
 
-        if (bookingGrpcClient.isEnabled()) {
+        if (bookingGrpcClient != null && bookingGrpcClient.isEnabled()) {
             try {
                 return bookingGrpcClient.createBooking(userId, hotelId, promoCode);
             } catch (StatusRuntimeException ex) {
@@ -129,7 +154,8 @@ public class BookingService {
     }
 
     private double resolvePromoDiscount(String promoCode, String userId) {
-        if (promoCode == null) return 0.0;
+        if (promoCode == null)
+            return 0.0;
 
         PromoCode promo = promoCodeService.validate(promoCode, userId);
         if (promo == null) {

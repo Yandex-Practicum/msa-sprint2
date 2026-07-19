@@ -2,10 +2,12 @@ import asyncio
 import datetime
 import json
 import logging
+import os
 
 import booking_pb2
 import booking_pb2_grpc
 import grpc
+import httpx
 from aiokafka import AIOKafkaProducer
 from aiokafka.admin import AIOKafkaAdminClient, NewTopic
 from aiokafka.errors import TopicAlreadyExistsError
@@ -22,9 +24,11 @@ class BookingService(booking_pb2_grpc.BookingServiceServicer):
 
     def __init__(self):
         self.kafka_host = 'localhost:9092'
+        self.monolith_base_url = os.getenv('MONOLITH_BASE_URL', 'http://localhost:8084')
         self.producer = None
         self.outbox_task = None
         self.is_running = False
+        self.http_client = httpx.AsyncClient(base_url=self.monolith_base_url, timeout=5.0, trust_env=False)
 
     async def start_kafka(self):
         """Initialize Admin Client to auto-create topics, then start Producer."""
@@ -52,7 +56,7 @@ class BookingService(booking_pb2_grpc.BookingServiceServicer):
         self.outbox_task = asyncio.create_task(self._outbox_relay_worker())
 
     async def stop_kafka(self):
-        """Stop worker and producers gracefully."""
+        """Stop worker, HTTP client, and producers gracefully."""
         self.is_running = False
         if self.outbox_task:
             self.outbox_task.cancel()
@@ -63,6 +67,9 @@ class BookingService(booking_pb2_grpc.BookingServiceServicer):
         if self.producer:
             await self.producer.stop()
             logger.info('Kafka Producer stopped.')
+
+        await self.http_client.aclose()
+        logger.info('HTTP Client closed.')
 
     def _to_proto_booking(self, b: BookingModel) -> booking_pb2.BookingResponse:
         """Safely parses and converts database types into strict Protobuf types."""
@@ -83,10 +90,76 @@ class BookingService(booking_pb2_grpc.BookingServiceServicer):
             created_at=created_str,
         )
 
+    async def _validate_user_via_monolith(self, user_id: str, context: grpc.aio.ServicerContext):
+        """Performs async HTTP queries to validate the user state against the monolith."""
+        try:
+            active_res, blacklisted_res = await asyncio.gather(
+                self.http_client.get(f'/api/users/{user_id}/active'),
+                self.http_client.get(f'/api/users/{user_id}/blacklisted'),
+            )
+
+            active_res.raise_for_status()
+            blacklisted_res.raise_for_status()
+
+            is_active = active_res.json()
+            is_blacklisted = blacklisted_res.json()
+
+            if not is_active:
+                logger.warn(f'User {user_id} is inactive via monolith validation.')
+                await context.abort(grpc.StatusCode.INVALID_ARGUMENT, 'User is inactive')
+
+            if is_blacklisted:
+                logger.warn(f'User {user_id} is blacklisted via monolith validation.')
+                await context.abort(grpc.StatusCode.INVALID_ARGUMENT, 'User is blacklisted')
+
+        except httpx.HTTPStatusError as http_err:
+            logger.error(f'Monolith returned error status during validation: {http_err}')
+            await context.abort(grpc.StatusCode.UNAVAILABLE, 'User validation service returned error status')
+        except httpx.RequestError as req_err:
+            logger.error(f'Network error trying to reach monolith user endpoints: {req_err}')
+            await context.abort(grpc.StatusCode.UNAVAILABLE, 'User validation backend is unreachable')
+
+    async def _validate_hotel_via_monolith(self, hotel_id: str, context: grpc.aio.ServicerContext):
+        """Performs async HTTP queries to validate the hotel state against the monolith."""
+        try:
+            operational_res, trusted_res, booked_res = await asyncio.gather(
+                self.http_client.get(f'/api/hotels/{hotel_id}/operational'),
+                self.http_client.get(f'/api/reviews/hotel/{hotel_id}/trusted'),
+                self.http_client.get(f'/api/hotels/{hotel_id}/fully-booked'),
+            )
+
+            operational_res.raise_for_status()
+            trusted_res.raise_for_status()
+            booked_res.raise_for_status()
+
+            if not operational_res.json():
+                logger.warn(f'Hotel {hotel_id} is not operational.')
+                await context.abort(grpc.StatusCode.INVALID_ARGUMENT, 'Hotel is not operational')
+
+            if not trusted_res.json():
+                logger.warn(f'Hotel {hotel_id} is not trusted based on reviews.')
+                await context.abort(grpc.StatusCode.INVALID_ARGUMENT, 'Hotel is not trusted based on reviews')
+
+            if booked_res.json():
+                logger.warn(f'Hotel {hotel_id} is fully booked.')
+                await context.abort(grpc.StatusCode.INVALID_ARGUMENT, 'Hotel is fully booked')
+
+        except httpx.HTTPStatusError as http_err:
+            logger.error(f'Monolith hotel endpoints returned error status: {http_err}')
+            await context.abort(grpc.StatusCode.UNAVAILABLE, 'Hotel validation backend error')
+        except httpx.RequestError as req_err:
+            logger.error(f'Network error reaching monolith hotel endpoints: {req_err}')
+            await context.abort(grpc.StatusCode.UNAVAILABLE, 'Hotel validation backend unreachable')
+
     async def CreateBooking(
         self, request: booking_pb2.BookingRequest, context: grpc.aio.ServicerContext
     ) -> booking_pb2.BookingResponse:
         logger.info(f'Received CreateBooking request for user: {request.user_id}')
+
+        await asyncio.gather(
+            self._validate_user_via_monolith(request.user_id, context),
+            self._validate_hotel_via_monolith(request.hotel_id, context)
+        )
 
         discount = 10.0 if request.promo_code else 0.0
         base_price = 5000.0
@@ -131,11 +204,7 @@ class BookingService(booking_pb2_grpc.BookingServiceServicer):
         return proto_response
 
     async def _outbox_relay_worker(self):
-        """Background loop looking for pending messages to forward to Kafka.
-
-        Uses SELECT FOR UPDATE SKIP LOCKED to prevent duplicate message relays
-        across multiple scaled instances of this gRPC service.
-        """
+        """Background loop looking for pending messages to forward to Kafka."""
         while self.is_running:
             try:
                 async with async_session() as session:
