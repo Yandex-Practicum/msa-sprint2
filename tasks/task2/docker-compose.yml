@@ -68,6 +68,13 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  booking-history-service:
+    build:
+      context: booking-history-service
+      dockerfile: Dockerfile
+    container_name: booking-history-service
+    networks:
+      - hotelio-net
 
   kafka:
     image: confluentinc/cp-kafka:8.2.2
