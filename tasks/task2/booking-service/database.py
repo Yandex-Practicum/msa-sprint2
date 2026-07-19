@@ -5,7 +5,7 @@ from sqlalchemy import BigInteger, DateTime, Float, String, Boolean, Text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 
-DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql+asyncpg://hotelio:hotelio@localhost:6433/hotelio')
+DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql+asyncpg://hotelio:hotelio@booking-service-db:5432/hotelio')
 
 engine = create_async_engine(DATABASE_URL, echo=True)
 async_session = sessionmaker(

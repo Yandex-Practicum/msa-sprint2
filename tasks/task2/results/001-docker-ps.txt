@@ -1,0 +1,8 @@
+CONTAINER ID   IMAGE                           COMMAND                  CREATED              STATUS                 PORTS                                         NAMES
+12ea48dd7639   task2-booking-history-service   "python main.py"         About a minute ago   Up About a minute                                                    booking-history-service
+5aed6a2f4601   task2-monolith                  "java -jar app.jar"      2 hours ago          Up 2 hours             0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp   hotelio-monolith
+ba8cce3d4698   confluentinc/cp-kafka:8.2.2     "/etc/confluent/dock…"   5 hours ago          Up 5 hours             0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp   task2-kafka-1
+1e6ac3bfb45c   postgres:16                     "docker-entrypoint.s…"   14 hours ago         Up 8 hours (healthy)   0.0.0.0:6432->5432/tcp, [::]:6432->5432/tcp   hotelio-db
+611ba55ac474   task2-booking-service           "python server.py"       15 hours ago         Up 8 hours                                                           booking-service
+430172f63f93   postgres:16                     "docker-entrypoint.s…"   16 hours ago         Up 8 hours (healthy)   0.0.0.0:6433->5432/tcp, [::]:6433->5432/tcp   booking-db
+612cdc0fe0f9   pgvector/pgvector:pg18-trixie   "docker-entrypoint.s…"   4 months ago         Up 8 hours             0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   pgvector-db

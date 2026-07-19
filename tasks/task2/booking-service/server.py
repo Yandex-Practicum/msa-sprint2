@@ -23,8 +23,8 @@ class BookingService(booking_pb2_grpc.BookingServiceServicer):
     TOPIC_BOOKING_EVENTS = 'booking-events'
 
     def __init__(self):
-        self.kafka_host = 'localhost:9092'
-        self.monolith_base_url = os.getenv('MONOLITH_BASE_URL', 'http://localhost:8084')
+        self.kafka_host = 'kafka:29092'
+        self.monolith_base_url = os.getenv('MONOLITH_BASE_URL', 'http://monolith:8080')
         self.producer = None
         self.outbox_task = None
         self.is_running = False

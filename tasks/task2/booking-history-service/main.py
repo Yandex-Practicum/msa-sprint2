@@ -10,11 +10,11 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('booking_history_service')
 
 # Конфигурация из переменных окружения
-KAFKA_BOOTSTRAP_SERVERS = os.getenv('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9092')
+KAFKA_BOOTSTRAP_SERVERS = os.getenv('KAFKA_BOOTSTRAP_SERVERS', 'kafka:29092')
 KAFKA_TOPIC = 'booking-events'
 KAFKA_GROUP_ID = os.getenv('KAFKA_GROUP_ID', 'booking-history-consumers')
 
-DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://hotelio:hotelio@localhost:6433/hotelio')
+DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://hotelio:hotelio@booking-service-db:5432/hotelio')
 
 
 async def init_db_schema(pool):
