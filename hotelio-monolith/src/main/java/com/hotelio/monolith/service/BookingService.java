@@ -3,10 +3,14 @@ package com.hotelio.monolith.service;
 import com.hotelio.monolith.entity.Booking;
 import com.hotelio.monolith.entity.PromoCode;
 import com.hotelio.monolith.repository.BookingRepository;
+import io.grpc.StatusRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,27 +24,46 @@ public class BookingService {
     private final ReviewService reviewService;
     private final AppUserService userService;
     private final HotelService hotelService;
+    private final BookingGrpcClient bookingGrpcClient;
 
     public BookingService(
             BookingRepository bookingRepository,
             PromoCodeService promoCodeService,
             ReviewService reviewService,
             AppUserService userService,
-            HotelService hotelService
+            HotelService hotelService,
+            BookingGrpcClient bookingGrpcClient
     ) {
         this.bookingRepository = bookingRepository;
         this.promoCodeService = promoCodeService;
         this.reviewService = reviewService;
         this.userService = userService;
         this.hotelService = hotelService;
+        this.bookingGrpcClient = bookingGrpcClient;
     }
 
     public List<Booking> listAll(String userId) {
+        if (bookingGrpcClient.isEnabled() && userId != null) {
+            try {
+                return bookingGrpcClient.listBookings(userId);
+            } catch (StatusRuntimeException ex) {
+                throw remoteBookingUnavailable(ex);
+            }
+        }
+
         return userId != null ? bookingRepository.findByUserId(userId) : bookingRepository.findAll();
     }
 
     public Booking createBooking(String userId, String hotelId, String promoCode) {
         log.info("Creating booking: userId={}, hotelId={}, promoCode={}", userId, hotelId, promoCode);
+
+        if (bookingGrpcClient.isEnabled()) {
+            try {
+                return bookingGrpcClient.createBooking(userId, hotelId, promoCode);
+            } catch (StatusRuntimeException ex) {
+                throw remoteBookingUnavailable(ex);
+            }
+        }
 
         validateUser(userId);
         validateHotel(hotelId);
@@ -57,8 +80,14 @@ public class BookingService {
         booking.setPromoCode(promoCode);
         booking.setDiscountPercent(discount);
         booking.setPrice(finalPrice);
+        booking.setCreatedAt(Instant.now());
 
         return bookingRepository.save(booking);
+    }
+
+    private ResponseStatusException remoteBookingUnavailable(Exception ex) {
+        log.warn("Booking gRPC service is unavailable", ex);
+        return new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Booking service is unavailable", ex);
     }
 
     private void validateUser(String userId) {
