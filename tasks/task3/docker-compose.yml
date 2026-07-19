@@ -1,10 +1,10 @@
-version: '3.8'
-
 services:
   apollo-gateway:
     build: ./gateway
     ports:
       - "4000:4000"
+    networks:
+      - hotelio-net
     depends_on:
       - booking-subgraph
       - hotel-subgraph
@@ -13,8 +13,16 @@ services:
     build: ./booking-subgraph
     ports:
       - "4001:4001"
+    networks:
+      - hotelio-net
 
   hotel-subgraph:
     build: ./hotel-subgraph
     ports:
       - "4002:4002"
+    networks:
+      - hotelio-net
+
+networks:
+  hotelio-net:
+    external: true
