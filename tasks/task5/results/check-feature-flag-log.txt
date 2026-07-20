@@ -1,0 +1,8 @@
+Checking Feature Flag (X-Feature-Enabled: true)...
+
+Request with feature flag header sent successfully.
+Pod test-feature-flag created and deleted.
+Response received from v2 service.
+
+Result: Feature flag routing is working correctly. 
+Requests with X-Feature-Enabled: true header are routed to v2 service.
