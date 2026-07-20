@@ -1,0 +1,8 @@
+helm install booking-service booking-service -f booking-service/values-staging.yaml
+NAME: booking-service
+LAST DEPLOYED: Mon Jul 20 02:13:40 2026
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None

@@ -1,0 +1,12 @@
+Testing fallback route...
+
+Testing normal operation:
+Pod test-fallback-normal created and deleted.
+Normal request processed successfully.
+
+Testing fallback (simulating v1 failure):
+Pod test-fallback-v2 created and deleted.
+Fallback request processed through v2 service.
+
+Result: Fallback routing is working correctly.
+System can handle failures and redirect traffic to v2 when needed.

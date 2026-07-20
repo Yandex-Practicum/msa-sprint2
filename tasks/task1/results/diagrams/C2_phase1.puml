@@ -1,0 +1,56 @@
+@startuml
+!include <C4/C4_Container>
+
+title Hotelio - Целевое состояние фазы 1 (с внутренним adapter routing)
+
+Person(customer, "Клиент")
+Person(admin, "Администратор")
+
+Container_Boundary(client_apps, "Client Applications") {
+  Container(web, "Web App", "Web client", "Клиентское приложение")
+}
+
+Container_Boundary(edge, "API Layer") {
+  Container(api_router, "API Gateway/Router", "Gateway", "Маршрутизация внешних запросов")
+}
+
+Container_Boundary(platform, "Platform") {
+  Container(monolith, "Hotelio Monolith", "Spring Boot", "Booking, Hotel, Promo, Review")
+  Container(booking, "BookingService", "Java service", "Использует UserValidationPort")
+  Container(adapter_router, "UserAdapterRouter", "In-process adapter", "Переключает Local/Remote по internal feature flag")
+  Container(legacy_user, "Legacy UserService", "Java service", "Остается на время миграции")
+  Container(user_svc, "User Microservice", "Spring Boot", "Выделенный User домен")
+}
+
+Container_Boundary(control_plane, "Control Plane") {
+  Container(edge_flags, "Edge Feature Flags", "Config Service", "Rollout для /api/users/*")
+  Container(internal_flags, "Internal Feature Flags", "Config Service", "Rollout для Booking->User")
+}
+
+Container_Boundary(data_layer, "Data Layer") {
+  ContainerDb(monolith_db, "Monolith DB", "PostgreSQL", "booking/hotel/promo/review + legacy user")
+  ContainerDb(user_db, "User DB", "PostgreSQL", "app_user")
+  Container(sync, "Data Sync", "Batch/CDC", "Синхронизация user-данных")
+}
+
+Rel(customer, web, "Использует", "HTTPS")
+Rel(admin, web, "Администрирует", "HTTPS")
+Rel(web, api_router, "API", "HTTPS/REST")
+
+Rel(api_router, edge_flags, "Читает edge rollout", "HTTP")
+Rel(api_router, legacy_user, "Часть /api/users/*", "HTTP/REST")
+Rel(api_router, user_svc, "Часть /api/users/*", "HTTP/REST")
+Rel(api_router, monolith, "Остальные endpoint", "HTTP/REST")
+
+Rel(booking, adapter_router, "user validation calls", "in-process")
+Rel(adapter_router, internal_flags, "Читает internal rollout", "HTTP")
+Rel(adapter_router, legacy_user, "Local path", "in-process")
+Rel(adapter_router, user_svc, "Remote path", "HTTP/REST")
+
+Rel(monolith, monolith_db, "Read/Write", "JDBC")
+Rel(legacy_user, monolith_db, "Read/Write", "JDBC")
+Rel(user_svc, user_db, "Read/Write", "JDBC")
+Rel(sync, user_db, "Read", "SQL")
+Rel(sync, monolith_db, "Replicate", "SQL")
+
+@enduml

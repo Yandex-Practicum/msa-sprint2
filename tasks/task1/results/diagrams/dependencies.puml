@@ -1,0 +1,71 @@
+@startuml
+title Анализ зависимостей текущего монолита Hotelio
+
+package "Controllers (REST API)" {
+  [BookingController] as booking_ctrl
+  [UserController] as user_ctrl
+  [HotelController] as hotel_ctrl
+  [PromoCodeController] as promo_ctrl
+  [ReviewController] as review_ctrl
+}
+
+package "Monolith Services" {
+  [BookingService] as booking
+  [UserService] as user
+  [HotelService] as hotel
+  [PromoCodeService] as promo
+  [ReviewService] as review
+}
+
+database "Shared PostgreSQL" as db {
+  frame "Tables" {
+    [app_user] as user_table
+    [booking] as booking_table
+    [hotel] as hotel_table
+    [promo_code] as promo_table
+    [review] as review_table
+  }
+}
+
+booking_ctrl --> booking
+user_ctrl --> user
+hotel_ctrl --> hotel
+promo_ctrl --> promo
+review_ctrl --> review
+
+booking --> user : validateUser()\nisUserActive()\nisUserBlacklisted()
+booking --> hotel : isHotelOperational()\nisHotelFullyBooked()
+booking --> promo : validate(promoCode, userId)
+booking --> review : isTrustedHotel(hotelId)
+
+promo --> user : getUserStatus()\nisVipUser()
+
+user --> user_table : CRUD
+booking --> booking_table : CRUD
+hotel --> hotel_table : READ
+promo --> promo_table : READ
+review --> review_table : READ
+
+note right of booking
+КРИТИЧЕСКАЯ ПРОБЛЕМА:
+- BookingService зависит от всех сервисов
+- Единая точка усложнения и риска
+- Любой сбой по цепочке блокирует бронирование
+end note
+
+note bottom of db
+ПРОБЛЕМА ОБЩЕЙ БД:
+- связанная релизная модель
+- конфликты схем
+- сложный rollback
+- нет независимого масштабирования
+end note
+
+note right of user
+ПЕРВЫЙ КАНДИДАТ НА ВЫДЕЛЕНИЕ:
+- минимальные зависимости
+- простой домен
+- низкий риск первой фазы
+end note
+
+@enduml

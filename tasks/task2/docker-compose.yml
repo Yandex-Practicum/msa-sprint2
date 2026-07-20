@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   monolith:
     build:
@@ -15,45 +13,98 @@ services:
       SPRING_DATASOURCE_USERNAME: hotelio
       SPRING_DATASOURCE_PASSWORD: hotelio
       BOOKING_SERVICE_EXTERNAL_HOST: booking-service
+      # BOOKING_SERVICE_EXTERNAL_HOST: host.docker.internal
       BOOKING_SERVICE_EXTERNAL_PORT: 9090
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      monolith-db:
+        condition: service_healthy
+      kafka:
+        condition: service_started
 
   monolith-db:
-    image: postgres:15
+    image: postgres:16
     container_name: hotelio-db
     environment:
       POSTGRES_USER: hotelio
       POSTGRES_PASSWORD: hotelio
       POSTGRES_DB: hotelio
     ports:
-      - "5432:5432"
+      - "6432:5432"
     volumes:
       - monolith-db-data:/var/lib/postgresql/data
     networks:
       - hotelio-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hotelio -d hotelio"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  
+  booking-service:
+    build:
+      context: booking-service
+      dockerfile: Dockerfile
+    container_name: booking-service
+    networks:
+      - hotelio-net
+
+  booking-service-db:
+    image: postgres:16
+    container_name: booking-db
+    environment:
+      POSTGRES_USER: hotelio
+      POSTGRES_PASSWORD: hotelio
+      POSTGRES_DB: hotelio
+    ports:
+      - "6433:5432"
+    volumes:
+      - booking-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hotelio -d hotelio"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  booking-history-service:
+    build:
+      context: booking-history-service
+      dockerfile: Dockerfile
+    container_name: booking-history-service
+    networks:
+      - hotelio-net
 
   kafka:
-    image: confluentinc/cp-kafka:7.2.1
+    image: confluentinc/cp-kafka:8.2.2
     ports:
       - "9092:9092"
+    networks:
+      - hotelio-net
+    volumes:
+      - kafka-data:/var/lib/kafka/data
     environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
+      KAFKA_LISTENERS: 'INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092,CONTROLLER://0.0.0.0:29093'
+      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka:29092,EXTERNAL://localhost:9092'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT'
+      
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    networks:
-      - hotelio-net
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.2.1
-    ports:
-      - "2181:2181"
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    networks:
-      - hotelio-net
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REREPLICATION_FACTOR: 1
+      KAFKA_LOG_DIRS: '/var/lib/kafka/data'
+      CLUSTER_ID: '${CLUSTER_ID:-MkU3OEVBNTcwNTJENDM2Qk}'
 
 volumes:
   monolith-db-data:
+  booking-db-data:
+  kafka-data:
 
 networks:
   hotelio-net:

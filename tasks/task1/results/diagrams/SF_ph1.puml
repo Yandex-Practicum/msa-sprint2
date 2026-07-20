@@ -1,0 +1,72 @@
+@startuml
+!include <C4/C4_Container>
+
+title Strangler Fig - Фаза 1 (UserService) с внешним и внутренним rollout
+
+Person(customer, "Клиент", "Использует платформу бронирования")
+Person(admin, "Администратор", "Работает с пользовательскими данными и контентом")
+
+Container_Boundary(edge, "Edge Layer") {
+  Container(router, "API Gateway/Router", "Kong or Spring Cloud Gateway", "Единая точка входа; маршрутизирует /api/users/* отдельно от остальной платформы")
+  Container(flags_edge, "Edge Feature Flags", "Config Service", "Внешний rollout для /api/users/*: 0 -> 10 -> 50 -> 100")
+}
+
+Container_Boundary(legacy, "Existing Monolith") {
+  Container(monolith, "Hotelio Monolith", "Spring Boot", "Основная платформа: booking, hotel, promo, review и legacy user")
+  Container(booking, "BookingService", "Java service", "createBooking использует UserValidationPort")
+  Container(port, "UserValidationPort", "Java interface", "Контракт для user validation внутри монолита")
+  Container(adapter_router, "UserAdapterRouter", "In-process adapter", "Выбор Local/Remote адаптера по internal feature flag")
+  Container(local_adapter, "LocalUserAdapter", "Java adapter", "Делегирует в legacy UserService")
+  Container(remote_adapter, "RemoteUserAdapter", "HTTP adapter", "Вызывает User Microservice по REST")
+  Container(old_user, "Legacy UserService", "Java service", "Старая реализация User-домена внутри монолита")
+  Container(flags_internal, "Internal Feature Flags", "Config Service", "Внутренний rollout Booking->User: 0 -> 10 -> 50 -> 100")
+}
+
+Container_Boundary(new_world, "New Microservice") {
+  Container(new_user, "User Microservice", "Spring Boot", "Новая реализация User API")
+}
+
+Container_Boundary(data_layer, "Data Layer") {
+  ContainerDb(monolith_db, "Monolith DB", "PostgreSQL", "Общая база монолита")
+  ContainerDb(user_db, "User DB", "PostgreSQL", "Отдельная база User сервиса")
+  Container(sync, "Data Sync", "Batch/CDC", "Синхронизация user-данных в переходный период")
+}
+
+Rel(customer, router, "Запросы к платформе", "HTTPS")
+Rel(admin, router, "Административные запросы", "HTTPS")
+
+Rel(router, flags_edge, "Читает edge rollout", "HTTP")
+Rel(router, monolith, "Все endpoint кроме /api/users/*", "HTTP/REST")
+Rel(router, old_user, "Часть трафика /api/users/*", "HTTP/REST")
+Rel(router, new_user, "Часть трафика /api/users/*", "HTTP/REST")
+
+Rel(booking, port, "isUserActive/isUserBlacklisted/getUserStatus", "in-process")
+Rel(port, adapter_router, "Маршрутизирует вызовы", "in-process")
+Rel(adapter_router, flags_internal, "Читает internal rollout", "HTTP")
+Rel(adapter_router, local_adapter, "Часть трафика", "in-process")
+Rel(adapter_router, remote_adapter, "Часть трафика", "in-process")
+Rel(local_adapter, old_user, "Локальный вызов", "in-process")
+Rel(remote_adapter, new_user, "HTTP/REST", "HTTP/REST")
+
+Rel(old_user, monolith_db, "Read/Write", "JDBC")
+Rel(monolith, monolith_db, "Read/Write", "JDBC")
+Rel(new_user, user_db, "Read/Write", "JDBC")
+Rel(sync, user_db, "Читает изменения", "SQL")
+Rel(sync, monolith_db, "Репликация для совместимости", "SQL")
+
+note right of router
+Внешний rollout:
+- gateway остается входом во всю платформу
+- только /api/users/* переключается поэтапно
+- остальной трафик продолжает идти в монолит
+end note
+
+note right of adapter_router
+Ключевой механизм фазы 1:
+- внутренние вызовы BookingService не проходят через gateway
+- поэтому нужен отдельный adapter routing
+- deterministic routing (например, hash(userId))
+- rollback выполняется internal feature flag
+end note
+
+@enduml

@@ -1,0 +1,14 @@
+OLD:
+hotelio=# select * from booking;
+ discount_percent | price |          created_at           | id |   hotel_id   | promo_code |   user_id
+------------------+-------+-------------------------------+----+--------------+------------+-------------
+               10 |    90 | 2025-10-08 13:42:44.261354+00 |  9 | test-hotel-1 | TESTCODE1  | test-user-2
+                0 |    80 | 2025-10-08 13:42:44.261354+00 | 10 | test-hotel-1 |            | test-user-3
+
+
+NEW:
+hotelio=# select * from booking;
+ discount_percent | price |          created_at           | id |   hotel_id   | promo_code |   user_id
+------------------+-------+-------------------------------+----+--------------+------------+-------------
+                0 |    80 | 2025-10-08 14:12:05.477007+00 |  1 | test-hotel-1 |            | test-user-3
+               10 |    90 | 2025-10-08 14:12:05.617408+00 |  2 | test-hotel-1 | TESTCODE1  | test-user-2

@@ -1,0 +1,27 @@
+hotelio=# \d
+             Список отношений
+ Схема  |     Имя     |   Тип   | Владелец
+--------+-------------+---------+----------
+ public | days_stat   | таблица | hotelio
+ public | hotels_stat | таблица | hotelio
+ public | users_stat  | таблица | hotelio
+(3 строки)
+
+hotelio=# select * from days_stat;
+    date    | count |          updated_at
+------------+-------+-------------------------------
+ 2025-10-08 |     4 | 2025-10-08 14:12:05.620342+00
+(1 строка)
+
+hotelio=# select * from hotels_stat;
+   hotel_id   | count |          updated_at
+--------------+-------+-------------------------------
+ test-hotel-1 |     4 | 2025-10-08 14:12:05.620342+00
+(1 строка)
+
+hotelio=# select * from users_stat;
+   user_id   | count |          updated_at
+-------------+-------+-------------------------------
+ test-user-3 |     2 | 2025-10-08 14:12:05.594885+00
+ test-user-2 |     2 | 2025-10-08 14:12:05.620342+00
+(2 строки)

@@ -49,9 +49,10 @@
 ```bash
 cd test/
 docker build -t hotelio-tester .
-docker run --rm \                                                                                                                                                                   ok | 4s | 01:49:56
+docker run --rm \
   -e DB_HOST=host.docker.internal \
-  -e DB_PORT=5432 \
+  -e DB_PORT=6432 \
+  -e DB_BOOKING_PORT=6433 \
   -e DB_NAME=hotelio \
   -e DB_USER=hotelio \
   -e DB_PASSWORD=hotelio \

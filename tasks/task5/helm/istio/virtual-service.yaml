@@ -1,0 +1,34 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: booking-service
+spec:
+  hosts:
+  - booking-service
+  http:
+  - name: "feature-flag-routing"
+    match:
+    - headers:
+        X-Feature-Enabled:
+          exact: "true"
+    route:
+    - destination:
+        host: booking-service-v2
+        port:
+          number: 80
+  - name: "canary-routing"
+    route:
+    - destination:
+        host: booking-service-v1
+        port:
+          number: 80
+      weight: 90
+    - destination:
+        host: booking-service-v2
+        port:
+          number: 80
+      weight: 10
+    retries:
+      attempts: 3
+      perTryTimeout: 2s
+    timeout: 5s

@@ -1,0 +1,22 @@
+IMAGE                                                                                                 ID             DISK USAGE   CONTENT SIZE   EXTRA
+11:latest                                                                                             c3e8626ff3d8        298MB         71.4MB        
+booking-service:local                                                                                 a42d90764551       31.4MB         10.2MB   U    
+confluentinc/cp-kafka:7.2.1                                                                           7494848da233       1.23GB          413MB        
+confluentinc/cp-kafka:8.2.2                                                                           8e01c0305844        867MB          300MB   U    
+confluentinc/cp-zookeeper:7.2.1                                                                       a09fad082e13       1.23GB          413MB        
+gcr.io/k8s-minikube/kicbase:v0.0.50                                                                   b97074569ae9       1.94GB          545MB        
+gcr.io/k8s-minikube/kicbase@sha256:eb4fec00e8ad70adf8e6436f195cc429825ffb85f95afcdb5d8d9deb576f3e93   eb4fec00e8ad       1.94GB          545MB   U    
+grafana/otel-lgtm:latest                                                                              10f48eb2f867       3.32GB          804MB        
+hotelio-tester:latest                                                                                 ae722a8bb259        142MB         35.1MB        
+kong:latest                                                                                           62721edc9669        546MB          128MB   U    
+pgvector/pgvector:pg18-trixie                                                                         058fdb396f7b        651MB          164MB   U    
+plantuml/plantuml-server:jetty                                                                        cd3d67a3150a        844MB          288MB   U    
+postgres:15                                                                                           74e110c41804        633MB          164MB        
+postgres:16                                                                                           be01cf82fc7d        642MB          166MB   U    
+task1-monolith:latest                                                                                 51b3d7f0b46a        287MB          101MB        
+task2-booking-history-service:latest                                                                  f42e7011dc12        203MB         48.9MB   U    
+task2-booking-service:latest                                                                          451e9d704c14        299MB         71.4MB   U    
+task2-monolith:latest                                                                                 722b33287adb        288MB          101MB   U    
+task3-apollo-gateway:latest                                                                           be1222e36a56        1.8GB          434MB   U    
+task3-booking-subgraph:latest                                                                         e7f28f5e61a8       1.66GB          411MB   U    
+task3-hotel-subgraph:latest                                                                           faf958c6686e       1.66GB          411MB   U    

@@ -1,0 +1,14 @@
+[project]
+name = "booking-service"
+version = "0.1.0"
+description = "Async gRPC booking service with Kafka integration"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "grpcio>=1.82.1",
+    "grpcio-tools>=1.82.1",
+    "aiokafka>=0.12.0",
+    "sqlalchemy[asyncio]>=2.0.51",
+    "asyncpg>=0.31.0",
+    "httpx>=0.28.1",
+]

@@ -1,0 +1,37 @@
+# Git
+.git
+.gitignore
+
+# Python build and caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Local virtual environments & package manager states
+.venv/
+venv/
+env/
+.uv/
+
+# Local IDE configuration
+.vscode/
+.idea/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Docker / CI artifacts
+Docker*
+docker-compose*
+.github/
+
+# Pre-compiled gRPC code (forces clean build-time generation)
+*_pb2.py
+*_pb2_grpc.py

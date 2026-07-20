@@ -1,0 +1,11 @@
+CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                  PORTS                                         NAMES
+f35c55cfbb46   task3-apollo-gateway            "docker-entrypoint.s…"   16 minutes ago   Up 16 minutes           0.0.0.0:4000->4000/tcp, [::]:4000->4000/tcp   task3-apollo-gateway-1
+762a361ec98b   task3-booking-subgraph          "docker-entrypoint.s…"   16 minutes ago   Up 16 minutes           0.0.0.0:4001->4001/tcp, [::]:4001->4001/tcp   task3-booking-subgraph-1
+68c714258fa4   task3-hotel-subgraph            "docker-entrypoint.s…"   16 minutes ago   Up 16 minutes           0.0.0.0:4002->4002/tcp, [::]:4002->4002/tcp   task3-hotel-subgraph-1
+e8bc478a8efc   task2-booking-service           "python server.py"       3 hours ago      Up 3 hours                                                            booking-service
+d1f69eecf1a9   task2-monolith                  "java -jar app.jar"      3 hours ago      Up 3 hours              0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp   hotelio-monolith
+12ea48dd7639   task2-booking-history-service   "python main.py"         4 hours ago      Up 4 hours                                                            booking-history-service
+ba8cce3d4698   confluentinc/cp-kafka:8.2.2     "/etc/confluent/dock…"   9 hours ago      Up 9 hours              0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp   task2-kafka-1
+1e6ac3bfb45c   postgres:16                     "docker-entrypoint.s…"   18 hours ago     Up 12 hours (healthy)   0.0.0.0:6432->5432/tcp, [::]:6432->5432/tcp   hotelio-db
+430172f63f93   postgres:16                     "docker-entrypoint.s…"   20 hours ago     Up 12 hours (healthy)   0.0.0.0:6433->5432/tcp, [::]:6433->5432/tcp   booking-db
+612cdc0fe0f9   pgvector/pgvector:pg18-trixie   "docker-entrypoint.s…"   4 months ago     Up 12 hours             0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   pgvector-db

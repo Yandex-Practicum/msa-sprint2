@@ -1,0 +1,4 @@
+NAME                                  READY   STATUS    RESTARTS   AGE
+booking-service-v1-7c4fd7cbcb-dqnvg   2/2     Running   0          22m
+booking-service-v1-7c4fd7cbcb-tct54   2/2     Running   0          22m
+booking-service-v2-5794df58-rfmzp     2/2     Running   0          22m
