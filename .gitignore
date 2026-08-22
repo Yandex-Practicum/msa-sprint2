@@ -1,0 +1,19 @@
+# Node.js (везде во вложенных папках)
+**/node_modules/
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/.pnpm-debug.log*
+**/package-lock.json (опционально, если не хотите коммитить)
+
+# .NET Core (везде во вложенных папках)
+**/bin/
+**/obj/
+**/.vs/
+**/[Bb]uild/
+**/[Ll]ogs/
+**/[Uu]serPreferences.xml
+*.user
+*.suo
+*.userosscache
+*.sln.docstates

@@ -1,40 +1,25 @@
-import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import { buildSubgraphSchema } from '@apollo/subgraph';
-import gql from 'graphql-tag';
-
-const typeDefs = gql`
-  type Hotel @key(fields: "id") {
-    id: ID!
-    name: String
-    city: String
-    stars: Int
-  }
-
-  type Query {
-    hotelsByIds(ids: [ID!]!): [Hotel]
-  }
-`;
-
-const resolvers = {
-  Hotel: {
-    __resolveReference: async ({ id }) => {
-      // TODO: Реальный вызов к hotel-сервису или заглушка
-    },
-  },
-  Query: {
-    hotelsByIds: async (_, { ids }) => {
-      // TODO: Заглушка или REST-запрос
-    },
-  },
-};
+import { typeDefs } from './schema.js';
+import { resolvers } from './resolvers.js';
+import { HotelDataSource } from './dataSource.js';
+import { createHotelLoader } from './dataLoader.js';
 
 const server = new ApolloServer({
-  schema: buildSubgraphSchema([{ typeDefs, resolvers }]),
+  typeDefs,
+  resolvers,
 });
 
-startStandaloneServer(server, {
+const { url } = await startStandaloneServer(server, {
   listen: { port: 4002 },
-}).then(() => {
-  console.log('✅ Hotel subgraph ready at http://localhost:4002/');
+  context: async () => {
+    const dataSource = new HotelDataSource();
+    return {
+      dataSources: {
+        hotelDataSource: dataSource,
+        hotelLoader: createHotelLoader(dataSource),
+      },
+    };
+  },
 });
+
+console.log(`🚀 Hotel Subgraph ready at ${url}`);
