@@ -1,3 +1,5 @@
+import { ApolloServer } from '@apollo/server';
+import { buildSubgraphSchema } from '@apollo/subgraph';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { typeDefs } from './schema.js';
 import { resolvers } from './resolvers.js';
@@ -5,8 +7,7 @@ import { HotelDataSource } from './dataSource.js';
 import { createHotelLoader } from './dataLoader.js';
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+   schema: buildSubgraphSchema([{ typeDefs, resolvers }])
 });
 
 const { url } = await startStandaloneServer(server, {

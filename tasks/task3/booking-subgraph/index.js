@@ -31,9 +31,10 @@ const typeDefs = gql`
 `;
 
 const resolvers = {
-  Query: {
+   Query: {
     bookingsByUser: async (_, { userId }, { user }) => {
-      // ---------- ACL ----------
+      console.log("[1. ACL] Проверка: user из заголовка =", user?.id, ", запрошенный userId =", userId);
+      
       if (!user) {
         throw new GraphQLError('Не передан заголовок userid', {
           extensions: { code: 'UNAUTHENTICATED' },
@@ -45,24 +46,31 @@ const resolvers = {
         });
       }
 
-      // ---------- Вызов к монолиту ----------
-      const res = await fetch(
-        `${MONOLITH_URL}/api/bookings?userId=${encodeURIComponent(userId)}`
-      );
+      const url = `${MONOLITH_URL}/api/bookings?userId=${encodeURIComponent(userId)}`;
+      console.log("[2. Fetch] Делаем запрос к монолиту:", url);
+      
+      const res = await fetch(url);
+      console.log("[3. Fetch] Статус ответа от монолита:", res.status);
+      
       if (!res.ok) {
         throw new GraphQLError(`Монолит вернул статус ${res.status}`, {
           extensions: { code: 'UPSTREAM_ERROR' },
         });
       }
-      const bookings = await res.json();
 
-      return bookings.map((b) => ({
-        id: b.bookingId,
+      const bookings = await res.json();
+      console.log("[4. Raw Data] Сырые данные от монолита:", JSON.stringify(bookings));
+      
+      const mapped = bookings.map((b) => ({
+        id: String(b.id), // <-- Вот здесь мы берем b.id
         userId: b.userId,
         hotelId: b.hotelId,
         promoCode: b.promoCode ?? null,
         discountPercent: b.discountPercent ?? 0,
       }));
+      
+      console.log("[5. Mapped] Данные, которые уйдут в GraphQL:", JSON.stringify(mapped));
+      return mapped;
     },
   },
   Booking: {
@@ -78,11 +86,18 @@ const server = new ApolloServer({
 startStandaloneServer(server, {
   listen: { port: 4001 },
   context: async ({ req }) => {
-    const userid =
-      (typeof req.headers.get === 'function' && req.headers.get('userid')) ||
-      req.headers['userid'];
+    // 1. Логируем ВСЕ заголовки, чтобы увидеть, что именно прислал Gateway или браузер
+    console.log("[SUBGRAPH] Все заголовки запроса:", JSON.stringify(req.headers));
+
+    // 2. Ищем заголовок 'userid' в любом регистре (на случай, если Gateway или браузер изменили регистр)
+    const headerKeys = Object.keys(req.headers);
+    const useridKey = headerKeys.find(k => k.toLowerCase() === 'userid');
+    const userid = useridKey ? req.headers[useridKey] : null;
+
+    console.log("[SUBGRAPH] Извлеченный userid:", userid);
+
     return { user: userid ? { id: userid } : null };
   },
 }).then(() => {
-  console.log('✅ Booking subgraph ready at http://localhost:4001/');
+  console.log('Booking subgraph ready at http://localhost:4001/');
 });
