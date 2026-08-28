@@ -1,0 +1,40 @@
+@startuml
+skinparam monochrome false
+skinparam shadowing false
+skinparam defaultTextAlignment center
+
+title Контейнерная диаграмма Hotelio (To-Be: Вынос Review Service)
+
+actor "Пользователь" as user
+
+rectangle "Экосистема Hotelio" {
+    
+    rectangle "Web-клиент\n[React/TypeScript]\nИнтерфейс для поиска и бронирования" as web_app
+    rectangle "API Gateway\n[Nginx/Kong]\nМаршрутизация и аутентификация" as api_gateway
+    
+    rectangle "Hotelio Monolith\n[Java Spring Boot]\nBooking, User, Hotel, Promo" as monolith
+    database "Main Database\n[PostgreSQL]\nПользователи, отели, бронирования" as monolith_db
+
+    rectangle "Review Service\n[Java Spring Boot]\nОтзывы и рейтинги" as review_svc #LightGreen
+    database "Review Database\n[PostgreSQL]\nТексты отзывов и оценки" as review_db #LightGreen
+    
+    rectangle "Kafka Cluster\n[Apache Kafka]\nБрокер сообщений" as kafka
+}
+
+user --> web_app : HTTPS
+web_app --> api_gateway : HTTPS/JSON
+
+api_gateway --> monolith : /api/bookings, /api/hotels
+api_gateway --> review_svc : /api/reviews
+
+monolith --> monolith_db : JDBC/SQL
+review_svc --> review_db : JDBC/SQL
+
+monolith ..> review_svc : Запрос рейтинга\nперед бронированием (HTTP/REST)
+review_svc --> kafka : Публикует событие RatingUpdated
+
+legend right
+  |= Цвет |= Значение |
+  | <#LightGreen> | Новые компоненты (To-Be) |
+endlegend
+@enduml
