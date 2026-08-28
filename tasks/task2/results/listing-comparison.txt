@@ -1,0 +1,373 @@
+=== Листинг бронирований ===
+
+--- Через REST (монолит) ---
+GET http://localhost:8084/api/bookings?userId=test-user-2
+[
+    {
+        "id":  44,
+        "userId":  "test-user-2",
+        "hotelId":  "test-hotel-1",
+        "promoCode":  "TESTCODE1",
+        "discountPercent":  10.0,
+        "price":  90.0,
+        "createdAt":  "2026-08-10T19:11:51.395407Z"
+    },
+    {
+        "id":  42,
+        "userId":  "test-user-2",
+        "hotelId":  "test-hotel-1",
+        "promoCode":  "TESTCODE1",
+        "discountPercent":  10.0,
+        "price":  90.0,
+        "createdAt":  "2026-08-10T19:11:51.168047Z"
+    },
+    {
+        "id":  39,
+        "userId":  "test-user-2",
+        "hotelId":  "test-hotel-1",
+        "promoCode":  "TESTCODE1",
+        "discountPercent":  10.0,
+        "price":  90.0,
+        "createdAt":  "2026-08-10T19:05:46.224096Z"
+    },
+    {
+        "id":  37,
+        "userId":  "test-user-2",
+        "hotelId":  "test-hotel-1",
+        "promoCode":  "TESTCODE1",
+        "discountPercent":  10.0,
+        "price":  90.0,
+        "createdAt":  "2026-08-10T19:05:46.055975Z"
+    },
+    {
+        "id":  34,
+        "userId":  "test-user-2",
+        "hotelId":  "test-hotel-1",
+        "promoCode":  "TESTCODE1",
+        "discountPercent":  10.0,
+        "price":  90.0,
+        "createdAt":  "2026-08-10T19:04:04.044628Z"
+    },
+    {
+        "id":  32,
+        "userId":  "test-user-2",
+        "hotelId":  "test-hotel-1",
+        "promoCode":  "TESTCODE1",
+        "discountPercent":  10.0,
+        "price":  90.0,
+        "createdAt":  "2026-08-10T19:04:03.878364Z"
+    },
+    {
+        "id":  29,
+        "userId":  "test-user-2",
+        "hotelId":  "test-hotel-1",
+        "promoCode":  "TESTCODE1",
+        "discountPercent":  10.0,
+        "price":  90.0,
+        "createdAt":  "2026-08-10T19:02:16.081684Z"
+    },
+    {
+        "id":  27,
+        "userId":  "test-user-2",
+        "hotelId":  "test-hotel-1",
+        "promoCode":  "TESTCODE1",
+        "discountPercent":  10.0,
+        "price":  90.0,
+        "createdAt":  "2026-08-10T19:02:15.900538Z"
+    },
+    {
+        "id":  24,
+        "userId":  "test-user-2",
+        "hotelId":  "test-hotel-1",
+        "promoCode":  "TESTCODE1",
+        "discountPercent":  10.0,
+        "price":  90.0,
+        "createdAt":  "2026-08-10T18:59:26.936619Z"
+    },
+    {
+        "id":  22,
+        "userId":  "test-user-2",
+        "hotelId":  "test-hotel-1",
+        "promoCode":  "TESTCODE1",
+        "discountPercent":  10.0,
+        "price":  90.0,
+        "createdAt":  "2026-08-10T18:59:26.760737Z"
+    },
+    {
+        "id":  19,
+        "userId":  "test-user-2",
+        "hotelId":  "test-hotel-1",
+        "promoCode":  "TESTCODE1",
+        "discountPercent":  10.0,
+        "price":  90.0,
+        "createdAt":  "2026-08-10T18:55:50.472402Z"
+    },
+    {
+        "id":  17,
+        "userId":  "test-user-2",
+        "hotelId":  "test-hotel-1",
+        "promoCode":  "TESTCODE1",
+        "discountPercent":  10.0,
+        "price":  90.0,
+        "createdAt":  "2026-08-10T18:55:50.288270Z"
+    },
+    {
+        "id":  14,
+        "userId":  "test-user-2",
+        "hotelId":  "test-hotel-1",
+        "promoCode":  "TESTCODE1",
+        "discountPercent":  10.0,
+        "price":  90.0,
+        "createdAt":  "2026-08-10T18:51:57.285793Z"
+    },
+    {
+        "id":  12,
+        "userId":  "test-user-2",
+        "hotelId":  "test-hotel-1",
+        "promoCode":  "TESTCODE1",
+        "discountPercent":  10.0,
+        "price":  90.0,
+        "createdAt":  "2026-08-10T18:51:56.897129Z"
+    },
+    {
+        "id":  9,
+        "userId":  "test-user-2",
+        "hotelId":  "test-hotel-1",
+        "promoCode":  "TESTCODE1",
+        "discountPercent":  10.0,
+        "price":  90.0,
+        "createdAt":  "2026-08-10T00:04:03.802600Z"
+    },
+    {
+        "id":  7,
+        "userId":  "test-user-2",
+        "hotelId":  "test-hotel-1",
+        "promoCode":  "TESTCODE1",
+        "discountPercent":  10.0,
+        "price":  90.0,
+        "createdAt":  "2026-08-10T00:04:03.446678Z"
+    },
+    {
+        "id":  5,
+        "userId":  "test-user-2",
+        "hotelId":  "test-hotel-1",
+        "promoCode":  "TESTCODE1",
+        "discountPercent":  10.0,
+        "price":  90.0,
+        "createdAt":  "2026-08-09T23:41:51.360032Z"
+    },
+    {
+        "id":  3,
+        "userId":  "test-user-2",
+        "hotelId":  "test-hotel-1",
+        "promoCode":  "TESTCODE1",
+        "discountPercent":  10.0,
+        "price":  90.0,
+        "createdAt":  "2026-08-09T22:50:00.851991Z"
+    },
+    {
+        "id":  2,
+        "userId":  "test-user-2",
+        "hotelId":  "test-hotel-1",
+        "promoCode":  "TESTCODE1",
+        "discountPercent":  10.0,
+        "price":  90.0,
+        "createdAt":  "2026-08-09T22:29:15.193817Z"
+    },
+    {
+        "id":  1,
+        "userId":  "test-user-2",
+        "hotelId":  "test-hotel-1",
+        "promoCode":  "TESTCODE1",
+        "discountPercent":  10.0,
+        "price":  90.0,
+        "createdAt":  "2026-08-09T09:44:17.421204Z"
+    }
+]
+
+--- Через gRPC (booking-service) ---
+grpcurl -plaintext -d '{"user_id": "test-user-2"}' booking-service:9090 booking.BookingService/ListBookings
+{
+  "bookings": [
+    {
+      "id": "44",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-08-10T19:11:51.3954070Z"
+    },
+    {
+      "id": "42",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-08-10T19:11:51.1680470Z"
+    },
+    {
+      "id": "39",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-08-10T19:05:46.2240960Z"
+    },
+    {
+      "id": "37",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-08-10T19:05:46.0559750Z"
+    },
+    {
+      "id": "34",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-08-10T19:04:04.0446280Z"
+    },
+    {
+      "id": "32",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-08-10T19:04:03.8783640Z"
+    },
+    {
+      "id": "29",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-08-10T19:02:16.0816840Z"
+    },
+    {
+      "id": "27",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-08-10T19:02:15.9005380Z"
+    },
+    {
+      "id": "24",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-08-10T18:59:26.9366190Z"
+    },
+    {
+      "id": "22",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-08-10T18:59:26.7607370Z"
+    },
+    {
+      "id": "19",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-08-10T18:55:50.4724020Z"
+    },
+    {
+      "id": "17",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-08-10T18:55:50.2882700Z"
+    },
+    {
+      "id": "14",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-08-10T18:51:57.2857930Z"
+    },
+    {
+      "id": "12",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-08-10T18:51:56.8971290Z"
+    },
+    {
+      "id": "9",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-08-10T00:04:03.8026000Z"
+    },
+    {
+      "id": "7",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-08-10T00:04:03.4466780Z"
+    },
+    {
+      "id": "5",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-08-09T23:41:51.3600320Z"
+    },
+    {
+      "id": "3",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-08-09T22:50:00.8519910Z"
+    },
+    {
+      "id": "2",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-08-09T22:29:15.1938170Z"
+    },
+    {
+      "id": "1",
+      "user_id": "test-user-2",
+      "hotel_id": "test-hotel-1",
+      "promo_code": "TESTCODE1",
+      "discount_percent": 10,
+      "price": 90,
+      "created_at": "2026-08-09T09:44:17.4212040Z"
+    }
+  ]
+}

@@ -1,6 +1,40 @@
 version: '3.8'
 
 services:
+  # 1. Монолит (источник данных для booking-subgraph)
+  monolith:
+    build:
+      context: ../monolith
+      dockerfile: Dockerfile
+    container_name: hotelio-monolith
+    ports:
+      - "8084:8080"
+    networks:
+      - hotelio-net
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://monolith-db:5432/hotelio
+      SPRING_DATASOURCE_USERNAME: hotelio
+      SPRING_DATASOURCE_PASSWORD: hotelio
+    depends_on:
+      monolith-db:
+        condition: service_healthy
+
+  monolith-db:
+    image: postgres:15
+    container_name: hotelio-db
+    environment:
+      POSTGRES_USER: hotelio
+      POSTGRES_PASSWORD: hotelio
+      POSTGRES_DB: hotelio
+    networks:
+      - hotelio-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hotelio -d hotelio"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # 2. GraphQL Federation (Суть Задания 3)
   apollo-gateway:
     build: ./gateway
     ports:
@@ -8,13 +42,33 @@ services:
     depends_on:
       - booking-subgraph
       - hotel-subgraph
+      - promocode-subgraph
+    networks:
+      - hotelio-net
 
   booking-subgraph:
     build: ./booking-subgraph
     ports:
       - "4001:4001"
+    environment:
+      MONOLITH_URL: http://monolith:8080
+    networks:
+      - hotelio-net
 
   hotel-subgraph:
     build: ./hotel-subgraph
     ports:
       - "4002:4002"
+    networks:
+      - hotelio-net
+
+  promocode-subgraph:
+    build: ./promocode-subgraph
+    ports:
+      - "4003:4003"
+    networks:
+      - hotelio-net
+
+networks:
+  hotelio-net:
+    external: true

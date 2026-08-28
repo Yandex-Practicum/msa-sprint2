@@ -1,0 +1,51 @@
+=== Новая БД (booking-service) ===
+ Id |   UserId    |   HotelId    |  PromoCode   | DiscountPercent | Price |           CreatedAt           
+----+-------------+--------------+--------------+-----------------+-------+-------------------------------
+  1 | test-user-2 | test-hotel-1 | TESTCODE1    |            10.0 |  90.0 | 2026-08-09 09:44:17.421204+00
+  2 | test-user-2 | test-hotel-1 | TESTCODE1    |            10.0 |  90.0 | 2026-08-09 22:29:15.193817+00
+  3 | test-user-2 | test-hotel-1 | TESTCODE1    |            10.0 |  90.0 | 2026-08-09 22:50:00.851991+00
+  4 | test-user-3 | test-hotel-1 | TESTCODE-VIP |            20.0 |  80.0 | 2026-08-09 22:50:01.466033+00
+  5 | test-user-2 | test-hotel-1 | TESTCODE1    |            10.0 |  90.0 | 2026-08-09 23:41:51.360032+00
+  6 | test-user-3 | test-hotel-1 | TESTCODE-VIP |            20.0 |  80.0 | 2026-08-09 23:41:51.539125+00
+  7 | test-user-2 | test-hotel-1 | TESTCODE1    |            10.0 |  90.0 | 2026-08-10 00:04:03.446678+00
+  8 | test-user-3 | test-hotel-1 | TESTCODE-VIP |            20.0 |  80.0 | 2026-08-10 00:04:03.677639+00
+  9 | test-user-2 | test-hotel-1 | TESTCODE1    |            10.0 |  90.0 | 2026-08-10 00:04:03.8026+00
+ 10 | test-user-3 | test-hotel-1 |              |               0 |   100 | 2026-08-10 00:04:03.864806+00
+ 11 | test-user-3 | test-hotel-1 | TESTCODE-VIP |            20.0 |  80.0 | 2026-08-10 00:04:03.92891+00
+ 12 | test-user-2 | test-hotel-1 | TESTCODE1    |            10.0 |  90.0 | 2026-08-10 18:51:56.897129+00
+ 13 | test-user-3 | test-hotel-1 | TESTCODE-VIP |            20.0 |  80.0 | 2026-08-10 18:51:57.186052+00
+ 14 | test-user-2 | test-hotel-1 | TESTCODE1    |            10.0 |  90.0 | 2026-08-10 18:51:57.285793+00
+ 15 | test-user-3 | test-hotel-1 |              |               0 |   100 | 2026-08-10 18:51:57.327357+00
+ 16 | test-user-3 | test-hotel-1 | TESTCODE-VIP |            20.0 |  80.0 | 2026-08-10 18:51:57.371205+00
+ 17 | test-user-2 | test-hotel-1 | TESTCODE1    |            10.0 |  90.0 | 2026-08-10 18:55:50.28827+00
+ 18 | test-user-3 | test-hotel-1 | TESTCODE-VIP |            20.0 |  80.0 | 2026-08-10 18:55:50.411822+00
+ 19 | test-user-2 | test-hotel-1 | TESTCODE1    |            10.0 |  90.0 | 2026-08-10 18:55:50.472402+00
+ 20 | test-user-3 | test-hotel-1 |              |               0 |   100 | 2026-08-10 18:55:50.514717+00
+ 21 | test-user-3 | test-hotel-1 | TESTCODE-VIP |            20.0 |  80.0 | 2026-08-10 18:55:50.55668+00
+ 22 | test-user-2 | test-hotel-1 | TESTCODE1    |            10.0 |  90.0 | 2026-08-10 18:59:26.760737+00
+ 23 | test-user-3 | test-hotel-1 | TESTCODE-VIP |            20.0 |  80.0 | 2026-08-10 18:59:26.875241+00
+ 24 | test-user-2 | test-hotel-1 | TESTCODE1    |            10.0 |  90.0 | 2026-08-10 18:59:26.936619+00
+ 25 | test-user-3 | test-hotel-1 |              |               0 |   100 | 2026-08-10 18:59:26.978338+00
+ 26 | test-user-3 | test-hotel-1 | TESTCODE-VIP |            20.0 |  80.0 | 2026-08-10 18:59:27.026194+00
+ 27 | test-user-2 | test-hotel-1 | TESTCODE1    |            10.0 |  90.0 | 2026-08-10 19:02:15.900538+00
+ 28 | test-user-3 | test-hotel-1 | TESTCODE-VIP |            20.0 |  80.0 | 2026-08-10 19:02:16.019663+00
+ 29 | test-user-2 | test-hotel-1 | TESTCODE1    |            10.0 |  90.0 | 2026-08-10 19:02:16.081684+00
+ 30 | test-user-3 | test-hotel-1 |              |               0 |   100 | 2026-08-10 19:02:16.124155+00
+ 31 | test-user-3 | test-hotel-1 | TESTCODE-VIP |            20.0 |  80.0 | 2026-08-10 19:02:16.16749+00
+ 32 | test-user-2 | test-hotel-1 | TESTCODE1    |            10.0 |  90.0 | 2026-08-10 19:04:03.878364+00
+ 33 | test-user-3 | test-hotel-1 | TESTCODE-VIP |            20.0 |  80.0 | 2026-08-10 19:04:03.985318+00
+ 34 | test-user-2 | test-hotel-1 | TESTCODE1    |            10.0 |  90.0 | 2026-08-10 19:04:04.044628+00
+ 35 | test-user-3 | test-hotel-1 |              |               0 |   100 | 2026-08-10 19:04:04.084301+00
+ 36 | test-user-3 | test-hotel-1 | TESTCODE-VIP |            20.0 |  80.0 | 2026-08-10 19:04:04.123206+00
+ 37 | test-user-2 | test-hotel-1 | TESTCODE1    |            10.0 |  90.0 | 2026-08-10 19:05:46.055975+00
+ 38 | test-user-3 | test-hotel-1 | TESTCODE-VIP |            20.0 |  80.0 | 2026-08-10 19:05:46.164768+00
+ 39 | test-user-2 | test-hotel-1 | TESTCODE1    |            10.0 |  90.0 | 2026-08-10 19:05:46.224096+00
+ 40 | test-user-3 | test-hotel-1 |              |               0 |   100 | 2026-08-10 19:05:46.26029+00
+ 41 | test-user-3 | test-hotel-1 | TESTCODE-VIP |            20.0 |  80.0 | 2026-08-10 19:05:46.301042+00
+ 42 | test-user-2 | test-hotel-1 | TESTCODE1    |            10.0 |  90.0 | 2026-08-10 19:11:51.168047+00
+ 43 | test-user-3 | test-hotel-1 | TESTCODE-VIP |            20.0 |  80.0 | 2026-08-10 19:11:51.318156+00
+ 44 | test-user-2 | test-hotel-1 | TESTCODE1    |            10.0 |  90.0 | 2026-08-10 19:11:51.395407+00
+ 45 | test-user-3 | test-hotel-1 |              |               0 |   100 | 2026-08-10 19:11:51.435942+00
+ 46 | test-user-3 | test-hotel-1 | TESTCODE-VIP |            20.0 |  80.0 | 2026-08-10 19:11:51.4805+00
+(46 rows)
+

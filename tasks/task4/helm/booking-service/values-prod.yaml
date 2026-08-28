@@ -1,0 +1,19 @@
+# Конфигурация для production окружения
+replicaCount: 2
+
+image:
+  name: booking-service
+  tag: latest
+  pullPolicy: Never
+
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "200m"
+  limits:
+    memory: "256Mi"
+    cpu: "500m"
+
+env:
+  - name: ENABLE_FEATURE_X
+    value: "true"

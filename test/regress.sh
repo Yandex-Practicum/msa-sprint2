@@ -17,7 +17,7 @@ echo "🧪 Выполнение HTTP-тестов..."
 pass() { echo "✅ $1"; }
 fail() { echo "❌ $1"; exit 1; }
 
-BASE="${API_URL:-http://localhost:8080}"
+BASE="${API_URL:-http://host.docker.internal:8080}"
 
 echo ""
 echo "Тесты пользователей..."

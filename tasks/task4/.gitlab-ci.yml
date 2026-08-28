@@ -2,22 +2,54 @@ stages:
   - build
   - test
   - deploy
+  - tag
 
 variables:
   IMAGE_TAG: latest
   IMAGE_NAME: booking-service
+  HELM_RELEASE: booking-service
+  HELM_CHART_PATH: tasks/task4/helm/booking-service
 
 build:
   stage: build
   script:
-
+    - echo "Building Docker image..."
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG tasks/task4/booking-service
+    - echo "Image built successfully"
 
 test:
   stage: test
   script:
-
+    - echo "Running tests..."
+    - docker run -d --name test-booking -p 8080:8080 $IMAGE_NAME:$IMAGE_TAG
+    - sleep 3
+    - echo "Testing /ping endpoint..."
+    - curl -f http://localhost:8080/ping || (echo "Test failed" && docker rm -f test-booking && exit 1)
+    - echo "Testing /health endpoint..."
+    - curl -f http://localhost:8080/health || (echo "Test failed" && docker rm -f test-booking && exit 1)
+    - echo "Testing /ready endpoint..."
+    - curl -f http://localhost:8080/ready || (echo "Test failed" && docker rm -f test-booking && exit 1)
+    - docker stop test-booking
+    - docker rm test-booking
+    - echo "All tests passed"
 
 deploy:
   stage: deploy
   script:
- 
+    - echo "Loading image into Minikube..."
+    - minikube image load $IMAGE_NAME:$IMAGE_TAG
+    - echo "Deploying with Helm..."
+    - helm upgrade --install $HELM_RELEASE $HELM_CHART_PATH --namespace default --create-namespace
+    - echo "Waiting for deployment to be ready..."
+    - kubectl rollout status deployment/$HELM_RELEASE --timeout=60s
+    - echo "Deployment completed successfully"
+
+tag:
+  stage: tag
+  script:
+    - echo "Creating git tag..."
+    - TAG_NAME="release-$(date +%Y%m%d-%H%M%S)"
+    - git tag $TAG_NAME
+    - git push origin $TAG_NAME
+    - echo "Tag $TAG_NAME created and pushed"
+  when: manual
