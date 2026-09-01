@@ -1,0 +1,9 @@
+kubectl get virtualservice,destinationrule,envoyfilter
+NAME                                         GATEWAYS   HOSTS         AGE
+virtualservice.networking.istio.io/booking              ["booking"]   38h
+
+NAME                                          HOST      AGE
+destinationrule.networking.istio.io/booking   booking   38h
+
+NAME                                                   AGE
+envoyfilter.networking.istio.io/booking-feature-flag   38h

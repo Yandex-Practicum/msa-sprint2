@@ -1,13 +1,23 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import { ApolloGateway } from '@apollo/gateway';
+import { ApolloGateway, RemoteGraphQLDataSource  } from '@apollo/gateway';
 
 
 const gateway = new ApolloGateway({
   serviceList: [
     { name: 'booking', url: 'http://booking-subgraph:4001' },
-    { name: 'hotel', url: 'http://hotel-subgraph:4002' }
-  ]
+    { name: 'hotel', url: 'http://hotel-subgraph:4002' },
+    { name: 'promocode', url: 'http://promocode-subgraph:4003' },
+  ],
+  buildService({ url }) {
+    return new RemoteGraphQLDataSource({
+      url,
+      willSendRequest({ request, context }) {
+        if (context.req?.headers['userid'])
+          request.http.headers.set('userid', context.req.headers['userid']);
+      },
+    });
+  },  
 });
 
 const server = new ApolloServer({ gateway, subscriptions: false });

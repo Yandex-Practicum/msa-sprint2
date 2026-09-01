@@ -1,0 +1,11 @@
+docker ps
+CONTAINER ID   IMAGE                             COMMAND                  CREATED       STATUS                 PORTS                                                                                      NAMES
+1906826fa98a   task2-monolith                    "java -jar app.jar"      6 hours ago   Up 6 hours             0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp                                                hotelio-monolith
+11147e77aec3   task2-booking-service             "java -jar app.jar"      6 hours ago   Up 6 hours             0.0.0.0:9090->9090/tcp, [::]:9090->9090/tcp, 0.0.0.0:8085->8080/tcp, [::]:8085->8080/tcp   booking-service
+d00129008be0   task2-booking-history-service     "./booking-history-s…"   6 hours ago   Up 6 hours                                                                                                        booking-history-service
+d475fe2711cb   postgres:17-alpine                "docker-entrypoint.s…"   6 hours ago   Up 6 hours (healthy)   0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp                                                booking-service-db
+a23f1ee4fb1f   postgres:17-alpine                "docker-entrypoint.s…"   6 hours ago   Up 6 hours (healthy)   0.0.0.0:5435->5432/tcp, [::]:5435->5432/tcp                                                booking-history-db
+6470ce38a023   postgres:17-alpine                "docker-entrypoint.s…"   6 hours ago   Up 6 hours (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp                                                hotelio-db
+b16137664e70   confluentinc/cp-zookeeper:7.2.1   "/etc/confluent/dock…"   6 hours ago   Up 6 hours             0.0.0.0:2181->2181/tcp, [::]:2181->2181/tcp                                                task2-zookeeper-1
+3eaa2866f050   confluentinc/cp-kafka:7.2.1       "/etc/confluent/dock…"   6 hours ago   Up 6 hours             0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp                                                task2-kafka-1
+8a21a50081e4   provectuslabs/kafka-ui:latest     "/bin/sh -c 'java --…"   6 hours ago   Up 6 hours             0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp                                                kafka-ui

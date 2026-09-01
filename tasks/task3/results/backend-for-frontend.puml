@@ -1,0 +1,29 @@
+plantuml
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Архитектура GraphQL Federation (Task 3)
+
+Person(client, "Клиент", "Приложение GraphQL-клиент")
+
+System_Boundary(graphql, "GraphQL Federation (task3)") {
+    Container(gateway, "apollo-gateway", "Node.js / Apollo Gateway", "Агрегирует субграфы")
+    Container(booking, "booking-subgraph", "Node.js / Apollo Subgraph", "Бронирования")
+    Container(hotel, "hotel-subgraph", "Node.js / Apollo Subgraph", "Отели")
+    Container(promo, "promocode-subgraph", "Node.js / Apollo Subgraph", "Промокоды")
+}
+
+System_Boundary(backend, "Backend (task2)") {
+    Container(monolith, "monolith", "Java / Spring Boot", "Порт 8080. /api/hotels/*, /api/promos/*")
+    Container(bookingService, "booking-service", "Java / Spring Boot", "Порт 8080. /api/bookings")
+}
+
+Rel(client, gateway, "GraphQL-запросы (userid)", "HTTP 4000")
+Rel(gateway, booking, "Федерация: bookingsByUser", "GraphQL")
+Rel(gateway, hotel, "Федерация: hotelsByIds", "GraphQL")
+Rel(gateway, promo, "Федерация: promosByCodes, validatePromoCode", "GraphQL")
+Rel(booking, bookingService, "REST GET /api/bookings?userId=", "HTTP")
+Rel(hotel, monolith, "REST GET /api/hotels/{id}", "HTTP")
+Rel(promo, monolith, "REST GET /api/promos/{code}, POST /validate", "HTTP")
+
+@enduml

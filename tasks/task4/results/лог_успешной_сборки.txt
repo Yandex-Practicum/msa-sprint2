@@ -1,0 +1,25 @@
+docker build -t booking-service:1.0.1 ./booking-service
+[+] Building 2.4s (12/12) FINISHED                                                                                                 docker:desktop-linux
+ => [internal] load build definition from Dockerfile                                                                                               0.0s
+ => => transferring dockerfile: 860B                                                                                                               0.0s
+ => [internal] load metadata for docker.io/library/golang:1.21-alpine                                                                              1.3s
+ => [internal] load .dockerignore                                                                                                                  0.0s
+ => => transferring context: 2B                                                                                                                    0.0s
+ => [1/7] FROM docker.io/library/golang:1.21-alpine@sha256:2414035b086e3c42b99654c8b26e6f5b1b1598080d65fd03c7f499552ff4dc94                        0.1s
+ => => resolve docker.io/library/golang:1.21-alpine@sha256:2414035b086e3c42b99654c8b26e6f5b1b1598080d65fd03c7f499552ff4dc94                        0.1s
+ => [internal] load build context                                                                                                                  0.0s
+ => => transferring context: 61B                                                                                                                   0.0s
+ => CACHED [2/7] RUN apk add --no-cache curl                                                                                                       0.0s
+ => CACHED [3/7] WORKDIR /app                                                                                                                      0.0s
+ => CACHED [4/7] COPY main.go .                                                                                                                    0.0s
+ => CACHED [5/7] COPY check-dns.sh .                                                                                                               0.0s
+ => CACHED [6/7] RUN chmod +x check-dns.sh                                                                                                         0.0s
+ => CACHED [7/7] RUN go build -o booking-service main.go                                                                                           0.0s
+ => exporting to image                                                                                                                             0.3s
+ => => exporting layers                                                                                                                            0.0s
+ => => exporting manifest sha256:965ec39024063f3c762b361faf1579e9e6083036e0a5771d8094486826d4ad15                                                  0.0s
+ => => exporting config sha256:57635c675b445377284800444d5936996e521f2c769e747e8afc729a3e190cdf                                                    0.0s
+ => => exporting attestation manifest sha256:dd40dce221f1436a7ddb984f49af142de3832775a1a4aab24ffc06609b107ff9                                      0.1s
+ => => exporting manifest list sha256:b92e9d96a05e5443dc84f159444b0aaec96abdf642de005392bed67611e09758                                             0.1s
+ => => naming to docker.io/library/booking-service:1.0.1                                                                                           0.0s
+ => => unpacking to docker.io/library/booking-service:1.0.1 

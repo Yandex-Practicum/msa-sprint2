@@ -1,0 +1,71 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+AddRelTag("newRelationLine", $lineColor="#00ff00",$textColor="#00ff00", $lineStyle=SolidLine())
+
+LAYOUT_WITH_LEGEND()
+
+System_Boundary(hotelio, "Hotelio Monolith") {
+
+  Component(webApp, "Web application", "")
+  Component(apiGateway, "API Gateway", "")
+
+' Micro Services
+  Container(promoContainer, "Promo codes container", "Spring Boot", "Microservice app exposing REST endpoint for promo codes") {
+    Component(promoController, "PromoCodeController", "Spring MVC", "/api/promos")
+    Component(promoService, "PromoCodeService", "Java Service", "Applies discounts and rules")
+    ComponentDb(monolithPostgresDB, "Monolith DB", "PostgreSQL", "Stores users, hotels, bookings, reviews, promos")
+    Rel(promoController, promoService, "Uses")
+    Rel(promoService, monolithPostgresDB, "Reads")
+  }
+
+  Container(hotelContainer, "Hotels Container", "Spring Boot", "Microservice app exposing REST endpoint for users") {
+    Component(hotelController, "HotelController", "Spring MVC", "/api/hotels")
+    Component(hotelService, "HotelService", "Java Service", "Retrieves hotel details")
+    Rel(hotelController, hotelService, "Uses")
+    ComponentDb(hotelDB, "Hotels Service DB", "PostgreSQL", "Stores hotel infos")
+    Rel(hotelService, hotelDB, "Reads")
+  }
+
+  Container(bookingContainer, "Booking Container", "Spring Boot", "Microservice app exposing REST endpoint for booking") {
+      Component(bookingControllerNew, "BookingController", "Spring MVC", "/api/bookings")
+      Component(bookingServiceNew, "BookingService", "Java Service", "Validates and creates bookings")
+      ' DB
+      ComponentDb(bookingDB, "Booking Service DB", "PostgreSQL", "Stores bookings")
+      Rel(bookingServiceNew, bookingDB, "Reads/Writes")
+  }
+
+  Container(reviewContainer, "Review Container", "Spring Boot", "Microservice app exposing REST endpoint for reviews") {
+    Component(reviewController, "ReviewController", "Spring MVC", "/api/reviews")
+    Component(reviewService, "ReviewService", "Java Service", "Manages hotel reviews")
+    Rel(reviewController, reviewService, "Uses")
+    ComponentDb(reviewDB, "Review Service DB", "PostgreSQL", "Stores reviews")
+    Rel(reviewService, reviewDB, "Reads/Writes")
+  }
+
+  Container(userContainer, "User Container", "Spring Boot", "Microservice app exposing REST endpoint for users") {
+    Component(userController, "UserController", "Spring MVC", "/api/users")
+    Component(userService, "UserService", "Java Service", "Validates user status and blacklist")
+    Rel(userController, userService, "Uses")
+    ComponentDb(userDB, "User Service DB", "PostgreSQL", "Stores users")
+    Rel(userService, userDB, "Reads")
+  }
+
+  Rel(bookingServiceNew, hotelController, "Calls")
+  Rel(bookingServiceNew, userController, "Calls")
+  Rel(bookingServiceNew, promoController, "Calls")
+  Rel(bookingServiceNew, reviewController, "Calls")
+}
+
+Person(user, "User", "Interacts with frontend")
+
+Rel(user, webApp, "Uses")
+Rel(webApp, apiGateway, "Calls")
+Rel(apiGateway, bookingControllerNew, "Calls")
+Rel(bookingControllerNew, bookingServiceNew, "Calls")
+Rel(apiGateway, hotelController, "Calls")
+Rel(apiGateway, promoController, "Calls")
+Rel(apiGateway, reviewController, "Calls")
+Rel(apiGateway, userController, "Calls")
+
+@enduml

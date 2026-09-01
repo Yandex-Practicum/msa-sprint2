@@ -1,0 +1,43 @@
+# DestinationRule задаёт правила Circuit Breaking и subsets (v1 / v2).
+# Маршрутизация трафика (канареечный release, фича-флаг, retries) описана отдельно
+# в booking-service-virtual-Service.yaml.
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: booking-service
+spec:
+  host: booking-service
+  # Circuit Breaking: защищает сервис от перегрузки и подов с ошибками.
+  trafficPolicy: # Дефолтные параметры для всех версий
+    connectionPool: # ограничения нагрузки на сервис для каждого pod-а
+      tcp:
+        maxConnections: 100
+      http:
+        http1MaxPendingRequests: 10
+        maxRequestsPerConnection: 10
+    outlierDetection: # параметры контроля работы pod-ов
+      consecutive5xxErrors: 3   # три пятисотых ошибки и ставим pod на паузу
+      interval: 10s             # периодичность проверки pod-а
+      baseEjectionTime: 30s     # Первый период исключения pod-а из обслуживания
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+    trafficPolicy: # Переопределяем дефолтные параметры трафика для v1
+      connectionPool:
+        tcp:
+          maxConnections: 150
+        http:
+          http1MaxPendingRequests: 20
+          maxRequestsPerConnection: 15
+  - name: v2
+    labels:
+      version: v2
+    trafficPolicy: # Переопределяем дефолтные параметры трафика для v2
+      connectionPool: 
+        tcp:
+          maxConnections: 150
+        http:
+          http1MaxPendingRequests: 20
+          maxRequestsPerConnection: 15

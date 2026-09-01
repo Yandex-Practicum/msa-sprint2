@@ -1,0 +1,8 @@
+minikube addons enable ingress        
+💡  ingress is an addon maintained by Kubernetes. For any concerns contact minikube on GitHub.
+You can view the list of minikube maintainers at: https://github.com/kubernetes/minikube/blob/master/OWNERS
+💡  After the addon is enabled, please run "minikube tunnel" and your ingress resources would be available at "127.0.0.1"
+    ▪ Using image registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.7
+    ▪ Using image registry.k8s.io/ingress-nginx/controller:v1.14.3
+    ▪ Using image registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.7
+🔎  Verifying ingress addon...

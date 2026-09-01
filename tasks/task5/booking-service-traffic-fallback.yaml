@@ -1,0 +1,33 @@
+# VirtualService для фича-флаг и fallback
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: booking-service
+spec:
+  hosts:
+  - booking-service
+  http:
+  # Если клиент шлёт X-Feature-Enabled: true, то
+  # трафик идёт на новую версию v2 (100%).
+  - name: booking-feature-flag
+    match:
+    - headers:
+        x-feature-enabled:
+          exact: "true"
+    route:
+    - destination:
+        host: booking-service
+        subset: v2
+      weight: 100
+
+  # ИНАЧЕ ->  Обработка ошибки, когда v1 не работает, но запрос попал туда по канарейке
+  - name: fallback-to-v2
+    retries:
+      attempts: 3
+      perTryTimeout: 2s
+      retryOn: gateway-error,connect-failure,refused-stream,reset
+    route:
+    - destination:
+        host: booking-service
+        subset: v2
+      weight: 100

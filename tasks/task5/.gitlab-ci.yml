@@ -1,0 +1,32 @@
+stages:
+  - build
+  - test
+  - deploy
+  - tag
+
+variables:
+  IMAGE_TAG: ${CI_COMMIT_SHORT_SHA}
+  IMAGE_NAME: booking-service
+
+build:
+  stage: build
+  script:
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG ./booking-service
+
+test:
+  stage: test
+  script:
+    - docker run -d -p 8080:8080 --name test-booking $IMAGE_NAME:$IMAGE_TAG
+    - sleep 2
+    - curl -f http://localhost:8080/ping || exit 1
+    - docker stop test-booking && docker rm test-booking
+
+deploy:
+  stage: deploy
+  before_script:
+    - minikube image load $IMAGE_NAME:$IMAGE_TAG
+  script:
+    - helm upgrade --install booking-service ./helm/booking-service \
+        --values ./helm/booking-service/values-staging.yaml \     
+        --set image.tag=$IMAGE_TAG                              
+        --set image.pullPolicy=IfNotPresent                     

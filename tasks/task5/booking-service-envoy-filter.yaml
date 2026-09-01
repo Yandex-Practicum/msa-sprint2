@@ -1,0 +1,38 @@
+# EnvoyFilter: реализация фича-флага через инъекцию в Envoy (sidecar).
+#
+# V01: данная маршрутизация по заголовку X-Feature-Enabled: true уже описана
+#      на уровне VirtualService (booking-service-virtual-Service.yaml).
+#      Этот EnvoyFilter добавляется как дополнительная точка управления:
+#      на входящем (SIDECAR_OUTBOUND) пути он проверяет заголовок и в случае
+#      X-Feature-Enabled: true добавляет внутренний заголовок
+#      x-feature-route: v2, чтобы трафик маршрутизировался на v2.
+#      Так можно менять поведение без изменения бизнес-кода сервиса.
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: booking-feature-flag
+  namespace: default
+spec:
+  configPatches:
+  - applyTo: HTTP_FILTER
+    match:
+      context: SIDECAR_OUTBOUND
+      listener:
+        filterChain:
+          filter:
+            name: "envoy.filters.network.http_connection_manager"
+    patch:
+      operation: INSERT_FIRST
+      value:
+        name: envoy.filters.http.lua
+        typed_config:
+          "@type": "type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua"
+          # в качестве демонстрации работы envoy filtr-a добавим к запросу дополнительный Header, 
+          # который потом проверим в коде сервиса
+          inlineCode: |
+            function envoy_on_request(request_handle)
+              local feature = request_handle:headers():get("x-feature-enabled")
+              if feature == "true" then
+                request_handle:headers():add("x-feature-route", "v2")
+              end
+            end
