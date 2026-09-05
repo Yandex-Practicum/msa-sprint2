@@ -1,0 +1,22 @@
+istioctl install --set profile=demo
+        |\          
+        | \         
+        |  \        
+        |   \       
+      /||    \      
+     / ||     \     
+    /  ||      \    
+   /   ||       \   
+  /    ||        \  
+ /     ||         \ 
+/______||__________\
+____________________
+  \__       _____/  
+     \_____/        
+
+This will install the Istio 1.30.4 profile "demo" into the cluster. Proceed? (y/N) y
+✔ Istio core installed ⛵️                                                                           
+✔ Istiod installed 🧠                                                                               
+✔ Egress gateways installed 🛫                                                                      
+✔ Ingress gateways installed 🛬                                                                     
+✔ Installation complete

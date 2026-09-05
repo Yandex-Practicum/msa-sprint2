@@ -1,0 +1,7 @@
+replicaCount: 3
+
+image:
+  tag: 1.0
+
+env:
+  ENABLE_FEATURE_X: "false"

@@ -1,0 +1,5 @@
+kubectl get pods -n istio-system
+NAME                                    READY   STATUS    RESTARTS   AGE
+istio-egressgateway-748dd55df9-5v6b7    1/1     Running   0          46h
+istio-ingressgateway-6cdcd6f8c7-5tshb   1/1     Running   0          46h
+istiod-6676d5f5fd-nttx6                 1/1     Running   0          46h

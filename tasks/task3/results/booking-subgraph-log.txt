@@ -1,0 +1,43 @@
+Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+
+✅ Booking subgraph ready at http://localhost:4001/
+
+bookingsByUser
+
+bookingsByUser
+
+Got bookings: []
+
+bookingsByUser
+
+bookingsByUser
+
+Got bookings: []
+
+bookingsByUser
+
+Got bookings: [{"id":2,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":10,"price":90,"createdAt":"2026-09-05T17:07:21.283899Z"}]
+
+bookingsByUser
+
+Got bookings: [{"id":1,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":null,"discountPercent":0,"price":80,"createdAt":"2026-09-05T17:07:19.997659Z"}]
+
+bookingsByUser
+
+Got bookings: [{"id":2,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":10,"price":90,"createdAt":"2026-09-05T17:07:21.283899Z"}]
+
+bookingsByUser
+
+Got bookings: [{"id":2,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":10,"price":90,"createdAt":"2026-09-05T17:07:21.283899Z"}]
+
+bookingsByUser
+
+bookingsByUser
+
+bookingsByUser
+
+Got bookings: [{"id":1,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":null,"discountPercent":0,"price":80,"createdAt":"2026-09-05T17:07:19.997659Z"}]
+
+bookingsByUser
+
+bookingsByUser

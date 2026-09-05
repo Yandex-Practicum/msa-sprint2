@@ -1,0 +1,17 @@
+docker exec -it booking-history-db psql -U booking-history -d booking-history_db -c "SELECT * FROM booking;" 
+ id |   used_id   |   hotel_id   | promo_code | discount_percent | price |          created_at           
+----+-------------+--------------+------------+------------------+-------+-------------------------------
+  1 | test-user-3 | test-hotel-1 |            |                0 |    80 | 2026-08-17 13:07:42.097185+00
+  2 | test-user-3 | test-hotel-1 | TESTCODE1  |               10 |    70 | 2026-08-17 13:07:43.973705+00
+  3 | test-user-3 | test-hotel-1 |            |                0 |    80 | 2026-08-17 13:08:00.463548+00
+  4 | test-user-3 | test-hotel-1 | TESTCODE1  |               10 |    70 | 2026-08-17 13:08:00.776755+00
+  5 | test-user-3 | test-hotel-1 |            |                0 |    80 | 2026-08-17 15:00:16.564338+00
+  6 | test-user-3 | test-hotel-1 | TESTCODE1  |               10 |    70 | 2026-08-17 15:00:17.413064+00
+  7 | test-user-3 | test-hotel-1 |            |                0 |    80 | 2026-08-17 15:07:31.246586+00
+  8 | test-user-3 | test-hotel-1 | TESTCODE1  |               10 |    70 | 2026-08-17 15:07:31.532906+00
+  9 | test-user-3 | test-hotel-1 |            |                0 |    80 | 2026-08-17 15:29:28.37225+00
+ 10 | test-user-3 | test-hotel-1 | TESTCODE1  |               10 |    70 | 2026-08-17 15:29:28.728837+00
+ 11 | test-user-3 | test-hotel-1 |            |                0 |    80 | 2026-08-17 16:18:16.775335+00
+ 12 | test-user-2 | test-hotel-1 | TESTCODE1  |               10 |    90 | 2026-08-17 16:18:17.184415+00
+ 13 | test-user-3 | test-hotel-1 |            |                0 |    80 | 2026-08-17 18:29:37.209074+00
+ 14 | test-user-3 | test-hotel-1 | TESTCODE1  |               10 |    70 | 2026-08-17 18:29:38.3199+00

@@ -37,18 +37,18 @@ task4/
 	- Либо на базе имеющегося booking-service, либо на базе предложенного в задаче
 - Собирается с помощью docker build
 - Открывает порт 8080
-- Возвращает /ping → pong
+- Возвращает /ping -> pong
 - Поведение сервиса меняется при наличии переменной ENABLE_FEATURE_X=true
 
 2. Helm-чарт:
 
 - Deployment с пробами:
 	- livenessProbe и readinessProbe по /ping
-- Service типа ClusterIP (порт 80 → targetPort 8080)
+- Service типа ClusterIP (порт 80 -> targetPort 8080)
 - Значения из values.yaml:
 	- replicaCount
 	- image.name, image.tag, image.pullPolicy
-	- env[] — переменные окружения	
+	- env[] — переменные окружения
 	- resources — requests и limits
 	- ENABLE_FEATURE_X — фича-флаг
 

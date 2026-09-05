@@ -1,0 +1,6 @@
+kubectl get pods -l app=booking
+NAME                          READY   STATUS    RESTARTS   AGE
+booking-v1-8446f9c647-78rd7   2/2     Running   0          38h
+booking-v1-8446f9c647-sfksv   2/2     Running   0          38h
+booking-v1-8446f9c647-stswk   2/2     Running   0          38h
+booking-v2-66766cb8d6-5x2mg   2/2     Running   0          38h

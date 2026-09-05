@@ -1,0 +1,5 @@
+kubectl logs -l app=booking-service -n default
+2026/09/01 20:45:24 Server running on :8080 (version=v1, feature=false)
+2026/09/01 20:45:26 Server running on :8080 (version=v1, feature=false)
+2026/09/01 20:45:26 Server running on :8080 (version=v1, feature=false)
+2026/09/01 19:43:22 Server running on :8080 (version=v2, feature=true)

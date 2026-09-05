@@ -14,8 +14,6 @@ func main() {
 		fmt.Fprintf(w, "pong")
 	})
 
-	// TODO: Feature flag route
-	// if ENABLE_FEATURE_X=true, expose /feature
 	if enableFeatureX {
 		http.HandleFunc("/feature", func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "Feature X is enabled!")

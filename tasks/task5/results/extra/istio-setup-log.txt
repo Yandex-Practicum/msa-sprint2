@@ -1,0 +1,21 @@
+c:\Istio\istio-1.30.4\bin\istioctl install --set profile=demo -y
+        |\          
+        | \         
+        |  \        
+        |   \       
+      /||    \      
+     / ||     \     
+    /  ||      \    
+   /   ||       \   
+  /    ||        \  
+ /     ||         \ 
+/______||__________\
+____________________
+  \__       _____/  
+     \_____/        
+
+✔ Istio core installed ⛵️                                                                                                                                                
+✔ Istiod installed 🧠                                                                                                                                                    
+✔ Egress gateways installed 🛫                                                                                                                                           
+✔ Ingress gateways installed 🛬                                                                                                                                          
+✔ Installation complete    

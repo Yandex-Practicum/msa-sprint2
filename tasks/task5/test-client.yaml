@@ -1,0 +1,26 @@
+# Test client (sleep) pod WITH Istio sidecar.
+# Используется, чтобы внутри кластера создать pod с curl, 
+# с которого можно будет слать запросы к сервису booking шли через Envoy
+# (SIDECAR_OUTBOUND).
+# На этом тестовом pod-е будут выполняться тестовые скрипты.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: curl-client
+  labels:
+    app: curl-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: curl-client
+  template:
+    metadata:
+      labels:
+        app: curl-client
+    spec:
+      containers:
+      - name: curl
+        image: curlimages/curl:8.10.1
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/sh", "-c", "sleep 3600"]

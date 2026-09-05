@@ -1,0 +1,73 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+AddRelTag("oldRelationLine", $lineColor="#ff0000",$textColor="#ff0000", $lineStyle=DashedLine())
+AddRelTag("newRelationLine", $lineColor="#00ff00",$textColor="#00ff00", $lineStyle=SolidLine())
+
+LAYOUT_WITH_LEGEND()
+
+System_Boundary(hotelio, "Hotelio Monolith") {
+  Component(webApp, "Web application", "")
+  Component(apiGateway, "API Gateway", "")
+
+  Container(monolith, "Monolith Application", "Spring Boot", "Legacy app exposing REST endpoints for hotel booking") {
+
+    ' Controllers
+    Component(bookingController, "BookingController", "Spring MVC", "/api/bookings")
+    Component(hotelController, "HotelController", "Spring MVC", "/api/hotels")
+    Component(promoController, "PromoCodeController", "Spring MVC", "/api/promos")
+    Component(reviewController, "ReviewController", "Spring MVC", "/api/reviews")
+    Component(userController, "UserController", "Spring MVC", "/api/users")
+
+    ' Services
+    Component(bookingService, "BookingService", "Java Service", "Validates and creates bookings")
+    Component(hotelService, "HotelService", "Java Service", "Retrieves hotel details")
+    Component(userService, "UserService", "Java Service", "Validates user status and blacklist")
+    Component(promoService, "PromoCodeService", "Java Service", "Applies discounts and rules")
+    Component(reviewService, "ReviewService", "Java Service", "Manages hotel reviews")
+
+    ' DB
+    ComponentDb(monolithPostgresDB, "Monolith DB", "PostgreSQL", "Stores users, hotels, bookings, reviews, promos")
+
+    ' Controller-Service relations
+    Rel(bookingController, bookingService, "Uses")
+    Rel(hotelController, hotelService, "Uses")
+    Rel(promoController, promoService, "Uses")
+    Rel(reviewController, reviewService, "Uses")
+    Rel(userController, userService, "Uses")
+
+    ' Service-Service and Service-DB
+    Rel(bookingService, hotelService, "Calls", $tags="oldRelationLine")
+    Rel(bookingService, userService, "Calls")
+    Rel(bookingService, promoService, "Calls")
+    Rel(bookingService, reviewService, "Calls")
+
+    Rel(bookingService, monolithPostgresDB, "Reads/Writes")
+    Rel(userService, monolithPostgresDB, "Reads")
+    Rel(hotelService, monolithPostgresDB, "Reads")
+    Rel(promoService, monolithPostgresDB, "Reads")
+    Rel(reviewService, monolithPostgresDB, "Reads/Writes")
+  }
+
+  Container(hotelContainer, "Hotels Container", "Spring Boot", "Microservice app exposing REST endpoint for users") {
+    Component(hotelControllerNew, "HotelController", "Spring MVC", "/api/hotels")
+    Component(hotelServiceNew, "HotelService", "Java Service", "Retrieves hotel details")
+    Rel(hotelControllerNew, hotelServiceNew, "Uses")
+    ComponentDb(hotelDB, "Hotels Service DB", "PostgreSQL", "Stores hotel infos")
+    Rel(hotelServiceNew, hotelDB, "Reads")
+  }
+  Rel(bookingService, hotelControllerNew, "Calls", $tags="newRelationLine")
+}
+
+Person(user, "User", "Interacts with frontend")
+Rel(user, webApp, "Uses")
+Rel(webApp, apiGateway, "Calls")
+Rel(apiGateway, hotelController, "Calls", $tags="oldRelationLine")
+Rel(apiGateway, hotelControllerNew, "Calls", $tags="newRelationLine")
+Rel(apiGateway, promoController, "Calls")
+Rel(apiGateway, reviewController, "Calls")
+Rel(apiGateway, userController, "Calls")
+
+BiRel(monolithPostgresDB, hotelDB, "Взаимная синхронизация данных об отелях", $tags="newRelationLine")
+
+@enduml
