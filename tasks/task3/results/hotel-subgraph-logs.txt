@@ -1,0 +1,8 @@
+Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+✅ Hotel subgraph ready at http://localhost:4002/
+[hotel-subgraph] batch load hotels: ["test-hotel-1"]
+[hotel-subgraph] batch load hotels: ["test-hotel-1"]
+[hotel-subgraph] batch load hotels: ["test-hotel-1","test-hotel-2"]
+[hotel-subgraph] batch load hotels: ["test-hotel-1"]
+[hotel-subgraph] batch load hotels: ["test-hotel-1"]
+[hotel-subgraph] batch load hotels: ["test-hotel-1","test-hotel-2"]

@@ -1,0 +1,12 @@
+Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+✅ Promocode subgraph ready at http://localhost:4003/
+[promocode-subgraph] Booking.discountPercent(promoCode=TESTCODE1) -> 10
+[promocode-subgraph] Booking.discountInfo(promoCode=TESTCODE1) -> isValid=true final=10
+[promocode-subgraph] Booking.discountPercent(promoCode=null) -> 0
+[promocode-subgraph] validatePromoCode(code=TESTCODE1) -> isValid=true
+[promocode-subgraph] activePromoCodes -> 1
+[promocode-subgraph] Booking.discountPercent(promoCode=TESTCODE1) -> 10
+[promocode-subgraph] Booking.discountInfo(promoCode=TESTCODE1) -> isValid=true final=10
+[promocode-subgraph] Booking.discountPercent(promoCode=null) -> 0
+[promocode-subgraph] validatePromoCode(code=TESTCODE1) -> isValid=true
+[promocode-subgraph] activePromoCodes -> 1

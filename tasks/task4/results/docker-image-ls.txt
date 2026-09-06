@@ -1,0 +1,2 @@
+booking-service:latest                      1351f669415c       18.8MB             0B        
+task2-booking-service:latest                64cb4d8cec8d        172MB             0B   U    

@@ -1,0 +1,15 @@
+▶️ Поднимаем под-клиент curl-test (с sidecar Envoy, чтобы VirtualService применялся)...
+pod/curl-test created
+pod/curl-test condition met
+
+▶️ Checking canary release (90% v1, 10% v2)
+   Отправляем 100 запросов из пода curl-test через sidecar Envoy.
+
+  всего ответов: 100
+  v1:            88
+  v2:            12
+  ошибок:        0
+
+Ожидание: v1 ~= 90, v2 ~= 10. Отклонение нормально - weighted routing
+вероятностный, выборка из 100 запросов небольшая.
+

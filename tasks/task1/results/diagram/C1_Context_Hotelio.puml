@@ -1,0 +1,19 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+title Hotelio - контекст системы (C1, To-Be)
+
+Person(user, "Пользователь", "Ищет отели, бронирует, оставляет отзывы")
+Person(partner, "Партнёрский канал", "Бронирует от имени клиентов через API")
+
+System(hotelio, "Hotelio", "Платформа бронирования отелей и апартаментов. Единая точка входа - API Gateway/BFF, за которым микросервисы и остаток монолита")
+
+System_Ext(pg, "PostgreSQL", "Базы данных сервисов (hotel, app_user, booking, promo_code, review)")
+System_Ext(kafka, "Kafka", "Событийная шина: booking.created и другие события")
+
+Rel(user, hotelio, "HTTPS /api/**", "REST")
+Rel(partner, hotelio, "HTTPS /api/**", "REST")
+Rel(hotelio, pg, "Read/Write", "JDBC")
+Rel(hotelio, kafka, "publish / subscribe", "события")
+@enduml

@@ -1,0 +1,96 @@
+git remote get-url origin didn't provide valid matches
+parsing and downloads finished in 172 ms.
+json schema validated in 302 ms
+build  starting shell (build)
+build  $ docker build -t ${IMAGE_NAME}:${IMAGE_TAG} booking-service/
+build  > #0 building with "default" instance using docker driver
+build  > 
+build  > #1 [internal] load build definition from Dockerfile
+build  > #1 transferring dockerfile: 810B done
+build  > #1 DONE 0.1s
+build  > 
+build  > #2 [internal] load metadata for docker.io/library/golang:1.21-alpine
+build  > #2 DONE 0.0s
+build  > 
+build  > #3 [internal] load metadata for docker.io/library/alpine:3.19
+build  > #3 ...
+build  > 
+build  > #4 [auth] library/alpine:pull token for registry-1.docker.io
+build  > #4 DONE 0.0s
+build  > 
+build  > #3 [internal] load metadata for docker.io/library/alpine:3.19
+build  > #3 DONE 2.8s
+build  > 
+build  > #5 [internal] load .dockerignore
+build  > #5 transferring context: 2B done
+build  > #5 DONE 0.0s
+build  > 
+build  > #6 [builder 1/4] FROM docker.io/library/golang:1.21-alpine
+build  > #6 DONE 0.0s
+build  > 
+build  > #7 [stage-1 1/4] FROM docker.io/library/alpine:3.19@sha256:6baf43584bcb78f2e5847d1de515f23499913ac9f12bdf834811a3145eb11ca1
+build  > #7 DONE 0.0s
+build  > 
+build  > #8 [internal] load build context
+build  > #8 transferring context: 29B done
+build  > #8 DONE 0.1s
+build  > 
+build  > #9 [builder 4/4] RUN CGO_ENABLED=0 go build -o booking-service main.go
+build  > #9 CACHED
+build  > 
+build  > #10 [stage-1 2/4] RUN apk add --no-cache curl ca-certificates
+build  > #10 CACHED
+build  > 
+build  > #11 [stage-1 3/4] WORKDIR /app
+build  > #11 CACHED
+build  > 
+build  > #12 [builder 2/4] WORKDIR /app
+build  > #12 CACHED
+build  > 
+build  > #13 [builder 3/4] COPY main.go .
+build  > #13 CACHED
+build  > 
+build  > #14 [stage-1 4/4] COPY --from=builder /app/booking-service .
+build  > #14 CACHED
+build  > 
+build  > #15 exporting to image
+build  > #15 exporting layers done
+build  > #15 writing image sha256:1351f669415c21f034433108d93f768664ad33efa88f36788cb1a6a6baf67ad1 0.0s done
+build  > #15 naming to docker.io/library/booking-service:latest 0.0s done
+build  > #15 DONE 0.1s
+build  finished in 4.23 s
+test   starting shell (test)
+test   $ docker rm -f booking-service-test || true
+test   $ docker run -d --name booking-service-test -p 18080:8080 ${IMAGE_NAME}:${IMAGE_TAG}
+test   > 784c736ec5c2255ea165f6cf9e9e0e76da6c5895a9ed69408f5d46e073e76a9b
+test   $ sleep 3
+test   $ curl -fsS http://localhost:18080/ping
+test   > pong<gclShellPromptPlaceholder> docker rm -f booking-service-test
+test   > booking-service-test
+test   finished in 7.59 s
+deploy starting shell (deploy)
+deploy $ minikube image load ${IMAGE_NAME}:${IMAGE_TAG}
+deploy > still running...
+deploy > still running...
+deploy $ helm upgrade --install ${HELM_RELEASE} ${CHART_PATH} --values ${CHART_PATH}/values.yaml
+deploy > Release "booking-service" has been upgraded. Happy Helming!
+deploy > NAME: booking-service
+deploy > LAST DEPLOYED: Fri Sep  4 21:50:26 2026
+deploy > NAMESPACE: default
+deploy > STATUS: deployed
+deploy > REVISION: 5
+deploy > TEST SUITE: None
+deploy $ kubectl rollout status deployment/${HELM_RELEASE} --timeout=120s
+deploy > deployment "booking-service" successfully rolled out
+deploy finished in 24 s
+tag    starting shell (tag)
+tag    $ git tag "v$(date +%Y%m%d%H%M%S)"
+tag    $ git push origin --tags
+tag    > To file:///home/anzor/ci-origin
+tag    >  * [new tag]         v20260904215027 -> v20260904215027
+tag    finished in 223 ms
+
+ PASS  build 
+ PASS  test  
+ PASS  deploy
+ PASS  tag   

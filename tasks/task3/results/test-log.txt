@@ -1,0 +1,14 @@
+--- OK: userid=test-user-2 (own bookings) ---
+{"data":{"bookingsByUser":[{"id":"2","hotel":{"name":"Отель test-hotel-1","city":"Seoul"},"discountPercent":10,"discountInfo":{"isValid":true,"originalDiscount":10,"finalDiscount":10,"description":"Обычный промокод"}}]}}
+
+--- DENY ACL: userid=test-user-1 requests test-user-2 ---
+{"data":{"bookingsByUser":[]}}
+
+--- NO header ---
+{"data":{"bookingsByUser":[]}}
+
+--- user3 (VIP, no promo) ---
+{"data":{"bookingsByUser":[{"id":"1","hotel":{"name":"Отель test-hotel-1","city":"Seoul"},"discountPercent":0}]}}
+
+--- validate/active/hotelsByIds ---
+{"data":{"validatePromoCode":{"isValid":true,"originalDiscount":10,"finalDiscount":10},"activePromoCodes":[{"isValid":true,"finalDiscount":10,"description":"Обычный промокод"}],"hotelsByIds":[{"id":"test-hotel-1","name":"Отель test-hotel-1","city":"Seoul","stars":5},{"id":"test-hotel-2","name":"Отель test-hotel-2","city":"Busan","stars":5}]}}

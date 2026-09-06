@@ -1,0 +1,30 @@
+# Default values (task5: Istio canary). v1 — основная версия.
+deploymentName: booking-service-v1
+appName: booking-service
+version: v1
+replicaCount: 1
+
+image:
+  name: booking-service
+  tag: latest
+  pullPolicy: Never   # локальный образ из minikube image load
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+  enabled: true
+
+serviceName: booking-service
+
+# Переменные окружения (feature flag)
+env:
+  ENABLE_FEATURE_X: "false"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
