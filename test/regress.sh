@@ -98,19 +98,19 @@ curl -sSf "${BASE}/api/promos/TESTCODE-OLD/valid" | grep -q 'false' && pass "И�
 curl -sSf -X POST "${BASE}/api/promos/validate?code=TESTCODE1&userId=test-user-2" | grep -q 'TESTCODE1' && pass "POST /validate промо прошёл" || fail "POST /validate не прошёл"
 
 echo ""
-echo "Тесты бронирования..."
+echo "Тесты бронирования (создание идёт через gRPC в booking-service)..."
 
-# 1. Получение всех бронирований
-curl -sSf "${BASE}/api/bookings" | grep -q 'test-user-2' && pass "Все бронирования получены" || fail "Бронирования не получены"
-
-# 2. Получение бронирований пользователя
-curl -sSf "${BASE}/api/bookings?userId=test-user-2" | grep -q 'test-user-2' && pass "Бронирования test-user-2 найдены" || fail "Нет бронирований test-user-2"
-
-# 3. Успешное бронирование отеля без промо
+# 1. Успешное бронирование отеля без промо (user VIP -> базовая цена 80)
 curl -sSf -X POST "${BASE}/api/bookings?userId=test-user-3&hotelId=test-hotel-1" | grep -q 'test-hotel-1' && pass "Бронирование прошло (без промо)" || fail "Бронирование (без промо) не прошло"
 
-# 4. Успешное бронирование с промо
+# 2. Успешное бронирование с промо
 curl -sSf -X POST "${BASE}/api/bookings?userId=test-user-2&hotelId=test-hotel-1&promoCode=TESTCODE1" | grep -q 'TESTCODE1' && pass "Бронирование с промо прошло" || fail "Бронирование с промо не прошло"
+
+# 3. Получение бронирований пользователя (список через gRPC из booking-service)
+curl -sSf "${BASE}/api/bookings?userId=test-user-2" | grep -q 'test-user-2' && pass "Бронирования test-user-2 получены" || fail "Бронирования test-user-2 не получены"
+
+# 4. Получение бронирований пользователя (VIP)
+curl -sSf "${BASE}/api/bookings?userId=test-user-3" | grep -q 'test-user-3' && pass "Бронирования test-user-3 получены" || fail "Бронирования test-user-3 не получены"
 
 # 5. Ошибка — неактивный пользователь
 code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE}/api/bookings?userId=test-user-0&hotelId=test-hotel-1")

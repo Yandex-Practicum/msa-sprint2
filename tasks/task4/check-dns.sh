@@ -4,7 +4,7 @@ set -e
 
 echo "▶️ Running in-cluster DNS test..."
 
-kubectl run dns-test --rm -it \
+kubectl run dns-test --rm --attach \
   --image=busybox \
   --restart=Never \
-  -- wget -qO- http://booking-service/ping && echo "✅ Success" || echo "❌ Failed"
+  -- wget -qO- http://booking-service/ping && echo " ✅ Success" || echo " ❌ Failed"

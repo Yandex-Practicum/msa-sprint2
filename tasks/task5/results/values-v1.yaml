@@ -1,0 +1,29 @@
+# v1 - основная (стабильная) версия. Получает 90% трафика при канареечном релизе.
+deploymentName: booking-service-v1
+appName: booking-service
+version: v1
+replicaCount: 1
+
+image:
+  name: booking-service
+  tag: v1
+  pullPolicy: Never
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+  enabled: true   # Service создаёт только релиз v1 (общий для обеих версий)
+
+serviceName: booking-service
+
+env:
+  ENABLE_FEATURE_X: "false"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi

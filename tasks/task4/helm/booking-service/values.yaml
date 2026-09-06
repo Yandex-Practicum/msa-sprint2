@@ -1,18 +1,24 @@
+# Default values (локальная разработка / minikube)
 replicaCount: 1
 
 image:
   name: booking-service
   tag: latest
-  pullPolicy: IfNotPresent
+  pullPolicy: Never   # локальный образ из minikube image load
 
 service:
   type: ClusterIP
   port: 80
   targetPort: 8080
 
+# Переменные окружения (feature flag)
+env:
+  ENABLE_FEATURE_X: "false"
+
 resources:
-
-livenessProbe:
-
-readinessProbe:
-
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi

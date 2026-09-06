@@ -1,0 +1,23 @@
+=== Pods ===
+NAME                                 READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+booking-service-v1-cf79fbd98-5fkgt   2/2     Running   0          29s   10.244.0.34   minikube   <none>           <none>
+booking-service-v2-f9c8bb5b8-4cr6s   2/2     Running   0          12m   10.244.0.17   minikube   <none>           <none>
+
+=== Istio resources ===
+NAME                                                 GATEWAYS   HOSTS                 AGE
+virtualservice.networking.istio.io/booking-service              ["booking-service"]   11m
+
+NAME                                                  HOST              AGE
+destinationrule.networking.istio.io/booking-service   booking-service   11m
+
+NAME                                                           AGE
+envoyfilter.networking.istio.io/booking-service-feature-flag   11m
+
+=== istioctl version ===
+client version: 1.31.0
+control plane version: 1.31.0
+
+=== helm releases ===
+NAME              	NAMESPACE	REVISION	UPDATED                                	STATUS  	CHART                	APP VERSION
+booking-service-v1	default  	1       	2026-09-04 23:37:21.71191063 +0300 MSK 	deployed	booking-service-0.2.0	1.0        
+booking-service-v2	default  	1       	2026-09-04 23:37:22.612293739 +0300 MSK	deployed	booking-service-0.2.0	1.0        

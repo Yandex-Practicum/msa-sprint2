@@ -1,0 +1,103 @@
+=================================================================
+ Hotelio — регрессионные тесты ДО миграции (Задание 1)
+ Дата: 
+вс 30 авг 2026 18:04:17 UTC
+=================================================================
+
+=== Окружение ===
+Docker:
+Docker version 29.7.2, build a7dcaa6
+Compose:
+Docker Compose version v5.4.0
+
+=== Запущенные контейнеры ===
+NAMES              STATUS         PORTS
+hotelio-db         Up 9 minutes   0.0.0.0:5433->5432/tcp, [::]:5433->5432/tcp
+hotelio-monolith   Up 7 minutes   0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp
+
+=== GET /api/bookings (проверка работоспособности) ===
+[{"id":1,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":10.0,"price":90.0,"createdAt":"2026-08-30T18:04:02.301581Z"},{"id":2,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":null,"discountPercent":0.0,"price":80.0,"createdAt":"2026-08-30T18:04:02.301581Z"},{"id":3,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":null,"discountPercent":0.0,"price":80.0,"createdAt":null},{"id":4,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":10.0,"price":90.0,"createdAt":null},{"id":5,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":"TESTCODE-VIP","discountPercent":20.0,"price":60.0,"createdAt":null}]
+
+=================================================================
+ Запуск регрессионного теста (test/regress.sh)
+=================================================================
+🏁 Регрессионный тест до миграции Hotelio
+🧪 Проверка подключения к БД...
+🧪 Загрузка фикстур...
+DELETE 4
+DELETE 3
+DELETE 12
+DELETE 3
+DELETE 5
+INSERT 0 4
+INSERT 0 3
+INSERT 0 12
+INSERT 0 3
+INSERT 0 2
+🧪 Выполнение HTTP-тестов...
+
+Тесты пользователей...
+✅ Получение test-user-1 по ID работает
+✅ Статус test-user-1: ACTIVE
+✅ test-user-1 в блэклисте
+✅ test-user-1 активен
+✅ test-user-1 не авторизован (в блэклисте)
+✅ test-user-3 — VIP-пользователь
+✅ test-user-2 авторизован
+
+Тесты отелей...
+✅ test-hotel-1 получен по ID
+✅ test-hotel-1 работает
+✅ test-hotel-3 не работает
+✅ test-hotel-2 полностью забронирован
+✅ Поиск отелей в Сеуле работает
+✅ Топ-отели в Сеуле загружены
+
+Тесты ревью...
+✅ Отзывы test-hotel-1 найдены
+✅ test-hotel-1 признан надёжным
+✅ test-hotel-3 НЕ признан надёжным (ожидаемо)
+
+Тесты промокодов...
+✅ Промокод TESTCODE1 найден
+✅ VIP-промо доступен VIP
+✅ VIP-промо недоступен обычному
+✅ Обычный промо доступен
+✅ Истекший промо недоступен
+✅ POST /validate промо прошёл
+
+Тесты бронирования...
+✅ Все бронирования получены
+✅ Бронирования test-user-2 найдены
+✅ Бронирование прошло (без промо)
+✅ Бронирование с промо прошло
+✅ Отклонено: неактивный пользователь
+✅ Отклонено: недоверенный отель
+✅ Отклонено: отель полностью забронирован
+✅ Все HTTP-тесты пройдены!
+
+=================================================================
+ Ручная проверка API (дополнительно)
+=================================================================
+--- POST /api/bookings?userId=test-user-3&hotelId=test-hotel-1&promoCode=TESTCODE-VIP ---
+{"id":10,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":"TESTCODE-VIP","discountPercent":20.0,"price":60.0,"createdAt":null}
+
+--- GET /api/hotels/top-rated?city=Seoul&limit=2 ---
+[{"id":"test-hotel-1","operational":true,"fullyBooked":false,"city":"Seoul","rating":4.7,"description":"Modern hotel in Seoul downtown with spa and skybar."}]
+
+--- GET /api/users/test-user-1 ---
+{"id":"test-user-1","status":"ACTIVE","blacklisted":true,"active":true,"name":"Alice","email":"alice@test.com","city":"Seoul"}
+
+--- GET /api/reviews/hotel/test-hotel-1/trusted ---
+true
+
+--- GET /api/promos/TESTCODE-OLD/valid ---
+false
+
+=================================================================
+ Логи успешного старта монолита (docker logs)
+=================================================================
+2026-08-30T17:56:56.630Z  INFO 1 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-08-30T17:56:58.203Z  INFO 1 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-30T17:56:59.373Z  INFO 1 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path ''
+2026-08-30T17:56:59.415Z  INFO 1 --- [           main] c.hotelio.monolith.MonolithApplication   : Started MonolithApplication in 6.986 seconds (process running for 7.899)

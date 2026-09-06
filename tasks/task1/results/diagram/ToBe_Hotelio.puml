@@ -1,0 +1,52 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+title Hotelio - целевая архитектура (промежуточное состояние, To-Be)
+
+Person(user, "Пользователь", "Ищет отели, бронирует, оставляет отзывы")
+
+System_Boundary(edge, "Пограничный слой (Edge)") {
+    Container(gateway, "API Gateway / BFF", "Spring Cloud Gateway", "Единая точка входа, маршрутизация /api/** на монолит и мигрированные сервисы")
+}
+
+System_Boundary(booking_domain, "Домен бронирований (мигрируется)") {
+    Container(booking_svc, "Booking Service", "Spring Boot", "Оркестрирует создание бронирования: валидация пользователя, отеля, промокода, отзывов, расчёт цены")
+    ContainerDb(booking_db, "Booking DB", "PostgreSQL", "booking: бронирования")
+}
+
+System_Boundary(users_domain, "Домен пользователей (мигрируется)") {
+    Container(user_svc, "User Service", "Spring Boot", "Статус пользователей, чёрный список, VIP")
+    ContainerDb(user_db, "User DB", "PostgreSQL", "app_user: пользователи")
+}
+
+System_Boundary(hotels_domain, "Домен отелей (мигрируется)") {
+    Container(hotel_svc, "Hotel Service", "Spring Boot", "Каталог отелей, поиск по городу, рейтинги")
+    ContainerDb(hotel_db, "Hotel DB", "PostgreSQL", "hotel: отели")
+}
+
+System_Boundary(legacy, "Монолит (остаток, не дорабатывается)") {
+    Container(monolith, "Monolith (остаток)", "Spring Boot", "Promo и Review остаются в монолите, работают только на чтение существующего функционала")
+    ContainerDb(monolith_db, "Monolith DB", "PostgreSQL", "promo_code, review")
+}
+
+Container(kafka, "Kafka", "Confluent Kafka", "Шина событий: события о бронированиях и отзывах")
+
+Rel(user, gateway, "HTTPS /api/**", "REST")
+Rel(gateway, booking_svc, "POST /api/bookings", "REST")
+Rel(gateway, hotel_svc, "GET /api/hotels/**", "REST")
+Rel(gateway, user_svc, "GET /api/users/**", "REST")
+Rel(gateway, monolith, "/api/promos/**, /api/reviews/**", "REST")
+
+Rel(booking_svc, user_svc, "Проверка статуса пользователя", "REST")
+Rel(booking_svc, hotel_svc, "Проверка отеля", "REST")
+Rel(booking_svc, monolith, "Валидация промокода и репутации", "REST")
+Rel(booking_svc, kafka, "booking.created", "publish")
+
+Rel(booking_svc, booking_db, "Read/Write")
+Rel(user_svc, user_db, "Read/Write")
+Rel(hotel_svc, hotel_db, "Read/Write")
+Rel(monolith, monolith_db, "Read/Write")
+
+Rel_Back(monolith, hotel_svc, "Поиск отелей (унаследованный вызов)", "REST")
+@enduml

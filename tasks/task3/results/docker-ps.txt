@@ -1,0 +1,19 @@
+CONTAINER ID   IMAGE                                    COMMAND                  CREATED          STATUS          PORTS                                                             NAMES
+849d42aaab8b   task3-apollo-gateway                     "docker-entrypoint.s…"   37 seconds ago   Up 33 seconds   0.0.0.0:4000->4000/tcp, [::]:4000->4000/tcp                       task3-apollo-gateway-1
+940595187c3c   task3-promocode-subgraph                 "docker-entrypoint.s…"   40 seconds ago   Up 35 seconds   0.0.0.0:4003->4003/tcp, [::]:4003->4003/tcp                       task3-promocode-subgraph-1
+2becb744ca3c   task3-hotel-subgraph                     "docker-entrypoint.s…"   40 seconds ago   Up 34 seconds   0.0.0.0:4002->4002/tcp, [::]:4002->4002/tcp                       task3-hotel-subgraph-1
+e6017394d078   task3-booking-subgraph                   "docker-entrypoint.s…"   40 seconds ago   Up 34 seconds   0.0.0.0:4001->4001/tcp, [::]:4001->4001/tcp                       task3-booking-subgraph-1
+466ac7f19bcc   task2-monolith                           "java -jar app.jar"      3 days ago       Up 3 days       0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp                       hotelio-monolith
+a399aed7b39d   task2-booking-history-service            "python consumer.py"     3 days ago       Up 3 days                                                                         booking-history-service
+ba998435f209   task2-booking-service                    "python server.py"       3 days ago       Up 3 days       0.0.0.0:9090->9090/tcp, [::]:9090->9090/tcp                       booking-service
+6a3f22411dcb   postgres:15                              "docker-entrypoint.s…"   3 days ago       Up 3 days       0.0.0.0:5433->5432/tcp, [::]:5433->5432/tcp                       hotelio-db
+c6791b8dec89   postgres:15                              "docker-entrypoint.s…"   3 days ago       Up 3 days       0.0.0.0:5435->5432/tcp, [::]:5435->5432/tcp                       history-db
+5b7984d9487a   postgres:15                              "docker-entrypoint.s…"   3 days ago       Up 3 days       0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp                       booking-db
+fbf56617d449   confluentinc/cp-zookeeper:7.2.1          "/etc/confluent/dock…"   3 days ago       Up 3 days       2888/tcp, 0.0.0.0:2181->2181/tcp, [::]:2181->2181/tcp, 3888/tcp   task2-zookeeper-1
+c41fb7c08cf6   confluentinc/cp-kafka:7.2.1              "/etc/confluent/dock…"   3 days ago       Up 3 days       0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp                       task2-kafka-1
+c1227928960b   coturn/coturn:latest                     "docker-entrypoint.s…"   2 weeks ago      Up 5 days                                                                         mangochat-coturn
+929d2d063228   osrm/osrm-backend                        "osrm-routed --algor…"   2 weeks ago      Up 5 days       0.0.0.0:5002->5000/tcp, [::]:5002->5000/tcp                       osrm-bike
+eced6f2ceb92   osrm/osrm-backend                        "osrm-routed --algor…"   2 weeks ago      Up 5 days       0.0.0.0:5001->5000/tcp, [::]:5001->5000/tcp                       osrm-foot
+d2aaf99ccae5   osrm/osrm-backend                        "osrm-routed --algor…"   2 weeks ago      Up 5 days       0.0.0.0:5000->5000/tcp, [::]:5000->5000/tcp                       osrm-car
+a73a0d61b2b9   overv/openstreetmap-tile-server:latest   "/run.sh run"            2 weeks ago      Up 5 days       5432/tcp, 0.0.0.0:8080->80/tcp, [::]:8080->80/tcp                 osm-tiles
+7166fa163db3   postgres:16-alpine                       "docker-entrypoint.s…"   2 weeks ago      Up 5 days       127.0.0.1:5432->5432/tcp                                          mangochat-db

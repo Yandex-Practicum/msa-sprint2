@@ -1,0 +1,4 @@
+=== curl /ping via port-forward ===
+/ping -> pong
+/health -> ok
+/feature -> Feature X is disabled

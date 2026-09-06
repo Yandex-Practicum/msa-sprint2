@@ -1,0 +1,52 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: booking-service
+spec:
+  hosts:
+    - booking-service
+  http:
+    # 1. Fallback: destination БЕЗ subset.
+    - name: fallback-any-healthy
+      match:
+        - headers:
+            x-fallback:
+              exact: "true"
+      route:
+        - destination:
+            host: booking-service
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+        retryOn: 5xx,connect-failure,refused-stream,gateway-error,reset
+
+    # 2. Фича-флаг: запрос с X-Feature-Enabled: true всегда уходит на v2,
+    - name: feature-flag-v2
+      match:
+        - headers:
+            x-feature-enabled:
+              exact: "true"
+      route:
+        - destination:
+            host: booking-service
+            subset: v2
+      retries:
+        attempts: 2
+        perTryTimeout: 2s
+        retryOn: 5xx,connect-failure,refused-stream
+
+    # 3. Канареечный релиз: 90% v1 / 10% v2 для всего остального трафика.
+    - name: canary-90-10
+      route:
+        - destination:
+            host: booking-service
+            subset: v1
+          weight: 90
+        - destination:
+            host: booking-service
+            subset: v2
+          weight: 10
+      retries:
+        attempts: 2
+        perTryTimeout: 2s
+        retryOn: 5xx,connect-failure,refused-stream,gateway-error

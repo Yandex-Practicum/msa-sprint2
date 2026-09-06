@@ -1,0 +1,29 @@
+# v2 - новая версия (канарейка). Получает 10% трафика + весь трафик
+deploymentName: booking-service-v2
+appName: booking-service
+version: v2
+replicaCount: 1
+
+image:
+  name: booking-service
+  tag: v2
+  pullPolicy: Never
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+  enabled: false   # Service уже создан релизом v1
+
+serviceName: booking-service
+
+env:
+  ENABLE_FEATURE_X: "true"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi

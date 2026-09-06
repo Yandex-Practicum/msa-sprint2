@@ -1,0 +1,32 @@
+=== 1. docker ps (наш стек) ===
+NAMES                     IMAGE                                    STATUS         PORTS
+hotelio-monolith          task2-monolith                           Up 3 minutes   0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp
+booking-history-service   task2-booking-history-service            Up 3 minutes
+booking-service           task2-booking-service                    Up 3 minutes   0.0.0.0:9090->9090/tcp, [::]:9090->9090/tcp
+hotelio-db                postgres:15                              Up 3 minutes   0.0.0.0:5433->5432/tcp, [::]:5433->5432/tcp
+history-db                postgres:15                              Up 3 minutes   0.0.0.0:5435->5432/tcp, [::]:5435->5432/tcp
+booking-db                postgres:15                              Up 3 minutes   0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp
+task2-zookeeper-1         confluentinc/cp-zookeeper:7.2.1          Up 3 minutes   2888/tcp, 0.0.0.0:2181->2181/tcp, [::]:2181->2181/tcp, 3888/tcp
+task2-kafka-1             confluentinc/cp-kafka:7.2.1              Up 3 minutes   0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp
+
+=== Сеть hotelio-net ===
+hotelio-monolith booking-db hotelio-db booking-history-service booking-service task2-kafka-1 history-db task2-zookeeper-1
+
+=== Логи монолита: BookingService beans ===
+➡️  BookingService beans:
+    - bookingService: class com.hotelio.monolith.service.BookingService
+    - grpcBookingService: class com.hotelio.GrpcBookingService
+
+=== Логи booking-service ===
+[booking-service] gRPC server listening on :9090
+[booking-service] published booking-created: {"id": "1", "userId": "test-user-3", "hotelId": "test-hotel-1", "promoCode": null, "discountPercent": 0.0, "price": 80.0, "createdAt": "2026-08-30T22:14:23Z"}
+[booking-service] published booking-created: {"id": "2", "userId": "test-user-2", "hotelId": "test-hotel-1", "promoCode": "TESTCODE1", "discountPercent": 10.0, "price": 90.0, "createdAt": "2026-08-30T22:14:24Z"}
+[booking-service] published booking-created: {"id": "3", "userId": "test-user-3", "hotelId": "test-hotel-1", "promoCode": null, "discountPercent": 0.0, "price": 80.0, "createdAt": "2026-08-30T22:15:15Z"}
+[booking-service] published booking-created: {"id": "4", "userId": "test-user-2", "hotelId": "test-hotel-1", "promoCode": "TESTCODE1", "discountPercent": 10.0, "price": 90.0, "createdAt": "2026-08-30T22:15:16Z"}
+
+=== Логи booking-history-service ===
+[booking-history] consuming booking-created
+[booking-history] stored 1 user=test-user-3 hotel=test-hotel-1 price=80.0
+[booking-history] stored 2 user=test-user-2 hotel=test-hotel-1 price=90.0
+[booking-history] stored 3 user=test-user-3 hotel=test-hotel-1 price=80.0
+[booking-history] stored 4 user=test-user-2 hotel=test-hotel-1 price=90.0

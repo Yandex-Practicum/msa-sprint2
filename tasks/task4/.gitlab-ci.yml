@@ -1,23 +1,47 @@
+# CI/CD пайплайн для booking-service (task4)
+# Локальный запуск: gitlab-ci-local build test deploy tag
+#
+# В проекте не используется Docker Registry: образ загружается в Minikube
+# через `minikube image load`. Для перехода на боевой режим достаточно
+# убрать строку с `minikube image load` (тогда helm install выполняется на хосте).
+
 stages:
   - build
   - test
   - deploy
+  - tag
 
 variables:
-  IMAGE_TAG: latest
   IMAGE_NAME: booking-service
+  IMAGE_TAG: latest
+  HELM_RELEASE: booking-service
+  CHART_PATH: helm/booking-service
 
 build:
   stage: build
   script:
-
+    - docker build -t ${IMAGE_NAME}:${IMAGE_TAG} booking-service/
 
 test:
   stage: test
   script:
-
+    - docker rm -f booking-service-test || true
+    - docker run -d --name booking-service-test -p 18080:8080 ${IMAGE_NAME}:${IMAGE_TAG}
+    - sleep 3
+    - curl -fsS http://localhost:18080/ping
+    - docker rm -f booking-service-test
 
 deploy:
   stage: deploy
   script:
- 
+    - minikube image load ${IMAGE_NAME}:${IMAGE_TAG}
+    - helm upgrade --install ${HELM_RELEASE} ${CHART_PATH} --values ${CHART_PATH}/values.yaml
+    - kubectl rollout status deployment/${HELM_RELEASE} --timeout=120s
+
+tag:
+  stage: tag
+  only:
+    - main
+  script:
+    - git tag "v$(date +%Y%m%d%H%M%S)"
+    - git push origin --tags

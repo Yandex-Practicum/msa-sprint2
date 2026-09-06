@@ -1,0 +1,5 @@
+▶️ Running in-cluster DNS test...
+pongAll commands and output from this session will be recorded in container logs, including credentials and sensitive information passed through the command prompt.
+If you don't see a command prompt, try pressing enter.
+pod "dns-test" deleted from default namespace
+ ✅ Success

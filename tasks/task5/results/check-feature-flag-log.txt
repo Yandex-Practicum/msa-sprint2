@@ -1,0 +1,17 @@
+▶️ Проверка Feature Flag (X-Feature-Enabled: true маршрутизирует на v2)...
+   Поднимаем под-клиент curl-test...
+pod/curl-test created
+pod/curl-test condition met
+
+--- Без заголовка (канареечный маршрут, обычно v1) ---
+{"feature_x":false,"version":"v1"}
+
+--- С заголовком X-Feature-Enabled: true (всегда v2) ---
+{"feature_x":true,"version":"v2"}
+
+--- То же через EnvoyFilter-маршрут (v2, feature_x=true) ---
+{"feature_x":true,"version":"v2"}
+
+--- Функционал фичи /feature есть только у v2 (ENABLE_FEATURE_X=true) ---
+Feature X is enabled!
+

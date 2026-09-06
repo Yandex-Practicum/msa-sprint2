@@ -1,0 +1,28 @@
+▶️ Testing fallback route (v1 down -> v2)
+
+1) Исходное состояние подов:
+NAME                                 READY   STATUS    RESTARTS   AGE
+booking-service-v1-cf79fbd98-4mrs2   2/2     Running   0          107s
+booking-service-v2-f9c8bb5b8-4cr6s   2/2     Running   0          11m
+
+2) Гасим поды v1 (replicas=0):
+deployment.apps/booking-service-v1 scaled
+   Ждём, пока Envoy уберёт эндпоинты v1 из пула...
+
+3) Поднимаем под-клиент curl-test...
+pod/curl-test created
+pod/curl-test condition met
+
+4) Запрос по fallback-маршруту (destination без subset, X-Fallback: true):
+{"feature_x":true,"version":"v2"}
+
+   Ожидание: ответ от v2 (v1 погашен, остались только v2).
+
+5) Для сравнения - обычный канареечный маршрут при погашенном v1:
+no healthy upstream
+6) Возвращаем v1:
+deployment.apps/booking-service-v1 scaled
+Waiting for deployment "booking-service-v1" rollout to finish: 0 out of 1 new replicas have been updated...
+Waiting for deployment "booking-service-v1" rollout to finish: 0 out of 1 new replicas have been updated...
+Waiting for deployment "booking-service-v1" rollout to finish: 0 of 1 updated replicas are available...
+deployment "booking-service-v1" successfully rolled out
