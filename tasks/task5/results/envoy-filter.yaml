@@ -1,0 +1,36 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: booking-feature-flag
+  namespace: default
+spec:
+  configPatches:
+    - applyTo: HTTP_FILTER
+      match:
+        context: ANY
+        listener:
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+              subFilter:
+                name: envoy.filters.http.router
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.http.lua
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+            inlineCode: |
+              function envoy_on_request(request_handle)
+                local headers = request_handle:headers()
+                if headers:get("x-feature-enabled") == "true" then
+                  request_handle:streamInfo():dynamicMetadata():set("feature_flag", "enabled", "true")
+                end
+              end
+
+              function envoy_on_response(response_handle)
+                local meta = response_handle:streamInfo():dynamicMetadata():get("feature_flag")
+                if meta ~= nil and meta["enabled"] == "true" then
+                  response_handle:headers():add("x-envoy-feature-flag", "on")
+                end
+              end

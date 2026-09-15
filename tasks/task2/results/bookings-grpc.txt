@@ -1,0 +1,20 @@
+{
+  "bookings": [
+    {
+      "id": "1",
+      "userId": "test-user-3",
+      "hotelId": "test-hotel-1",
+      "price": 80,
+      "createdAt": "2026-09-08T20:33:06.547944Z"
+    },
+    {
+      "id": "2",
+      "userId": "test-user-2",
+      "hotelId": "test-hotel-1",
+      "promoCode": "TESTCODE1",
+      "discountPercent": 10,
+      "price": 90,
+      "createdAt": "2026-09-08T20:33:08.004308Z"
+    }
+  ]
+}

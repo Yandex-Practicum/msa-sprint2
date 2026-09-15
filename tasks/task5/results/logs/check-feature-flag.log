@@ -1,0 +1,10 @@
+Фича-флаг: X-Feature-Enabled → маршрут на v2 + пометка EnvoyFilter'ом
+GATEWAY_URL=http://192.168.49.2:31693
+--- 1) Запрос С заголовком X-Feature-Enabled: true ---
+body: pong (v2) feature-on
+--- 2) Проверка заголовка от EnvoyFilter ---
+HTTP/1.1 200 OK
+x-envoy-feature-flag: on
+--- 3) Контроль: запрос БЕЗ заголовка (canary ~90/10) ---
+pong (v1)
+PASS: фича-флаг включён, ответ от v2 (feature-on)

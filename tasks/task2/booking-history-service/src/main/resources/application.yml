@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: booking-history-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://booking-history-db:5432/booking_history}
+    username: ${SPRING_DATASOURCE_USERNAME:history}
+    password: ${SPRING_DATASOURCE_PASSWORD:history}
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: false
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
+    consumer:
+      group-id: ${booking.consumer-group:booking-history-service}
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+
+server:
+  port: 8082
+
+booking:
+  events-topic: ${KAFKA_BOOKING_TOPIC:booking-created}
+  consumer-group: ${KAFKA_CONSUMER_GROUP:booking-history-service}
+
+logging:
+  level:
+    com.hotelio: INFO
+    org.apache.kafka: WARN

@@ -14,11 +14,22 @@ echo "▶️ Helm release:"
 helm list | grep booking-service || echo "(No release found)"
 
 echo
-echo "▶️ Port-forward to test service locally:"
-echo "  kubectl port-forward svc/booking-service 8080:80"
-echo "  Then in another terminal:"
-echo "    curl http://localhost:8080/ping"
-
+echo "ENABLE_FEATURE_X in pod:"
+kubectl get deployment booking-service \
+ -o jsonpath='{.spec.template.spec.containers[0].env}' 2>/dev/null || true
 echo
-echo "▶️ Quick curl (if port-forward already running):"
-curl --fail http://localhost:8080/ping && echo "✅ Reachable" || echo "❌ Not responding"
+echo
+
+echo "▶️ Local curl via port-forward (svc/booking-service 8080:80):"
+kubectl port-forward svc/booking-service 8080:80 >/dev/null 2>&1 &
+PF=$!
+trap 'kill $PF 2>/dev/null' EXIT
+sleep 3
+
+printf " GET /ping -> "
+curl --fail -s http://localhost:8080/ping && echo
+printf " GET /ready -> "
+curl --fail -s http://localhost:8080/ready && echo
+printf " GET /feature-> "
+curl --fail -s http://localhost:8080/feature && echo
+echo "Reachable"

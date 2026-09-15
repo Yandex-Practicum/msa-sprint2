@@ -1,0 +1,4 @@
+booking-service:latest                                                                                17f92fee5ea2         26MB         7.63MB        
+booking-service:v1                                                                                    c56d5cbc783e         26MB         7.63MB        
+booking-service:v2                                                                                    c56d5cbc783e         26MB         7.63MB        
+task2-booking-service:latest                                                                          4f5bea29abaf        578MB          182MB        

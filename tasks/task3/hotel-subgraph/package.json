@@ -1,11 +1,13 @@
 {
   "name": "hotel-subgraph",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
+  "description": "Federated hotel subgraph: batching + caching via DataLoader",
   "dependencies": {
     "@apollo/server": "^4.8.1",
     "@apollo/subgraph": "^2.4.1",
+    "dataloader": "^2.2.2",
     "graphql": "^16.8.1",
-	"graphql-tag": "^2.12.6"
+    "graphql-tag": "^2.12.6"
   }
 }

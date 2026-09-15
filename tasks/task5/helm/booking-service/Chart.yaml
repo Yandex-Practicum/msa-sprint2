@@ -1,0 +1,5 @@
+apiVersion: v2
+name: booking-service
+description: Booking service for Istio traffic management demo (v1/v2)
+version: 0.1.0
+appVersion: "1.0"

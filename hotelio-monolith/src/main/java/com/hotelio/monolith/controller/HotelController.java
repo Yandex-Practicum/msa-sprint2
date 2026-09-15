@@ -24,6 +24,12 @@ public class HotelController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // GET /api/hotels/by-ids?ids=h1,h2,h3 - batch-загрузка для DataLoader hotel-subgraph
+    @GetMapping("/by-ids")
+    public List<Hotel> getHotelsByIds(@RequestParam List<String> ids) {
+        return hotelService.getHotelsByIds(ids);
+    }
+
     @GetMapping("/{id}/operational")
     public boolean isOperational(@PathVariable String id) {
         return hotelService.isHotelOperational(id);

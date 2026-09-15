@@ -1,0 +1,39 @@
+Fallback-маршрут v1→v2 (старая версия недоступна → обслуживает v2)
+GATEWAY_URL=http://192.168.49.2:31693
+--- 1) Исходное состояние: v1 и v2 доступны ---
+ booking-service-v1-5b5d8cc88b-52wp2 2/2
+ booking-service-v1-5b5d8cc88b-fx4tn 2/2
+ booking-service-v1-5b5d8cc88b-hmfhf 2/2
+ booking-service-v1-5b5d8cc88b-nz8bp 2/2
+ booking-service-v1-5b5d8cc88b-p49zx 2/2
+ booking-service-v1-5b5d8cc88b-qqzsb 2/2
+ booking-service-v1-5b5d8cc88b-rd2fk 2/2
+ booking-service-v1-5b5d8cc88b-xj7l8 2/2
+ booking-service-v1-5b5d8cc88b-zbt9x 2/2
+ booking-service-v2-5bfdf596d6-qqph6 2/2
+реплики: v1=9 v2=1
+до отказа: v1=23 v2=7 errors=0
+нормальный режим
+--- 2) Отказ v1: масштабируем booking-service-v1 до 0 ---
+deployment.apps/booking-service-v1 scaled
+v1 → 0; ожидаем удаления endpoint'ов (15s)...
+ booking-service-v2-5bfdf596d6-qqph6 2/2
+--- 3) Fallback: трафик должен обслуживаться v2 ---
+после отказа v1: v2=30 errors=0
+FALLBACK OK: v1 недоступна, но сервис полностью обслуживается v2
+--- 4) Восстановление v1 (→ 9 реплик) ---
+deployment.apps/booking-service-v1 scaled
+ждём готовности v1 (20s)...
+ booking-service-v1-5b5d8cc88b-5gktf 2/2
+ booking-service-v1-5b5d8cc88b-5pqf5 2/2
+ booking-service-v1-5b5d8cc88b-7hn65 2/2
+ booking-service-v1-5b5d8cc88b-bll2l 2/2
+ booking-service-v1-5b5d8cc88b-flpgw 2/2
+ booking-service-v1-5b5d8cc88b-llqlx 2/2
+ booking-service-v1-5b5d8cc88b-nqg8j 2/2
+ booking-service-v1-5b5d8cc88b-xdkmb 2/2
+ booking-service-v1-5b5d8cc88b-zdx2g 2/2
+ booking-service-v2-5bfdf596d6-qqph6 2/2
+--- 5) Проверка возврата к canary ~90/10 ---
+после восстановления: v1=46 v2=4 errors=0
+PASS: fallback v1→v2 работает, сервис восстановлен в канареечный режим

@@ -1,0 +1,18 @@
+@startuml C1_Context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title C1 - Контекст Hotelio (целевая архитектура)
+
+Person(user, "Клиент", "Бронирует отели, смотрит каталог и отзывы, применяет промокоды")
+Person(admin, "Администратор", "Управляет контентом и промокодами")
+
+System(platform, "Hotelio - платформа бронирования отелей", "BFF/API-фасад и микросервисы: booking, user, hotel, promo, review")
+
+System_Ext(payment, "Платёжный провайдер", "Внешняя система онлайн-оплаты")
+System_Ext(notify, "Email/SMS-провайдер", "Внешняя система уведомлений")
+
+Rel(user, platform, "Бронирование, каталог, отзывы", "HTTPS/GraphQL")
+Rel(admin, platform, "Управление контентом и промокодами", "HTTPS")
+Rel(platform, payment, "Инициация оплаты", "HTTPS")
+Rel(platform, notify, "События бронирования", "Kafka / HTTPS")
+@enduml

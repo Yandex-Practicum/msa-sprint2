@@ -1,0 +1,36 @@
+@startuml C2_Container_Current
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title C2 - Контейнеры Hotelio (текущее состояние: монолит)
+
+Person(client, "Клиент", "Web / мобильный клиент")
+
+Container_Boundary(monolith, "Hotelio Monolith [Java Spring Boot]") {
+  Container(web, "REST API", "Spring MVC", "/api/bookings /api/users /api/hotels /api/promos /api/reviews")
+  Component(booking, "BookingService", "Java", "Оркестратор: валидации, расчёт цены, создание брони")
+  Component(us, "AppUserService", "Java", "Статусы, чёрный список, VIP")
+  Component(hs, "HotelService", "Java", "Каталог отелей")
+  Component(ps, "PromoCodeService", "Java", "Промокоды, VIP-only")
+  Component(rs, "ReviewService", "Java", "Отзывы, доверие к отелю")
+  ContainerDb(db, "Monolith DB", "PostgreSQL", "booking, app_user, hotel, promo_code, review")
+}
+
+Rel(client, web, "HTTPS")
+Rel(web, booking, "использует")
+Rel(web, us, "использует")
+Rel(web, hs, "использует")
+Rel(web, ps, "использует")
+Rel(web, rs, "использует")
+
+Rel(booking, us, "проверка пользователя (active, blacklist, VIP)")
+Rel(booking, hs, "проверка отеля (operational, fully-booked)")
+Rel(booking, rs, "проверка доверия")
+Rel(booking, ps, "применение промокода")
+Rel(ps, us, "неявная зависимость (нужен VIP-статус)")
+
+Rel(booking, db, "Read/Write")
+Rel(us, db, "Read")
+Rel(hs, db, "Read")
+Rel(ps, db, "Read")
+Rel(rs, db, "Read/Write")
+@enduml

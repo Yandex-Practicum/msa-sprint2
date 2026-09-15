@@ -1,0 +1,1 @@
+docker.io/library/booking-service:latest

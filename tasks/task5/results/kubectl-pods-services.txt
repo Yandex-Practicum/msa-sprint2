@@ -1,0 +1,11 @@
+NAME                                  READY   STATUS    RESTARTS   AGE     IP            NODE       NOMINATED NODE   READINESS GATES
+booking-service-v1-5b5d8cc88b-5gktf   2/2     Running   0          4m15s   10.244.0.21   minikube   <none>           <none>
+booking-service-v1-5b5d8cc88b-5pqf5   2/2     Running   0          4m15s   10.244.0.26   minikube   <none>           <none>
+booking-service-v1-5b5d8cc88b-7hn65   2/2     Running   0          4m15s   10.244.0.25   minikube   <none>           <none>
+booking-service-v1-5b5d8cc88b-bll2l   2/2     Running   0          4m15s   10.244.0.20   minikube   <none>           <none>
+booking-service-v1-5b5d8cc88b-flpgw   2/2     Running   0          4m15s   10.244.0.23   minikube   <none>           <none>
+booking-service-v1-5b5d8cc88b-llqlx   2/2     Running   0          4m15s   10.244.0.28   minikube   <none>           <none>
+booking-service-v1-5b5d8cc88b-nqg8j   2/2     Running   0          4m15s   10.244.0.22   minikube   <none>           <none>
+booking-service-v1-5b5d8cc88b-xdkmb   2/2     Running   0          4m15s   10.244.0.27   minikube   <none>           <none>
+booking-service-v1-5b5d8cc88b-zdx2g   2/2     Running   0          4m15s   10.244.0.24   minikube   <none>           <none>
+booking-service-v2-5bfdf596d6-qqph6   2/2     Running   0          10m     10.244.0.10   minikube   <none>           <none>

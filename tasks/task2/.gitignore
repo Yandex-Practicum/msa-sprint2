@@ -1,0 +1,8 @@
+booking-service/build/
+booking-history-service/build/
+
+.idea/
+*.iml
+.vscode/
+
+.gradle/

@@ -1,0 +1,2 @@
+NAME              ENDPOINTS                                                        AGE
+booking-service   10.244.0.10:8080,10.244.0.20:8080,10.244.0.21:8080 + 7 more...   6m56s

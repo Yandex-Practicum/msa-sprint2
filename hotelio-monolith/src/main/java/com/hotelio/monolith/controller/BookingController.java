@@ -19,7 +19,7 @@ public class BookingController {
 
     // GET /api/bookings?userId=123
     @GetMapping
-    public List<Booking> listBookings(@RequestParam(required = false) String userId) {
+    public List<Booking> listBookings(@RequestParam(required = false, defaultValue = "") String userId) {
         return bookingService.listAll(userId);
     }
 

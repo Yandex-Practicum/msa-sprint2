@@ -1,0 +1,48 @@
+@startuml C2_Container_Target
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title C2 - Контейнеры Hotelio (целевая архитектура: микросервисы + BFF)
+
+Person(user, "Клиент", "Web / Mobile")
+
+Container_Boundary(platform, "Hotelio Platform") {
+  Container(gw, "BFF / API Gateway", "GraphQL + REST", "Точка входа, ACL, агрегация")
+
+  Container(booking, "booking-service", "Spring Boot", "Создание и список бронирований")
+  Container(us, "user-service", "Spring Boot", "Профиль, статус, VIP")
+  Container(hs, "hotel-service", "Spring Boot", "Каталог отелей")
+  Container(ps, "promo-service", "Spring Boot", "Промокоды")
+  Container(rs, "review-service", "Spring Boot", "Отзывы, доверие")
+
+  Container(kafka, "Kafka", "События", "BookingCreated, UserUpdated...")
+
+  ContainerDb(bdb, "Booking DB", "PostgreSQL", "")
+  ContainerDb(udb, "User DB", "PostgreSQL", "")
+  ContainerDb(hdb, "Hotel DB", "PostgreSQL", "")
+  ContainerDb(pdb, "Promo DB", "PostgreSQL", "")
+  ContainerDb(rdb, "Review DB", "PostgreSQL", "")
+}
+
+Rel(user, gw, "HTTPS/GraphQL")
+Rel(gw, booking, "REST/gRPC")
+Rel(gw, us, "REST")
+Rel(gw, hs, "REST")
+Rel(gw, ps, "REST")
+Rel(gw, rs, "REST")
+
+Rel(booking, us, "валидация пользователя")
+Rel(booking, hs, "валидация отеля")
+Rel(booking, rs, "проверка доверия")
+Rel(booking, ps, "применение промокода")
+
+Rel(booking, bdb, "Read/Write")
+Rel(us, udb, "Read/Write")
+Rel(hs, hdb, "Read")
+Rel(ps, pdb, "Read")
+Rel(rs, rdb, "Read/Write")
+
+Rel(booking, kafka, "публикует BookingCreated")
+Rel(us, kafka, "публикует UserUpdated")
+Rel(ps, kafka, "подписка: UserUpdated")
+Rel(rs, kafka, "события отзывов")
+@enduml

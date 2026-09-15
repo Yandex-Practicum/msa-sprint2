@@ -1,0 +1,1 @@
+{"data":{"userBookings":[{"id":"3","hotel":{"name":"Grand Central Seoul (Seoul)"}},{"id":"4","hotel":{"name":"Han River Retreat (Seoul)"}},{"id":"5","hotel":{"name":"Busan Harbor View (Busan)"}},{"id":"6","hotel":{"name":"Gwangalli Beach (Busan)"}},{"id":"7","hotel":{"name":"Daegu Plaza (Daegu)"}},{"id":"8","hotel":{"name":"Paris Lumiere (Paris)"}}]}}

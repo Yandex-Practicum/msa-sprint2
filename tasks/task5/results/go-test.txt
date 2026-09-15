@@ -1,0 +1,16 @@
+=== RUN   TestPingV1
+--- PASS: TestPingV1 (0.00s)
+=== RUN   TestPingV2WithoutHeader
+--- PASS: TestPingV2WithoutHeader (0.00s)
+=== RUN   TestPingV2FeatureEnabled
+--- PASS: TestPingV2FeatureEnabled (0.00s)
+=== RUN   TestReady
+--- PASS: TestReady (0.00s)
+=== RUN   TestHealth
+--- PASS: TestHealth (0.00s)
+=== RUN   TestFeatureDisabledByDefault
+--- PASS: TestFeatureDisabledByDefault (0.00s)
+=== RUN   TestFeatureEnabled
+--- PASS: TestFeatureEnabled (0.00s)
+PASS
+ok  	booking-service	0.037s

@@ -1,0 +1,42 @@
+Проверка установки Istio (istio-system)...
+NAME                                    READY   STATUS    RESTARTS   AGE     IP           NODE       NOMINATED NODE   READINESS GATES
+istio-egressgateway-967756d76-trqqq     1/1     Running   0          7m14s   10.244.0.8   minikube   <none>           <none>
+istio-ingressgateway-67bd4766db-shfsv   1/1     Running   0          7m13s   10.244.0.9   minikube   <none>           <none>
+istiod-667bc4c875-k5tpp                 1/1     Running   0          8m8s    10.244.0.7   minikube   <none>           <none>
+
+Проверка инъекции sidecar в namespace 'default'...
+istio-injection = enabled
+
+Поды booking-service v1/v2 (ожидается 2/2 Running, sidecar инжектирован)...
+NAME                                  READY   STATUS    RESTARTS   AGE     IP            NODE       NOMINATED NODE   READINESS GATES
+booking-service-v1-5b5d8cc88b-52wp2   2/2     Running   0          90s     10.244.0.19   minikube   <none>           <none>
+booking-service-v1-5b5d8cc88b-fx4tn   2/2     Running   0          91s     10.244.0.17   minikube   <none>           <none>
+booking-service-v1-5b5d8cc88b-hmfhf   2/2     Running   0          91s     10.244.0.15   minikube   <none>           <none>
+booking-service-v1-5b5d8cc88b-nz8bp   2/2     Running   0          91s     10.244.0.16   minikube   <none>           <none>
+booking-service-v1-5b5d8cc88b-p49zx   2/2     Running   0          91s     10.244.0.14   minikube   <none>           <none>
+booking-service-v1-5b5d8cc88b-qqzsb   2/2     Running   0          91s     10.244.0.18   minikube   <none>           <none>
+booking-service-v1-5b5d8cc88b-rd2fk   2/2     Running   0          91s     10.244.0.13   minikube   <none>           <none>
+booking-service-v1-5b5d8cc88b-xj7l8   2/2     Running   0          117s    10.244.0.11   minikube   <none>           <none>
+booking-service-v1-5b5d8cc88b-zbt9x   2/2     Running   0          91s     10.244.0.12   minikube   <none>           <none>
+booking-service-v2-5bfdf596d6-qqph6   2/2     Running   0          5m23s   10.244.0.10   minikube   <none>           <none>
+
+Istio-конфигурации: Gateway / VirtualService / DestinationRule / EnvoyFilter...
+NAME                                          AGE
+gateway.networking.istio.io/booking-gateway   56s
+
+NAME                                                 GATEWAYS                     HOSTS                                                             AGE
+virtualservice.networking.istio.io/booking-service   ["booking-gateway","mesh"]   ["booking-service","booking-service.default.svc.cluster.local"]   56s
+
+NAME                                                  HOST              AGE
+destinationrule.networking.istio.io/booking-service   booking-service   56s
+
+NAME                                                   AGE
+envoyfilter.networking.istio.io/booking-feature-flag   56s
+
+Ingress-gateway URL для проверок...
+GATEWAY_URL=http://192.168.49.2:31693
+HOST_HEADER=Host: booking-service.default.svc.cluster.local
+
+Сквозная проверка через ingress-gateway (Host: booking-service)...
+HTTP-статус: 200 0.057032s
+Ответ: pong (v1)

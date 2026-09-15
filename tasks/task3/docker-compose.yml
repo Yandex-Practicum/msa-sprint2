@@ -1,20 +1,47 @@
-version: '3.8'
-
 services:
   apollo-gateway:
     build: ./gateway
+    container_name: task3-apollo-gateway
     ports:
       - "4000:4000"
+    networks:
+      - hotelio-net
     depends_on:
       - booking-subgraph
       - hotel-subgraph
+      - promocode-subgraph
 
   booking-subgraph:
     build: ./booking-subgraph
+    container_name: task3-booking-subgraph
     ports:
       - "4001:4001"
+    networks:
+      - hotelio-net
+    environment:
+      GRPC_BOOKING_HOST: booking-service
+      GRPC_BOOKING_PORT: "9090"
 
   hotel-subgraph:
     build: ./hotel-subgraph
+    container_name: task3-hotel-subgraph
     ports:
       - "4002:4002"
+    networks:
+      - hotelio-net
+    environment:
+      HOTEL_API_BASE: http://monolith:8080
+
+  promocode-subgraph:
+    build: ./promocode-subgraph
+    container_name: task3-promocode-subgraph
+    ports:
+      - "4003:4003"
+    networks:
+      - hotelio-net
+    environment:
+      BOOKING_FACADE_URL: http://monolith:8080
+
+networks:
+  hotelio-net:
+    external: true

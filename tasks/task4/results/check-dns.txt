@@ -1,0 +1,10 @@
+Running in-cluster DNS test...
+pod/dns-test created
+Connecting to booking-service (10.108.105.163:80)
+writing to stdout
+-                    100% |********************************|     4  0:00:00 ETA
+written to stdout
+pong
+DNS_OK
+
+Success

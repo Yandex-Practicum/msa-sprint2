@@ -1,0 +1,3 @@
+CONTAINER ID   IMAGE            COMMAND                  CREATED              STATUS              PORTS                                         NAMES
+bd50ada189f2   postgres:15      "docker-entrypoint.s…"   About a minute ago   Up About a minute   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   hotelio-db
+5ca298c040f2   task1-monolith   "java -jar app.jar"      About a minute ago   Up About a minute   0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp   hotelio-monolith

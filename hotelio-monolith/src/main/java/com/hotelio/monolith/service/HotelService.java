@@ -29,6 +29,11 @@ public class HotelService {
         return repo.findById(hotelId);
     }
 
+    public List<Hotel> getHotelsByIds(List<String> ids) {
+        if (ids == null || ids.isEmpty()) return Collections.emptyList();
+        return repo.findAllById(ids);
+    }
+
     public List<Hotel> findHotelsInCity(String city) {
         if (city == null || city.isBlank()) return Collections.emptyList();
         return repo.findByCity(city);

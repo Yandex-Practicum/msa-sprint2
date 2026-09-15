@@ -1,0 +1,150 @@
+Using fallback git user.email
+  Command failed with exit code 1: git config user.email
+Using fallback git user.name
+  Command failed with exit code 1: git config user.name
+parsing and downloads finished in 178 ms.
+json schema validated in 520 ms
+build  starting shell (build)
+build  $ docker build -t ${IMAGE_NAME}:${IMAGE_TAG} booking-service/
+build  > #0 building with "default" instance using docker driver
+build  > 
+build  > #1 [internal] load build definition from Dockerfile
+build  > #1 transferring dockerfile: 654B 0.0s done
+build  > #1 DONE 0.1s
+build  > 
+build  > #2 [internal] load metadata for docker.io/library/golang:1.21-alpine
+build  > #2 DONE 0.2s
+build  > 
+build  > #3 [internal] load metadata for docker.io/library/alpine:3.19
+build  > #3 DONE 0.2s
+build  > 
+build  > #4 [internal] load .dockerignore
+build  > #4 transferring context: 2B done
+build  > #4 DONE 0.1s
+build  > 
+build  > #5 [internal] load build context
+build  > #5 DONE 0.0s
+build  > 
+build  > #6 [build 1/5] FROM docker.io/library/golang:1.21-alpine@sha256:2414035b086e3c42b99654c8b26e6f5b1b1598080d65fd03c7f499552ff4dc94
+build  > #6 resolve docker.io/library/golang:1.21-alpine@sha256:2414035b086e3c42b99654c8b26e6f5b1b1598080d65fd03c7f499552ff4dc94
+build  > #6 resolve docker.io/library/golang:1.21-alpine@sha256:2414035b086e3c42b99654c8b26e6f5b1b1598080d65fd03c7f499552ff4dc94 0.1s done
+build  > #6 DONE 0.4s
+build  > 
+build  > #7 [stage-1 1/4] FROM docker.io/library/alpine:3.19@sha256:6baf43584bcb78f2e5847d1de515f23499913ac9f12bdf834811a3145eb11ca1
+build  > #7 resolve docker.io/library/alpine:3.19@sha256:6baf43584bcb78f2e5847d1de515f23499913ac9f12bdf834811a3145eb11ca1 0.1s done
+build  > #7 DONE 0.3s
+build  > 
+build  > #5 [internal] load build context
+build  > #5 transferring context: 1.21kB 0.0s done
+build  > #5 DONE 0.2s
+build  > 
+build  > #8 [stage-1 2/4] RUN apk add --no-cache curl &&     adduser -D -u 1000 booking
+build  > #8 ...
+build  > 
+build  > #9 [build 2/5] WORKDIR /src
+build  > #9 DONE 0.2s
+build  > 
+build  > #10 [build 3/5] COPY go.mod ./
+build  > #10 DONE 0.3s
+build  > 
+build  > #8 [stage-1 2/4] RUN apk add --no-cache curl &&     adduser -D -u 1000 booking
+build  > #8 ...
+build  > 
+build  > #11 [build 4/5] COPY main.go ./
+build  > #11 DONE 0.3s
+build  > 
+build  > #12 [build 5/5] RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o booking-service main.go
+build  > #12 ...
+build  > 
+build  > #8 [stage-1 2/4] RUN apk add --no-cache curl &&     adduser -D -u 1000 booking
+build  > #8 1.270 fetch https://dl-cdn.alpinelinux.org/alpine/v3.19/main/x86_64/APKINDEX.tar.gz
+build  > #8 2.575 fetch https://dl-cdn.alpinelinux.org/alpine/v3.19/community/x86_64/APKINDEX.tar.gz
+build  > #8 3.950 (1/9) Installing ca-certificates (20250911-r0)
+build  > #8 4.216 (2/9) Installing brotli-libs (1.1.0-r1)
+build  > #8 4.592 (3/9) Installing c-ares (1.27.0-r0)
+build  > #8 4.726 (4/9) Installing libunistring (1.1-r2)
+build  > #8 5.153 (5/9) Installing libidn2 (2.3.4-r4)
+build  > #8 5.327 (6/9) Installing nghttp2-libs (1.58.0-r0)
+build  > #8 5.440 (7/9) Installing libpsl (0.21.5-r0)
+build  > #8 5.618 (8/9) Installing libcurl (8.14.1-r2)
+build  > #8 5.859 (9/9) Installing curl (8.14.1-r2)
+build  > #8 6.061 Executing busybox-1.36.1-r20.trigger
+build  > #8 6.199 Executing ca-certificates-20250911-r0.trigger
+build  > #8 6.640 OK: 12 MiB in 24 packages
+build  > #8 DONE 7.4s
+build  > 
+build  > #12 [build 5/5] RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o booking-service main.go
+build  > #12 ...
+build  > 
+build  > #13 [stage-1 3/4] WORKDIR /app
+build  > #13 DONE 0.4s
+build  > 
+build  > #12 [build 5/5] RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o booking-service main.go
+build  > still running...
+build  > still running...
+build  > still running...
+build  > #12 DONE 40.4s
+build  > 
+build  > #14 [stage-1 4/4] COPY --from=build /src/booking-service /app/booking-service
+build  > #14 DONE 0.2s
+build  > 
+build  > #15 exporting to image
+build  > #15 exporting layers
+build  > #15 exporting layers 0.9s done
+build  > #15 exporting manifest sha256:5e1bd20b2177a73738345e25b89b68cec59652c7dabd40e05b83eb9dc2dbf376 0.0s done
+build  > #15 exporting config sha256:14ada3ad5cf2cc6c3ada57457bb78dbdcb35adaa36cc40a51739d009ff7a7f03 0.1s done
+build  > #15 exporting attestation manifest sha256:c0a04e5d54b052544c0749c21aaadd902ecfedaaea3b2351d30086c44292f9bc 0.1s done
+build  > #15 exporting manifest list sha256:86969c67b379b8725bc46af020d03b0a5fded768902c91beaa746f7565035332
+build  > #15 exporting manifest list sha256:86969c67b379b8725bc46af020d03b0a5fded768902c91beaa746f7565035332 0.1s done
+build  > #15 naming to docker.io/library/booking-service:latest done
+build  > #15 unpacking to docker.io/library/booking-service:latest
+build  > #15 unpacking to docker.io/library/booking-service:latest 0.9s done
+build  > #15 DONE 2.2s
+build  $ docker images ${IMAGE_NAME}:${IMAGE_TAG}
+build  > IMAGE                    ID             DISK USAGE   CONTENT SIZE   EXTRA
+build  > booking-service:latest   86969c67b379         26MB         7.63MB        
+build  finished in 47 s
+test   starting shell (test)
+test   $ docker rm -f booking-service-test || true
+test   $ docker run -d --name booking-service-test -p 8080:8080 -e ENABLE_FEATURE_X=true ${IMAGE_NAME}:${IMAGE_TAG}
+test   > 683a6fb8598efacc83ea552394604e76b490cd898cd99c7f5f189bcaaade3fcb
+test   $ sleep 2
+test   $ test "$(curl -s http://localhost:8080/ping)" = "pong" && echo "OK  /ping -> pong"
+test   > OK  /ping -> pong
+test   $ curl --fail -s http://localhost:8080/ready | grep -q ready && echo "OK  /ready"
+test   > OK  /ready
+test   $ curl --fail -s http://localhost:8080/health | grep -q ok && echo "OK  /health"
+test   > OK  /health
+test   $ test "$(curl -s http://localhost:8080/feature)" = "Feature X is enabled!" && echo "OK  /feature (ENABLE_FEATURE_X=true)"
+test   > OK  /feature (ENABLE_FEATURE_X=true)
+test   $ docker rm -f booking-service-test
+test   > booking-service-test
+test   finished in 4.67 s
+deploy starting shell (deploy)
+deploy $ minikube status >/dev/null 2>&1 || minikube start --driver=docker
+deploy $ minikube image load ${IMAGE_NAME}:${IMAGE_TAG}
+deploy $ helm upgrade --install booking-service helm/booking-service -f helm/booking-service/values-staging.yaml --set image.name=${IMAGE_NAME} --set image.tag=${IMAGE_TAG} --set image.pullPolicy=Never
+deploy > Release "booking-service" has been upgraded. Happy Helming!
+deploy > NAME: booking-service
+deploy > LAST DEPLOYED: Wed Sep  9 00:36:58 2026
+deploy > NAMESPACE: default
+deploy > STATUS: deployed
+deploy > REVISION: 2
+deploy > TEST SUITE: None
+deploy $ kubectl rollout status deployment/booking-service --timeout=120s
+deploy > deployment "booking-service" successfully rolled out
+deploy finished in 11 s
+tag    starting shell (tag)
+tag    $ git tag "booking-service-$(date +%Y%m%d-%H%M%S)"
+tag    $ echo "Создан тег:"
+tag    > Создан тег:
+tag    $ git tag -l "booking-service-*" | sort | tail -3
+tag    > booking-service-20260907-172403
+tag    > booking-service-20260907-172536
+tag    > booking-service-20260909-003659
+tag    finished in 79 ms
+
+ PASS  build 
+ PASS  test  
+ PASS  deploy
+ PASS  tag   

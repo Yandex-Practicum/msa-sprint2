@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: booking-service
+  main:
+    web-application-type: none
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://booking-db:5432/booking}
+    username: ${SPRING_DATASOURCE_USERNAME:booking}
+    password: ${SPRING_DATASOURCE_PASSWORD:booking}
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: false
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+grpc:
+  server:
+    port: ${GRPC_PORT:9090}
+
+monolith:
+  base-url: ${MONOLITH_BASE_URL:http://monolith:8080}
+
+booking:
+  events-topic: ${KAFKA_BOOKING_TOPIC:booking-created}
+
+logging:
+  level:
+    com.hotelio: INFO
+    org.apache.kafka: WARN

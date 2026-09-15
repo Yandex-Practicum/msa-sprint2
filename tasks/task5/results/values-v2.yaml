@@ -1,0 +1,38 @@
+version: v2
+replicaCount: 1
+
+image:
+  name: booking-service
+  tag: v2
+  pullPolicy: Never
+
+service:
+  create: false
+
+env:
+  - name: SERVICE_VERSION
+    value: "v2"
+  - name: ENABLE_FEATURE_X
+    value: "true"
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 250m
+    memory: 160Mi
+
+livenessProbe:
+  httpGet:
+    path: /ping
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /ping
+    port: 8080
+  initialDelaySeconds: 3
+  periodSeconds: 5
