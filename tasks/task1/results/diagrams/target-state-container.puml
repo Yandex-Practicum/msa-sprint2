@@ -1,0 +1,60 @@
+@startuml target-state-container
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+title Hotelio — целевая архитектура
+
+Person(user, "Пользователь / партнёрский канал", "Web, mobile, partner API")
+
+System_Boundary(hotelio, "Hotelio Platform") {
+
+  Container(gateway, "API Gateway / GraphQL Federation", "Apollo Gateway / GraphQL Router", "Единая точка входа, BFF per platform, ACL, композиция подграфов")
+
+  Container(bookingSvc, "Booking Service", "Java / gRPC + GraphQL subgraph", "Создание и просмотр бронирований, расчёт цены")
+  Container(userSvc, "User Service", "Java", "Статус пользователя, чёрный список")
+  Container(hotelSvc, "Hotel Service", "Java", "Каталог отелей, доступность")
+  Container(promoSvc, "PromoCode Service", "Java", "Промокоды и скидки")
+  Container(reviewSvc, "Review Service", "Java", "Отзывы и рейтинг доверия")
+
+  ContainerDb(bookingDb, "Booking DB", "PostgreSQL", "booking")
+  ContainerDb(userDb, "User DB", "PostgreSQL", "app_user")
+  ContainerDb(hotelDb, "Hotel DB", "PostgreSQL", "hotel")
+  ContainerDb(promoDb, "Promo DB", "PostgreSQL", "promo_code")
+  ContainerDb(reviewDb, "Review DB", "PostgreSQL", "review")
+
+  Container(kafka, "Kafka", "Event backbone", "Событийная интеграция: BookingCreated, ReviewAdded и т.д.")
+  Container(mesh, "Service Mesh (Istio)", "Sidecar proxies", "mTLS, канареечные раскаты, трейсинг, ретраи")
+  Container(observability, "Observability Stack", "Metrics + Tracing", "Метрики и трассировка на каждый сервис")
+}
+
+Rel(user, gateway, "HTTPS / GraphQL")
+Rel(gateway, bookingSvc, "GraphQL subgraph / gRPC")
+Rel(gateway, userSvc, "GraphQL subgraph")
+Rel(gateway, hotelSvc, "GraphQL subgraph")
+Rel(gateway, promoSvc, "GraphQL subgraph")
+Rel(gateway, reviewSvc, "GraphQL subgraph")
+
+Rel(bookingSvc, userSvc, "gRPC: проверка статуса/ЧС")
+Rel(bookingSvc, hotelSvc, "gRPC: проверка отеля")
+Rel(bookingSvc, promoSvc, "gRPC: валидация промокода")
+Rel(bookingSvc, reviewSvc, "gRPC: доверие к отелю")
+
+Rel(bookingSvc, bookingDb, "Reads/Writes")
+Rel(userSvc, userDb, "Reads/Writes")
+Rel(hotelSvc, hotelDb, "Reads/Writes")
+Rel(promoSvc, promoDb, "Reads/Writes")
+Rel(reviewSvc, reviewDb, "Reads/Writes")
+
+Rel(bookingSvc, kafka, "Publish: BookingCreated")
+Rel(reviewSvc, kafka, "Publish: ReviewAdded")
+Rel(promoSvc, kafka, "Consume: usage stats")
+
+Rel(bookingSvc, mesh, "sidecar")
+Rel(userSvc, mesh, "sidecar")
+Rel(hotelSvc, mesh, "sidecar")
+Rel(promoSvc, mesh, "sidecar")
+Rel(reviewSvc, mesh, "sidecar")
+
+Rel(mesh, observability, "metrics/traces")
+
+@enduml

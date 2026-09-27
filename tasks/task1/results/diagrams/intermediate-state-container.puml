@@ -1,0 +1,52 @@
+@startuml intermediate-state-container
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+title Hotelio — промежуточное состояние
+
+Person(user, "Пользователь / партнёрский канал", "Web, mobile, partner API")
+
+System_Boundary(hotelio, "Hotelio Platform (переходное состояние)") {
+
+  Container(monolith, "Monolith Application", "Spring Boot", "User/Hotel/Promo/Review controllers + вход для Booking.\nНовые фичи сюда больше не добавляем.") {
+    Component(bookingController, "BookingController", "Spring MVC", "Точка входа для клиента: по флагу выбирает старый или новый путь")
+    Component(legacyBookingService, "BookingService (старый)", "Java Service", "Старый код, вызывается напрямую. Удалим, когда новый путь заработает стабильно")
+    Component(grpcBookingClient, "GrpcBookingClient", "gRPC stub", "Клиент к новому Booking Service")
+    Component(userService, "UserService", "Java Service")
+    Component(hotelService, "HotelService", "Java Service")
+    Component(promoService, "PromoCodeService", "Java Service")
+    Component(reviewService, "ReviewService", "Java Service")
+  }
+
+  ContainerDb(monolithDb, "Monolith DB", "PostgreSQL", "app_user, hotel, promo_code, review (booking выносится)")
+
+  Container(bookingSvc, "Booking Service (новый)", "Java / gRPC", "Вынесенная бизнес-логика бронирований")
+  ContainerDb(bookingDb, "Booking DB", "PostgreSQL", "booking (отдельная БД/схема)")
+
+  Container(kafka, "Kafka", "Event backbone", "Outbox/CDC: синхронизация booking при переезде данных")
+}
+
+Rel(user, bookingController, "REST /api/bookings")
+Rel(user, monolith, "REST /api/users, /api/hotels, /api/promos, /api/reviews")
+
+Rel(bookingController, legacyBookingService, "если флаг = старый путь")
+Rel(bookingController, grpcBookingClient, "если флаг = новый путь (по умолчанию)")
+Rel(grpcBookingClient, bookingSvc, "gRPC")
+
+Rel(legacyBookingService, userService, "прямой вызов (путь на случай отката)")
+Rel(legacyBookingService, hotelService, "прямой вызов (путь на случай отката)")
+Rel(legacyBookingService, promoService, "прямой вызов (путь на случай отката)")
+Rel(legacyBookingService, reviewService, "прямой вызов (путь на случай отката)")
+
+Rel(bookingSvc, monolith, "REST: проверка user/hotel/promo/review\n(временно, уйдёт после их миграции)")
+Rel(bookingSvc, bookingDb, "Reads/Writes")
+
+Rel(userService, monolithDb, "Reads/Writes")
+Rel(hotelService, monolithDb, "Reads/Writes")
+Rel(promoService, monolithDb, "Reads/Writes")
+Rel(reviewService, monolithDb, "Reads/Writes")
+
+Rel(monolithDb, kafka, "Outbox/CDC (переходный период)")
+Rel(kafka, bookingDb, "Синхронизация данных booking")
+
+@enduml

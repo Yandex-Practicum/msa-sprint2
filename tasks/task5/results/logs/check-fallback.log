@@ -1,0 +1,18 @@
+pod/booking-test-client condition met
+▶️ Testing fallback route...
+▶️ Killing one booking-service pod...
+pod "booking-service-v1-6779d6c57f-n969b" deleted from default namespace
+Killed: booking-service-v1-6779d6c57f-n969b
+▶️ Sending 20 requests right away (retries + outlier detection should route around it if a sibling replica of the same version is still healthy)...
+Succeeded: 20/20, Failed: 0/20
+Fallback route working
+
+▶️ Full-outage scenario: scaling booking-service-v1 to 0 replicas to simulate v1 being completely down...
+deployment.apps/booking-service-v1 scaled
+With v1 fully down: reached v2 = 2/20, failed = 18/20
+NOTE: Istio does not automatically redirect the ~90% of traffic statically weighted to v1
+over to v2 once v1 has zero endpoints — this is a real Envoy limitation (weighted_clusters
+is chosen once per request, before any retry, and retries never cross to a sibling cluster).
+Expect close to 90% failures here even though v2 is healthy.
+▶️ Restoring v1...
+deployment.apps/booking-service-v1 scaled

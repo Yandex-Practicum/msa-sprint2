@@ -20,7 +20,7 @@ docker compose up -d --build
     - grpcBookingService: class com.hotelio.GrpcBookingService
 ```
 
-При запуске тестов, тесты на booking должны упасть.
+При запуске тестов, тесты на booking должны упасть (промежуточный шаг, до начала реализации BookingService)
 
 
 ---

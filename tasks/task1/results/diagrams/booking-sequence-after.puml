@@ -1,0 +1,49 @@
+@startuml booking-sequence-after
+title POST /api/bookings — после выноса Booking (Strangler Fig, промежуточное состояние)
+
+actor User
+
+box "Монолит" #LightYellow
+  participant BookingController
+  participant GrpcBookingClient as GrpcClient
+  participant "User/Hotel/Promo/Review\nREST API (не мигрированы)" as MonolithApi
+end box
+
+box "Booking Service (новый)" #LightBlue
+  participant BookingService as NewBooking
+end box
+
+database "Booking DB" as BookingDB
+
+User -> BookingController: POST /api/bookings?userId&hotelId&promoCode
+note right of BookingController
+  Контракт для клиента не изменился —
+  тот же URL, те же параметры и ответы.
+end note
+
+BookingController -> BookingController: флаг = "новый путь"\n(включен по умолчанию, когда всё проверено)
+BookingController -> GrpcClient: createBooking(userId, hotelId, promoCode)
+GrpcClient -> NewBooking: gRPC CreateBooking
+
+group Проверки идут по REST обратно в монолит\n(временно — уйдёт, когда User/Hotel/Promo/Review тоже переедут)
+  NewBooking -> MonolithApi: GET /api/users/{id}/active, /blacklisted
+  NewBooking -> MonolithApi: GET /api/hotels/{id}/operational, /fully-booked
+  NewBooking -> MonolithApi: GET /api/reviews/hotel/{id}/trusted
+  NewBooking -> MonolithApi: GET /api/users/{id}/status
+  NewBooking -> MonolithApi: POST /api/promos/validate
+end
+
+NewBooking -> BookingDB: INSERT booking(price, discountPercent, ...)
+NewBooking --> GrpcClient: BookingResult
+GrpcClient --> BookingController: BookingResult
+BookingController --> User: 200 OK
+
+note over BookingController, GrpcClient
+  Путь для отката (флаг = "старый"): BookingController
+  просто вызывает старый BookingService напрямую —
+  см. booking-sequence-before.puml. Держим его только
+  на время миграции и убираем, как только новый путь
+  подтвердит себя на тестах.
+end note
+
+@enduml

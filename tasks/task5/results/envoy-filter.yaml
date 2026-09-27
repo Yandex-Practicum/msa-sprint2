@@ -1,0 +1,28 @@
+# Отрендеренный `helm template` вывод шаблона
+# tasks/task5/helm/booking-service/templates/envoyfilter.yaml
+
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: booking-service-feature-flag
+spec:
+  configPatches:
+    - applyTo: HTTP_ROUTE
+      match:
+        context: SIDECAR_OUTBOUND
+        routeConfiguration:
+          vhost:
+            name: "booking-service.default.svc.cluster.local:8080"
+      patch:
+        operation: INSERT_FIRST
+        value:
+          name: feature-flag-v2
+          match:
+            prefix: "/"
+            headers:
+              - name: x-feature-enabled
+                string_match:
+                  exact: "true"
+          route:
+            cluster: "outbound|8080|v2|booking-service.default.svc.cluster.local"
+            timeout: 0s

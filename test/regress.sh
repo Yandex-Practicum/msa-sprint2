@@ -98,6 +98,21 @@ curl -sSf "${BASE}/api/promos/TESTCODE-OLD/valid" | grep -q 'false' && pass "И�
 curl -sSf -X POST "${BASE}/api/promos/validate?code=TESTCODE1&userId=test-user-2" | grep -q 'TESTCODE1' && pass "POST /validate промо прошёл" || fail "POST /validate не прошёл"
 
 echo ""
+echo "🧪 Проверка готовности booking-service (gRPC)..."
+BOOKING_SERVICE_HOST="${BOOKING_SERVICE_HOST:-booking-service}"
+BOOKING_SERVICE_PORT="${BOOKING_SERVICE_PORT:-9090}"
+for i in $(seq 1 30); do
+  if timeout 1 bash -c "</dev/tcp/${BOOKING_SERVICE_HOST}/${BOOKING_SERVICE_PORT}" 2>/dev/null; then
+    pass "booking-service доступен на ${BOOKING_SERVICE_HOST}:${BOOKING_SERVICE_PORT}"
+    break
+  fi
+  if [[ "$i" == "30" ]]; then
+    fail "booking-service недоступен на ${BOOKING_SERVICE_HOST}:${BOOKING_SERVICE_PORT}"
+  fi
+  sleep 1
+done
+
+echo ""
 echo "Тесты бронирования..."
 
 # 1. Получение всех бронирований

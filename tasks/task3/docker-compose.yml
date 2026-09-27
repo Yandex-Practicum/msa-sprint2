@@ -2,19 +2,51 @@ version: '3.8'
 
 services:
   apollo-gateway:
-    build: ./gateway
+    build: ./apollo-gateway
     ports:
       - "4000:4000"
+    environment:
+      BOOKING_SUBGRAPH_URL: http://booking-subgraph:4001
+      HOTEL_SUBGRAPH_URL: http://hotel-subgraph:4002
+      PROMOCODE_SUBGRAPH_URL: http://promocode-subgraph:4003
     depends_on:
       - booking-subgraph
       - hotel-subgraph
+      - promocode-subgraph
+    networks:
+      - hotelio-net
 
   booking-subgraph:
     build: ./booking-subgraph
     ports:
       - "4001:4001"
+    environment:
+      BOOKING_GRPC_HOST: booking-service
+      BOOKING_GRPC_PORT: 9090
+    networks:
+      - hotelio-net
 
   hotel-subgraph:
     build: ./hotel-subgraph
     ports:
       - "4002:4002"
+    environment:
+      MONOLITH_BASE_URL: http://monolith:8080
+    networks:
+      - hotelio-net
+
+  promocode-subgraph:
+    build: ./promocode-subgraph
+    ports:
+      - "4003:4003"
+    environment:
+      BOOKING_GRPC_HOST: booking-service
+      BOOKING_GRPC_PORT: 9090
+      MONOLITH_BASE_URL: http://monolith:8080
+      KNOWN_PROMO_CODES: "TESTCODE1,TESTCODE-VIP,TESTCODE-OLD"
+    networks:
+      - hotelio-net
+
+networks:
+  hotelio-net:
+    external: true

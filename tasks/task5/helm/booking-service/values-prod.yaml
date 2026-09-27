@@ -1,0 +1,49 @@
+# Overlay for prod: helm upgrade --install booking-service ./helm/booking-service -f values-prod.yaml
+
+# Single version in prod — the v1/v2 Istio canary split is a local/minikube demo concern.
+versions:
+  - name: v1
+    replicaCount: 3
+    enableFeatureX: "false"
+
+image:
+  tag: stable
+  pullPolicy: IfNotPresent
+
+postgres:
+  enabled: false
+
+kafka:
+  enabled: false
+
+# No Istio mesh assumed in prod for this exercise.
+istio:
+  enabled: false
+
+env:
+  - name: PGHOST
+    value: booking-db.prod.svc.cluster.local
+  - name: PGPORT
+    value: "5432"
+  - name: PGUSER
+    value: booking
+  - name: PGPASSWORD
+    value: booking
+  - name: PGDATABASE
+    value: booking
+  - name: MONOLITH_BASE_URL
+    value: http://monolith.prod.svc.cluster.local:8080
+  - name: KAFKA_BROKERS
+    value: kafka.prod.svc.cluster.local:9092
+  - name: KAFKA_TOPIC
+    value: booking-events
+  - name: GRPC_PORT
+    value: "9090"
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: "1"
+    memory: 512Mi

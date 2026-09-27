@@ -1,0 +1,26 @@
+{
+  "name": "booking-service",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Booking microservice: gRPC server, own Postgres DB, publishes BookingCreated to Kafka",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.10.9",
+    "@grpc/proto-loader": "^0.7.13",
+    "@grpc/reflection": "^1.0.4",
+    "axios": "^1.7.2",
+    "grpc-health-check": "^2.1.0",
+    "kafkajs": "^2.2.4",
+    "pg": "^8.12.0",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.20"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.9",
+    "typescript": "^5.5.2"
+  }
+}

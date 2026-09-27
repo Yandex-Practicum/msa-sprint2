@@ -1,0 +1,6 @@
+=== 1. Композиция супер-графа  ===
+$ curl -s http://localhost:4000/ -d '{"query":"{ __schema { types { name fields { name } } } }"}'
+Booking => ['id', 'userId', 'hotelId', 'hotel', 'promoCode', 'discountPercent', 'discountInfo']
+Hotel => ['id', 'name', 'city', 'rating', 'description', 'operational', 'fullyBooked']
+DiscountInfo => ['isValid', 'originalDiscount', 'finalDiscount', 'description', 'expiresAt', 'applicableHotels']
+Query => ['userBookings', 'booking', 'hotelsByIds', 'validatePromoCode', 'activePromoCodes']

@@ -1,0 +1,127 @@
+====================================================================
+Hotelio — baseline проверка перед началом миграции (task1, п.7 задания)
+Дата: 2026-09-20 20:42:36 UTC
+Окружение: чистый запуск (docker compose down -v выполнен перед стартом)
+====================================================================
+
+$ docker network create hotelio-net
+Error response from daemon: network with name hotelio-net already exists
+(сеть уже существует)
+
+$ docker compose up -d --build   (запускается из /home/user/Documents/Learning/Architecture/Microservices/MSA-Hotelio/tasks/task1)
+#10 resolving provenance for metadata file
+#10 DONE 0.0s
+ Image task1-monolith Built 
+ Volume task1_monolith-db-data Creating 
+ Volume task1_monolith-db-data Creating 
+ Container hotelio-monolith Creating 
+ Volume task1_monolith-db-data Created 
+ Volume task1_monolith-db-data Created 
+ Container hotelio-db Creating 
+ Container hotelio-monolith Created 
+ Container hotelio-db Created 
+ Container hotelio-monolith Starting 
+ Container hotelio-db Starting 
+ Container hotelio-monolith Started 
+ Container hotelio-db Started 
+
+$ docker ps
+CONTAINER ID   IMAGE            COMMAND                  CREATED         STATUS         PORTS                                         NAMES
+94631d505b23   postgres:15      "docker-entrypoint.s…"   6 seconds ago   Up 6 seconds   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   hotelio-db
+b0b2ef30741a   task1-monolith   "java -jar app.jar"      6 seconds ago   Up 6 seconds   0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp   hotelio-monolith
+
+--- Чистый старт приложения: docker logs hotelio-monolith (первые запросы ещё не приходили) ---
+2026-09-20T20:42:41.130Z  INFO 1 --- [           main] c.hotelio.monolith.MonolithApplication   : Started MonolithApplication in 3.449 seconds (process running for 3.817)
+➡️  BookingService beans:
+    - bookingService: class com.hotelio.monolith.service.BookingService
+
+$ curl http://localhost:8084/bookings   (путь из architecture/readme.md — не совпадает с реальным маппингом контроллера)
+{"timestamp":"2026-09-20T20:42:56.934+00:00","status":404,"error":"Not Found","path":"/bookings"}
+HTTP_STATUS:404
+
+$ curl http://localhost:8084/api/bookings   (реальный путь BookingController, БД ещё пуста)
+[]
+HTTP_STATUS:200
+
+$ docker build -t hotelio-tester test/   (контекст: /home/user/Documents/Learning/Architecture/Microservices/MSA-Hotelio/test)
+#11 exporting to image
+#11 exporting layers done
+#11 exporting manifest sha256:e38e1c61fa6030477a5e17e780549de82039c67e88f752588c0351c44c3ce200 done
+#11 exporting config sha256:45025eb18c5495259e2e3cfb9beb32dac8024067d4fd76f612bb8405db1f77c5 done
+#11 exporting attestation manifest sha256:d2398767155c5e2f29241988f8ee8dc4381384a1d004fdd3df285c0c51478588 0.0s done
+#11 exporting manifest list sha256:8a08a49963a4fde98648356dc67a8fc10c5e350c05abc585a2b9c7a80893131f 0.0s done
+#11 naming to docker.io/library/hotelio-tester:latest
+#11 naming to docker.io/library/hotelio-tester:latest done
+#11 unpacking to docker.io/library/hotelio-tester:latest done
+#11 DONE 0.1s
+
+$ docker run --rm --network hotelio-net ... hotelio-tester   (test/regress.sh)
+🏁 Регрессионный тест до миграции Hotelio
+🧪 Проверка подключения к БД...
+🧪 Загрузка фикстур...
+DELETE 0
+DELETE 0
+DELETE 0
+DELETE 0
+DELETE 0
+INSERT 0 4
+INSERT 0 3
+INSERT 0 12
+INSERT 0 3
+INSERT 0 2
+🧪 Выполнение HTTP-тестов...
+
+Тесты пользователей...
+✅ Получение test-user-1 по ID работает
+✅ Статус test-user-1: ACTIVE
+✅ test-user-1 в блэклисте
+✅ test-user-1 активен
+✅ test-user-1 не авторизован (в блэклисте)
+✅ test-user-3 — VIP-пользователь
+✅ test-user-2 авторизован
+
+Тесты отелей...
+✅ test-hotel-1 получен по ID
+✅ test-hotel-1 работает
+✅ test-hotel-3 не работает
+✅ test-hotel-2 полностью забронирован
+✅ Поиск отелей в Сеуле работает
+✅ Топ-отели в Сеуле загружены
+
+Тесты ревью...
+✅ Отзывы test-hotel-1 найдены
+✅ test-hotel-1 признан надёжным
+✅ test-hotel-3 НЕ признан надёжным (ожидаемо)
+
+Тесты промокодов...
+✅ Промокод TESTCODE1 найден
+✅ VIP-промо доступен VIP
+✅ VIP-промо недоступен обычному
+✅ Обычный промо доступен
+✅ Истекший промо недоступен
+✅ POST /validate промо прошёл
+
+Тесты бронирования...
+✅ Все бронирования получены
+✅ Бронирования test-user-2 найдены
+✅ Бронирование прошло (без промо)
+✅ Бронирование с промо прошло
+✅ Отклонено: неактивный пользователь
+✅ Отклонено: недоверенный отель
+✅ Отклонено: отель полностью забронирован
+✅ Все HTTP-тесты пройдены!
+
+--- Ожидаемые 500-ошибки в логах монолита (тесты 5-7 намеренно проверяют негативные сценарии: неактивный пользователь, недоверенный/переполненный отель) ---
+BookingService не имеет custom exception handler, поэтому IllegalArgumentException из validateUser/validateHotel всплывает как HTTP 500 со стектрейсом в консоли — это ожидаемое поведение текущего монолита, а не сбой инфраструктуры.
+2026-09-20T20:42:58.874Z  WARN 1 --- [nio-8080-exec-8] c.h.monolith.service.BookingService      : User test-user-0 is inactive
+2026-09-20T20:42:58.875Z ERROR 1 --- [nio-8080-exec-8] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: java.lang.IllegalArgumentException: User is inactive] with root cause
+
+java.lang.IllegalArgumentException: User is inactive
+--
+2026-09-20T20:42:58.892Z  WARN 1 --- [nio-8080-exec-9] c.h.monolith.service.BookingService      : Hotel test-hotel-3 is not operational
+2026-09-20T20:42:58.893Z ERROR 1 --- [nio-8080-exec-9] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: java.lang.IllegalArgumentException: Hotel is not operational] with root cause
+
+java.lang.IllegalArgumentException: Hotel is not operational
+--
+2026-09-20T20:42:58.909Z  WARN 1 --- [io-8080-exec-10] c.h.monolith.service.BookingService      : Hotel test-hotel-2 is not trusted
+2026-09-20T20:42:58.909Z ERROR 1 --- [io-8080-exec-10] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: java.lang.IllegalArgumentException: Hotel is not trusted based on reviews] with root cause

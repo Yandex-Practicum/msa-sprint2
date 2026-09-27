@@ -1,0 +1,56 @@
+=== Решение N+1 в hotel-subgraph  через батчинг===
+
+Запрос: 5 бронирований test-user-2, ВСЕ на один и тот же отель test-hotel-1
+{
+  "data": {
+    "userBookings": [
+      {
+        "id": "2",
+        "hotel": {
+          "name": "Test Hotel 1",
+          "city": "Seoul"
+        }
+      },
+      {
+        "id": "3",
+        "hotel": {
+          "name": "Test Hotel 1",
+          "city": "Seoul"
+        }
+      },
+      {
+        "id": "5",
+        "hotel": {
+          "name": "Test Hotel 1",
+          "city": "Seoul"
+        }
+      },
+      {
+        "id": "8",
+        "hotel": {
+          "name": "Test Hotel 1",
+          "city": "Seoul"
+        }
+      },
+      {
+        "id": "10",
+        "hotel": {
+          "name": "Test Hotel 1",
+          "city": "Seoul"
+        }
+      }
+    ]
+  }
+}
+
+Логи hotel-subgraph
+
+✅ Hotel subgraph ready at http://localhost:4002/
+[hotel-subgraph] batch load: 1 уникальных hotelId — ["test-hotel-1"]
+[hotel-subgraph] REST GET /api/hotels/test-hotel-1 -> монолит
+[hotel-subgraph] batch load: 1 уникальных hotelId — ["test-hotel-1"]
+[hotel-subgraph] REST GET /api/hotels/test-hotel-1 -> монолит
+[hotel-subgraph] batch load: 1 уникальных hotelId — ["test-hotel-1"]
+[hotel-subgraph] REST GET /api/hotels/test-hotel-1 -> монолит
+[hotel-subgraph] batch load: 1 уникальных hotelId — ["test-hotel-1"]
+[hotel-subgraph] batch load: 1 уникальных hotelId — ["test-hotel-1"]

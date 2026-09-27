@@ -1,0 +1,13 @@
+versions:
+  - name: v2
+    replicaCount: 1
+    enableFeatureX: "true"
+
+image:
+  name: booking-service
+  tag: latest
+  pullPolicy: Never
+
+service:
+  port: 80          # gRPC (Service) -> targetPort 9090
+  httpPort: 8080     # HTTP /ping (Service) -> targetPort 8080, тот же порт в контейнере

@@ -1,0 +1,14 @@
+✅ Booking subgraph ready at http://localhost:4001/
+[booking-subgraph] ACL DENY: userBookings(userId="test-user-2"), заголовок userid=""
+[booking-subgraph] ACL DENY: userBookings(userId="test-user-1"), заголовок userid=""
+[booking-subgraph] ACL DENY: userBookings(userId="test-user-1"), заголовок userid=""
+[booking-subgraph] ACL OK: userBookings(userId="test-user-1") -> gRPC ListBookings
+[booking-subgraph] gRPC ListBookings({ user_id: "test-user-1" }) -> booking-service:9090
+[booking-subgraph] gRPC ListBookings ответ: 0 бронирований
+[booking-subgraph] ACL OK: userBookings(userId="test-user-1") -> gRPC ListBookings
+[booking-subgraph] gRPC ListBookings({ user_id: "test-user-1" }) -> booking-service:9090
+[booking-subgraph] gRPC ListBookings ответ: 0 бронирований
+[booking-subgraph] ACL DENY: userBookings(userId="test-user-1"), заголовок userid="test-user-2"
+[booking-subgraph] ACL OK: userBookings(userId="test-user-2") -> gRPC ListBookings
+[booking-subgraph] gRPC ListBookings({ user_id: "test-user-2" }) -> booking-service:9090
+[booking-subgraph] gRPC ListBookings ответ: 5 бронирований

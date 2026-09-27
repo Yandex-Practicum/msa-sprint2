@@ -1,0 +1,14 @@
+▶️ Creating in-mesh test client pod (booking-test-client)...
+pod/booking-test-client created
+pod/booking-test-client condition met
+▶️ Проверка Feature Flag (X-Feature-Enabled: true)...
+HTTP/1.1 200 OK
+x-app-version: v2
+content-type: text/plain
+date: Sun, 27 Sep 2026 20:41:31 GMT
+x-envoy-upstream-service-time: 5
+server: envoy
+transfer-encoding: chunked
+
+pong
+✅ Feature flag routing works: request landed on v2

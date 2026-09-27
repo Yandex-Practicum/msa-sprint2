@@ -1,0 +1,57 @@
+{{- range .Values.versions }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}
+  labels:
+    app: {{ $.Release.Name }}
+    version: {{ .name }}
+spec:
+  replicas: {{ .replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ $.Release.Name }}
+      version: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $.Release.Name }}
+        version: {{ .name }}
+    spec:
+      containers:
+        - name: {{ $.Chart.Name }}
+          image: "{{ $.Values.image.name }}:{{ $.Values.image.tag }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+
+          ports:
+            - containerPort: {{ $.Values.service.targetPort }}
+            - containerPort: {{ $.Values.service.httpPort }}
+
+          env:
+            - name: ENABLE_FEATURE_X
+              value: {{ .enableFeatureX | quote }}
+            - name: APP_VERSION
+              value: {{ .name | quote }}
+            - name: HTTP_PORT
+              value: {{ $.Values.service.httpPort | quote }}
+            {{- range $.Values.env }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+            {{- end }}
+
+          {{- if $.Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml $.Values.livenessProbe | nindent 12 }}
+          {{- end }}
+
+          {{- if $.Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml $.Values.readinessProbe | nindent 12 }}
+          {{- end }}
+
+          {{- if $.Values.resources }}
+          resources:
+            {{- toYaml $.Values.resources | nindent 12 }}
+          {{- end }}
+{{- end }}

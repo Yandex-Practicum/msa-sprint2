@@ -1,0 +1,27 @@
+{{- if .Values.istio.enabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: {{ .Release.Name }}-feature-flag
+spec:
+  configPatches:
+    - applyTo: HTTP_ROUTE
+      match:
+        context: SIDECAR_OUTBOUND
+        routeConfiguration:
+          vhost:
+            name: "{{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.httpPort }}"
+      patch:
+        operation: INSERT_FIRST
+        value:
+          name: feature-flag-v2
+          match:
+            prefix: "/"
+            headers:
+              - name: x-feature-enabled
+                string_match:
+                  exact: "true"
+          route:
+            cluster: "outbound|{{ .Values.service.httpPort }}|v2|{{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local"
+            timeout: 0s
+{{- end }}

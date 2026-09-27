@@ -1,0 +1,26 @@
+{{- if .Values.istio.enabled }}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  hosts:
+    - {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
+  http:
+    - name: primary-canary
+      route:
+        - destination:
+            host: {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
+            subset: v1
+            port:
+              number: {{ .Values.service.httpPort }}
+          weight: {{ .Values.istio.canary.v1Weight }}
+        - destination:
+            host: {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
+            subset: v2
+            port:
+              number: {{ .Values.service.httpPort }}
+          weight: {{ .Values.istio.canary.v2Weight }}
+      retries:
+        {{- toYaml .Values.istio.retries | nindent 8 }}
+{{- end }}

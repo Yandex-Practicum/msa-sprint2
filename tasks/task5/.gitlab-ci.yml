@@ -1,0 +1,70 @@
+stages:
+  - build
+  - test
+  - deploy
+  - tag
+
+variables:
+  IMAGE_TAG: latest
+  IMAGE_NAME: booking-service
+
+build:
+  stage: build
+  script:
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG ../task2/booking-service/
+
+test:
+  stage: test
+  script:
+    - docker network create ci-net-$CI_JOB_ID
+    - >
+      docker run -d --name postgres-$CI_JOB_ID --network ci-net-$CI_JOB_ID
+      -e POSTGRES_USER=booking -e POSTGRES_PASSWORD=booking -e POSTGRES_DB=booking
+      postgres:15
+    - for i in $(seq 1 30); do docker exec postgres-$CI_JOB_ID pg_isready -U booking && break; sleep 2; done
+    - >
+      docker run -d --name kafka-$CI_JOB_ID --network ci-net-$CI_JOB_ID
+      -e KAFKA_NODE_ID=1
+      -e KAFKA_PROCESS_ROLES=broker,controller
+      -e KAFKA_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka-$CI_JOB_ID:9092
+      -e KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      -e KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka-$CI_JOB_ID:9093
+      -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      -e KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      apache/kafka:3.7.0
+    - for i in $(seq 1 30); do docker exec kafka-$CI_JOB_ID /opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 >/dev/null 2>&1 && break; sleep 2; done
+    - >
+      docker run -d --name booking-service-test --network ci-net-$CI_JOB_ID -p 9090:9090
+      -e PGHOST=postgres-$CI_JOB_ID -e PGPORT=5432
+      -e PGUSER=booking -e PGPASSWORD=booking -e PGDATABASE=booking
+      -e KAFKA_BROKERS=kafka-$CI_JOB_ID:9092 -e KAFKA_TOPIC=booking-events
+      -e GRPC_PORT=9090
+      $IMAGE_NAME:$IMAGE_TAG
+    - curl -sSL -o grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/latest/download/grpc_health_probe-linux-amd64
+    - chmod +x grpc_health_probe
+    - for i in $(seq 1 30); do ./grpc_health_probe -addr=localhost:9090 -service=readiness && break; sleep 2; done
+    - docker logs booking-service-test
+  after_script:
+    - docker rm -f booking-service-test postgres-$CI_JOB_ID kafka-$CI_JOB_ID || true
+    - docker network rm ci-net-$CI_JOB_ID || true
+
+deploy:
+  stage: deploy
+  script:
+    - command -v minikube >/dev/null || { echo "minikube not found on PATH. Run 'minikube start --driver=docker' first (see README)."; exit 1; }
+    - command -v helm >/dev/null || { echo "helm not found on PATH. Install helm first (see README)."; exit 1; }
+    - command -v istioctl >/dev/null || { echo "istioctl not found on PATH. Run 'istioctl install --set profile=demo' first (see README)."; exit 1; }
+    - minikube status >/dev/null 2>&1 || { echo "minikube is not running. Run 'minikube start --driver=docker' first."; exit 1; }
+    - kubectl get ns istio-system >/dev/null 2>&1 || { echo "Istio is not installed in this cluster. Run 'istioctl install --set profile=demo' first."; exit 1; }
+    - minikube image load $IMAGE_NAME:$IMAGE_TAG
+    - helm upgrade --install booking-service ./helm/booking-service --set image.tag=$IMAGE_TAG
+    - kubectl get pods -l app=booking-service
+
+tag:
+  stage: tag
+  when: manual
+  script:
+    - TAG_NAME="deploy-$(date +%Y%m%d%H%M%S)"
+    - git tag -a "$TAG_NAME" -m "Deploy booking-service image $IMAGE_NAME:$IMAGE_TAG"
+    - echo "Created git tag $TAG_NAME (local only, not pushed)"

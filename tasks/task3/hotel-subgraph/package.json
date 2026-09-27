@@ -1,11 +1,23 @@
 {
   "name": "hotel-subgraph",
   "version": "1.0.0",
-  "type": "module",
+  "private": true,
+  "description": "Hotel subgraph: hotel data from the monolith REST API, batched + cached with DataLoader",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
   "dependencies": {
     "@apollo/server": "^4.8.1",
     "@apollo/subgraph": "^2.4.1",
+    "axios": "^1.7.2",
+    "dataloader": "^2.2.2",
     "graphql": "^16.8.1",
-	"graphql-tag": "^2.12.6"
+    "graphql-tag": "^2.12.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.9",
+    "typescript": "^5.5.2"
   }
 }

@@ -1,0 +1,59 @@
+@startuml current-state-component
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+title Hotelio — текущее состояние (монолит), уровень компонент
+
+System_Boundary(hotelio, "Hotelio Monolith") {
+
+  Container(monolith, "Monolith Application", "Spring Boot", "Единое приложение, все модули в одном процессе") {
+
+    Component(bookingController, "BookingController", "Spring MVC", "/api/bookings")
+    Component(hotelController, "HotelController", "Spring MVC", "/api/hotels")
+    Component(promoController, "PromoCodeController", "Spring MVC", "/api/promos")
+    Component(reviewController, "ReviewController", "Spring MVC", "/api/reviews")
+    Component(userController, "UserController", "Spring MVC", "/api/users")
+
+    Component(bookingService, "BookingService", "Java Service", "Главный модуль: проверяет данные и создаёт бронирование, сам вызывает остальные 4 модуля")
+    Component(hotelService, "HotelService", "Java Service", "Данные об отелях")
+    Component(userService, "UserService", "Java Service", "Статус пользователя и чёрный список")
+    Component(promoService, "PromoCodeService", "Java Service", "Промокоды и скидки")
+    Component(reviewService, "ReviewService", "Java Service", "Отзывы и доверие к отелю")
+
+    ComponentDb(postgres, "Monolith DB", "PostgreSQL", "Общая база: app_user, booking, hotel, promo_code, review")
+
+    Rel(bookingController, bookingService, "Uses")
+    Rel(hotelController, hotelService, "Uses")
+    Rel(promoController, promoService, "Uses")
+    Rel(reviewController, reviewService, "Uses")
+    Rel(userController, userService, "Uses")
+
+    Rel(bookingService, hotelService, "Calls (in-process)")
+    Rel(bookingService, userService, "Calls (in-process)")
+    Rel(bookingService, promoService, "Calls (in-process)")
+    Rel(bookingService, reviewService, "Calls (in-process)")
+
+    Rel(bookingService, postgres, "Reads/Writes")
+    Rel(userService, postgres, "Reads")
+    Rel(hotelService, postgres, "Reads")
+    Rel(promoService, postgres, "Reads")
+    Rel(reviewService, postgres, "Reads/Writes")
+  }
+}
+
+Person(user, "Пользователь / партнёрский канал", "Веб и мобильные клиенты")
+Rel(user, bookingController, "Uses")
+Rel(user, hotelController, "Uses")
+Rel(user, promoController, "Uses")
+Rel(user, reviewController, "Uses")
+Rel(user, userController, "Uses")
+
+note right of bookingService
+  На каждое бронирование — 4 прямых вызова
+  других модулей внутри одной программы.
+  Больше всего зависит от остальных модулей
+  и держит на себе самую важную нагрузку —
+  пик бронирований.
+end note
+
+@enduml

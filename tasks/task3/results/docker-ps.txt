@@ -1,0 +1,15 @@
+$ docker ps
+CONTAINER ID   IMAGE                             COMMAND                  CREATED          STATUS             PORTS                                                             NAMES
+151651063e4d   imega/graphql-playground:latest   "docker-entrypoint.s…"   46 minutes ago   Up 46 minutes      0.0.0.0:4040->4000/tcp, [::]:4040->4000/tcp                       busy_hellman
+480e4f8d5fcc   73c800275a18                      "docker-entrypoint.s…"   9 hours ago      Up About an hour   0.0.0.0:4001->4001/tcp, [::]:4001->4001/tcp                       task3-booking-subgraph-1
+1729b1f3bda0   1879b0428642                      "docker-entrypoint.s…"   9 hours ago      Up About an hour   0.0.0.0:4002->4002/tcp, [::]:4002->4002/tcp                       task3-hotel-subgraph-1
+7bf639d3e0b6   de4d8c39895b                      "docker-entrypoint.s…"   9 hours ago      Up About an hour   0.0.0.0:4000->4000/tcp, [::]:4000->4000/tcp                       task3-apollo-gateway-1
+216c41048e42   5adc463d3630                      "docker-entrypoint.s…"   9 hours ago      Up About an hour   0.0.0.0:4003->4003/tcp, [::]:4003->4003/tcp                       task3-promocode-subgraph-1
+2e25e5f17c8e   240749ba1130                      "docker-entrypoint.s…"   9 hours ago      Up About an hour   0.0.0.0:9090->9090/tcp, [::]:9090->9090/tcp                       booking-service
+9fdcf138fcb1   836b5df8de27                      "docker-entrypoint.s…"   9 hours ago      Up About an hour                                                                     booking-history-service
+d9f1e174a79b   confluentinc/cp-kafka:7.2.1       "/etc/confluent/dock…"   9 hours ago      Up About an hour   0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp                       task2-kafka-1
+dda54e5afc7c   postgres:15                       "docker-entrypoint.s…"   9 hours ago      Up About an hour   0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp                       booking-history-db
+47f89c23edb5   postgres:15                       "docker-entrypoint.s…"   9 hours ago      Up About an hour   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp                       hotelio-db
+1b9f9d072270   postgres:15                       "docker-entrypoint.s…"   9 hours ago      Up About an hour   0.0.0.0:5433->5432/tcp, [::]:5433->5432/tcp                       booking-db
+ec4d8697301f   confluentinc/cp-zookeeper:7.2.1   "/etc/confluent/dock…"   9 hours ago      Up About an hour   2888/tcp, 0.0.0.0:2181->2181/tcp, [::]:2181->2181/tcp, 3888/tcp   task2-zookeeper-1
+b5c8715af83d   09021cca1410                      "java -jar app.jar"      9 hours ago      Up About an hour   0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp                       hotelio-monolith

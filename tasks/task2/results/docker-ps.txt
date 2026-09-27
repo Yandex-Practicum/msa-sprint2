@@ -1,0 +1,18 @@
+$ docker ps
+(запуск: cd tasks/task2 && docker compose up -d --build)
+
+CONTAINER ID   IMAGE                             COMMAND                  CREATED              STATUS              PORTS                                                             NAMES
+1c5a78800796   task2-monolith                    "java -jar app.jar"      About a minute ago   Up About a minute   0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp                       hotelio-monolith
+e7ea2260128d   task2-booking-service             "docker-entrypoint.s…"   3 minutes ago        Up 3 minutes        0.0.0.0:9090->9090/tcp, [::]:9090->9090/tcp                       booking-service
+867574028ccb   task2-booking-history-service     "docker-entrypoint.s…"   3 minutes ago        Up 3 minutes                                                                          booking-history-service
+cdc70b7315b0   confluentinc/cp-kafka:7.2.1       "/etc/confluent/dock…"   9 minutes ago        Up 9 minutes        0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp                       task2-kafka-1
+11f4e1f13caf   postgres:15                       "docker-entrypoint.s…"   9 minutes ago        Up 9 minutes        0.0.0.0:5434->5432/tcp, [::]:5434->5432/tcp                       booking-history-db
+1ba0419c4d3c   postgres:15                       "docker-entrypoint.s…"   9 minutes ago        Up 9 minutes        0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp                       hotelio-db
+843d06adcb6d   postgres:15                       "docker-entrypoint.s…"   9 minutes ago        Up 9 minutes        0.0.0.0:5433->5432/tcp, [::]:5433->5432/tcp                       booking-db
+6b21487bac71   confluentinc/cp-zookeeper:7.2.1   "/etc/confluent/dock…"   9 minutes ago        Up 9 minutes        2888/tcp, 0.0.0.0:2181->2181/tcp, [::]:2181->2181/tcp, 3888/tcp   task2-zookeeper-1
+
+--- Лог старта монолита (docker logs hotelio-monolith), видно оба бина ---
+2026-09-20T22:43:19.131Z  INFO 1 --- [           main] c.hotelio.monolith.MonolithApplication   : Started MonolithApplication in 3.02 seconds (process running for 3.36)
+➡️  BookingService beans:
+    - bookingService: class com.hotelio.monolith.service.BookingService
+    - grpcBookingService: class com.hotelio.GrpcBookingService

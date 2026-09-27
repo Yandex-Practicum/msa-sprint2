@@ -1,0 +1,47 @@
+@startuml booking-sequence-before
+title POST /api/bookings — как есть (монолит, до миграции)
+
+actor User
+
+box "Монолит" #LightYellow
+  participant BookingController
+  participant BookingService
+  participant UserService
+  participant HotelService
+  participant ReviewService
+  participant PromoCodeService
+end box
+
+database "Monolith DB" as DB
+
+User -> BookingController: POST /api/bookings?userId&hotelId&promoCode
+BookingController -> BookingService: createBooking(userId, hotelId, promoCode)
+
+group Проверка пользователя
+  BookingService -> UserService: isUserActive(userId)
+  BookingService -> UserService: isUserBlacklisted(userId)
+end
+
+group Проверка отеля
+  BookingService -> HotelService: isHotelOperational(hotelId)
+  BookingService -> ReviewService: isTrustedHotel(hotelId)
+  BookingService -> HotelService: isHotelFullyBooked(hotelId)
+end
+
+group Расчёт цены
+  BookingService -> UserService: getUserStatus(userId)
+  BookingService -> PromoCodeService: validate(promoCode, userId)
+end
+
+BookingService -> DB: INSERT booking(price, discountPercent, ...)
+BookingService --> BookingController: Booking
+BookingController --> User: 200 OK
+
+note over BookingService
+  Все вызовы — обычные вызовы методов внутри
+  одной программы (не по сети). BookingService
+  напрямую знает про все 4 других модуля —
+  если один из них сломается, сломается и бронирование.
+end note
+
+@enduml

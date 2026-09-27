@@ -1,0 +1,44 @@
+# Overlay for staging: helm upgrade --install booking-service ./helm/booking-service -f values-staging.yaml
+
+replicaCount: 1
+
+image:
+  tag: staging
+  pullPolicy: IfNotPresent
+
+# External Postgres/Kafka already run in staging — don't deploy the local single-node ones.
+postgres:
+  enabled: false
+
+kafka:
+  enabled: false
+
+env:
+  - name: PGHOST
+    value: booking-db.staging.svc.cluster.local
+  - name: PGPORT
+    value: "5432"
+  - name: PGUSER
+    value: booking
+  - name: PGPASSWORD
+    value: booking
+  - name: PGDATABASE
+    value: booking
+  - name: MONOLITH_BASE_URL
+    value: http://monolith.staging.svc.cluster.local:8080
+  - name: KAFKA_BROKERS
+    value: kafka.staging.svc.cluster.local:9092
+  - name: KAFKA_TOPIC
+    value: booking-events
+  - name: GRPC_PORT
+    value: "9090"
+
+ENABLE_FEATURE_X: "true"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
