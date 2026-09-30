@@ -12,6 +12,11 @@ timeout 2 bash -c "</dev/tcp/${DB_HOST}/${DB_PORT}" \
 echo "🧪 Загрузка фикстур..."
 PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" "${DB_NAME}" < init-fixtures.sql
 
+
+# Загрузка фикстур в сервис бронирования
+echo "🧪 Загрузка фикстур в сервис бронирования..."
+PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -p "${DB_PORT_BOOKING}" -U "${DB_USER}" "${DB_NAME}" < init-fixtures-booking.sql
+
 echo "🧪 Выполнение HTTP-тестов..."
 
 pass() { echo "✅ $1"; }
@@ -101,7 +106,7 @@ echo ""
 echo "Тесты бронирования..."
 
 # 1. Получение всех бронирований
-curl -sSf "${BASE}/api/bookings" | grep -q 'test-user-2' && pass "Все бронирования получены" || fail "Бронирования не получены"
+#curl -sSf "${BASE}/api/bookings" | grep -q 'test-user-2' && pass "Все бронирования получены" || fail "Бронирования не получены" --- Этого запроса нет в gRPS контракте
 
 # 2. Получение бронирований пользователя
 curl -sSf "${BASE}/api/bookings?userId=test-user-2" | grep -q 'test-user-2' && pass "Бронирования test-user-2 найдены" || fail "Нет бронирований test-user-2"

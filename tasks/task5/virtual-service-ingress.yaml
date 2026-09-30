@@ -1,0 +1,45 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: booking-service-ingress
+  namespace: default
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - booking-gateway
+  http:
+    - name: feature-flag
+      match:
+        - headers:
+            x-feature-enabled:
+              exact: "true"
+      route:
+        - destination:
+            host: booking-service
+            subset: v2
+
+    - name: fallback
+      match:
+        - headers:
+            x-fallback:
+              exact: "true"
+      route:
+        - destination:
+            host: booking-service
+            subset: v2
+
+    - name: canary
+      route:
+        - destination:
+            host: booking-service
+            subset: v1
+          weight: 90
+        - destination:
+            host: booking-service
+            subset: v2
+          weight: 10
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+        retryOn: 5xx,gateway-error,connect-failure,refused-stream

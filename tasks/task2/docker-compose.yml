@@ -31,6 +31,57 @@ services:
     networks:
       - hotelio-net
 
+
+  booking-service-db:
+    image: postgres:15
+    container_name: booking-service-db
+    environment:
+      POSTGRES_USER: hotelio
+      POSTGRES_PASSWORD: hotelio
+      POSTGRES_DB: hotelio
+    ports:
+      - "5433:5432"
+    volumes:
+      - booking-service-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+
+
+  booking-service:
+    build: booking-service
+    environment:
+      DB_HOST: booking-service-db
+      DB_PORT: 5432
+      DB_NAME: hotelio
+      DB_USER: hotelio
+      DB_PASSWORD: hotelio
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_TOPIC: booking-created
+      GRPC_PORT: 9090
+      MONOLITH_URL: http://hotelio-monolith:8080
+    volumes:
+      - ./booking-service:/app
+    ports:
+      - "9090:9090"
+    networks:
+      - hotelio-net
+
+  booking-history-service:
+    build: booking-history-service
+    environment:
+      DB_HOST: booking-service-db
+      DB_PORT: 5432
+      DB_NAME: hotelio
+      DB_USER: hotelio
+      DB_PASSWORD: hotelio
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_TOPIC: booking-created
+      MONOLITH_URL: http://hotelio-monolith:8080
+    volumes:
+      - ./booking-service:/app
+    networks:
+      - hotelio-net
+
   kafka:
     image: confluentinc/cp-kafka:7.2.1
     ports:
@@ -54,6 +105,7 @@ services:
 
 volumes:
   monolith-db-data:
+  booking-service-db-data:
 
 networks:
   hotelio-net:
