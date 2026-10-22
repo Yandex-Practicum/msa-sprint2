@@ -1,0 +1,38 @@
+booking-service gRPC on :9090
+{"level":"ERROR","timestamp":"2026-10-22T09:22:18.483Z","logger":"kafkajs","message":"[Connection] Connection error: connect ECONNREFUSED 10.89.1.6:9092","broker":"kafka:9092","clientId":"booking-service","stack":"Error: connect ECONNREFUSED 10.89.1.6:9092\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1555:16)"}
+{"level":"ERROR","timestamp":"2026-10-22T09:22:18.485Z","logger":"kafkajs","message":"[BrokerPool] Failed to connect to seed broker, trying another broker from the list: Connection error: connect ECONNREFUSED 10.89.1.6:9092","retryCount":0,"retryTime":296}
+{"level":"ERROR","timestamp":"2026-10-22T09:22:18.783Z","logger":"kafkajs","message":"[Connection] Connection error: connect ECONNREFUSED 10.89.1.6:9092","broker":"kafka:9092","clientId":"booking-service","stack":"Error: connect ECONNREFUSED 10.89.1.6:9092\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1555:16)"}
+{"level":"ERROR","timestamp":"2026-10-22T09:22:18.784Z","logger":"kafkajs","message":"[BrokerPool] Failed to connect to seed broker, trying another broker from the list: Connection error: connect ECONNREFUSED 10.89.1.6:9092","retryCount":1,"retryTime":660}
+{"level":"ERROR","timestamp":"2026-10-22T09:22:19.446Z","logger":"kafkajs","message":"[Connection] Connection error: connect ECONNREFUSED 10.89.1.6:9092","broker":"kafka:9092","clientId":"booking-service","stack":"Error: connect ECONNREFUSED 10.89.1.6:9092\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1555:16)"}
+{"level":"ERROR","timestamp":"2026-10-22T09:22:19.446Z","logger":"kafkajs","message":"[BrokerPool] Failed to connect to seed broker, trying another broker from the list: Connection error: connect ECONNREFUSED 10.89.1.6:9092","retryCount":2,"retryTime":1554}
+{"level":"ERROR","timestamp":"2026-10-22T09:22:21.001Z","logger":"kafkajs","message":"[Connection] Connection error: connect ECONNREFUSED 10.89.1.6:9092","broker":"kafka:9092","clientId":"booking-service","stack":"Error: connect ECONNREFUSED 10.89.1.6:9092\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1555:16)"}
+{"level":"ERROR","timestamp":"2026-10-22T09:22:21.002Z","logger":"kafkajs","message":"[BrokerPool] Failed to connect to seed broker, trying another broker from the list: Connection error: connect ECONNREFUSED 10.89.1.6:9092","retryCount":3,"retryTime":2790}
+Kafka producer connected
+Creating booking: userId=test-user-3, hotelId=test-hotel-1, promoCode=undefined
+Booking created {
+  id: '3',
+  userId: 'test-user-3',
+  hotelId: 'test-hotel-1',
+  promoCode: '',
+  discountPercent: 0,
+  price: 80,
+  createdAt: '2026-10-22T09:23:34.013Z'
+}
+Creating booking: userId=test-user-2, hotelId=test-hotel-1, promoCode=TESTCODE1
+BookingCreated sent 3
+Booking created {
+  id: '4',
+  userId: 'test-user-2',
+  hotelId: 'test-hotel-1',
+  promoCode: 'TESTCODE1',
+  discountPercent: 10,
+  price: 90,
+  createdAt: '2026-10-22T09:23:34.059Z'
+}
+BookingCreated sent 4
+Creating booking: userId=test-user-0, hotelId=test-hotel-1, promoCode=undefined
+User is inactive
+Creating booking: userId=test-user-2, hotelId=test-hotel-3, promoCode=undefined
+Hotel is not operational
+Creating booking: userId=test-user-2, hotelId=test-hotel-2, promoCode=undefined
+Hotel is not trusted based on reviews

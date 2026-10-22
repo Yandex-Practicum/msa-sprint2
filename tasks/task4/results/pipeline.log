@@ -1,0 +1,83 @@
+parsing and downloads finished in 38 ms.
+json schema validated in 72 ms
+build  starting shell (build)
+build  $ docker build -t $IMAGE_NAME:$IMAGE_TAG ./booking-service
+build  > DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+build  >             Install the buildx component to build images with BuildKit:
+build  >             https://docs.docker.com/go/buildx/
+build  > 
+build  > Sending build context to Docker daemon  3.584kB
+build  > [1/2] STEP 1/4: FROM golang:1.21-alpine AS build
+build  > [1/2] STEP 2/4: WORKDIR /app
+build  > --> Using cache ba3e18dbac847549460434d8ddac6a2f578eb6f18f50861a727bb9dfd6a9cf1c
+build  > --> ba3e18dbac84
+build  > [1/2] STEP 3/4: COPY main.go .
+build  > --> Using cache 554de06558c57340331073ce116c600e6ff0bf48700abcc847c3ca1689c01bfa
+build  > --> 554de06558c5
+build  > [1/2] STEP 4/4: RUN go build -o booking-service main.go
+build  > --> Using cache d05c258944f61b476f23d745d694eb564fa0124446f0c55151f8f0dda9a0be0e
+build  > --> d05c258944f6
+build  > [2/2] STEP 1/6: FROM alpine:3.19
+build  > [2/2] STEP 2/6: RUN apk add --no-cache curl
+build  > --> Using cache d0c442dda5330699098cf926c65924b0afc7688cf20f19030d0156ee80f77c60
+build  > --> d0c442dda533
+build  > [2/2] STEP 3/6: WORKDIR /app
+build  > --> Using cache 18e3aa785a26001b219b4991c0b2b77402fa98322d1e2ea37f146ffae0cbd904
+build  > --> 18e3aa785a26
+build  > [2/2] STEP 4/6: COPY --from=build /app/booking-service .
+build  > --> Using cache a3feeb9ad97a2b6098046d1202aaeaf4e62a5bd7e6a3b58ce229b9f7480f4f34
+build  > --> a3feeb9ad97a
+build  > [2/2] STEP 5/6: EXPOSE 8080
+build  > --> Using cache 0bc9caea41202fe2fd906ac05ea38043574bffe2d740d708578f4fe8e2ebc4fc
+build  > --> 0bc9caea4120
+build  > [2/2] STEP 6/6: CMD ["./booking-service"]
+build  > --> Using cache 8a33b50a0bba6d5a6c416f951431298b211aa9dbdab5c927407734d8a3528ae3
+build  > [2/2] COMMIT docker.io/library/booking-service:latest
+build  > --> 8a33b50a0bba
+build  > Successfully tagged docker.io/library/booking-service:latest
+build  > 8a33b50a0bba6d5a6c416f951431298b211aa9dbdab5c927407734d8a3528ae3
+build  > Successfully built 8a33b50a0bba
+build  > Successfully tagged booking-service:latest
+build  finished in 3.3 s
+test   starting shell (test)
+test   $ docker rm -f booking-test || true
+test   > Error response from daemon: no container with ID or name "booking-test" found: no such container
+test   $ docker run -d --name booking-test -p 18080:8080 $IMAGE_NAME:$IMAGE_TAG
+test   > 753bf4b67845b65508f6fda4431132c2401195124914a5cadaa4a9b0a71e220a
+test   $ sleep 3
+test   $ curl --fail http://localhost:18080/ping
+test   >   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+test   >                                  Dload  Upload   Total   Spent    Left  Speed
+test   >   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100     4  100     4    0     0   3639      0 --:--:-- --:--:-- --:--:--  4000
+test   > pong<gclShellPromptPlaceholder> docker rm -f booking-test
+test   > booking-test
+test   finished in 3.22 s
+deploy starting shell (deploy)
+deploy $ minikube image load $IMAGE_NAME:$IMAGE_TAG
+deploy $ helm upgrade --install booking-service ./helm/booking-service -f $VALUES_FILE
+deploy > Release "booking-service" has been upgraded. Happy Helming!
+deploy > NAME: booking-service
+deploy > LAST DEPLOYED: Thu Oct 22 13:37:10 2026
+deploy > NAMESPACE: default
+deploy > STATUS: deployed
+deploy > REVISION: 2
+deploy > DESCRIPTION: Upgrade complete
+deploy > TEST SUITE: None
+deploy $ kubectl rollout restart deployment/booking-service
+deploy > deployment.apps/booking-service restarted
+deploy $ kubectl rollout status deployment/booking-service --timeout=120s
+deploy > Waiting for deployment "booking-service" rollout to finish: 1 old replicas are pending termination...
+deploy > Waiting for deployment "booking-service" rollout to finish: 1 old replicas are pending termination...
+deploy > deployment "booking-service" successfully rolled out
+deploy finished in 10 s
+tag    starting shell (tag)
+tag    $ TAG="release-$(date +%Y%m%d-%H%M%S)"
+tag    $ git tag "$TAG"
+tag    $ echo "Created tag $TAG"
+tag    > Created tag release-20261022-133716
+tag    finished in 26 ms
+
+ PASS  build 
+ PASS  test  
+ PASS  deploy
+ PASS  tag   

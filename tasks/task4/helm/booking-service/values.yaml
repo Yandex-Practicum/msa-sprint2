@@ -3,16 +3,35 @@ replicaCount: 1
 image:
   name: booking-service
   tag: latest
-  pullPolicy: IfNotPresent
+  pullPolicy: Never
 
 service:
   type: ClusterIP
   port: 80
   targetPort: 8080
 
+ENABLE_FEATURE_X: false
+
+env: []
+
 resources:
+  requests:
+    cpu: 50m
+    memory: 32Mi
+  limits:
+    cpu: 200m
+    memory: 64Mi
 
 livenessProbe:
+  httpGet:
+    path: /ping
+    port: 8080
+  initialDelaySeconds: 3
+  periodSeconds: 10
 
 readinessProbe:
-
+  httpGet:
+    path: /ping
+    port: 8080
+  initialDelaySeconds: 2
+  periodSeconds: 5

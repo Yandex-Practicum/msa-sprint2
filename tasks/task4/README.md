@@ -112,3 +112,15 @@ pong
 kubectl port-forward svc/booking-service 8080:80
 curl http://localhost:8080/ping
 ```
+
+# Как развернуть (решение)
+
+```bash
+minikube start --driver=docker
+gitlab-ci-local build test deploy tag
+./check-status.sh
+./check-dns.sh
+```
+
+Prod-конфиг: `VALUES_FILE=helm/booking-service/values-prod.yaml` (переменная в `.gitlab-ci.yml`).
+Подробности в results/report.md.

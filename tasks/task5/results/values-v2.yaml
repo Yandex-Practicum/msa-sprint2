@@ -1,0 +1,5 @@
+version: v2
+replicaCount: 1
+ENABLE_FEATURE_X: true
+service:
+  enabled: false

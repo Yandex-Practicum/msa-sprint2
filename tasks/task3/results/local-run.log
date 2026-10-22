@@ -1,0 +1,28 @@
+# Локальный прогон без Docker (node-процессы + монолит + booking-service из задания 2)
+
+## OK: header userid: test-user-2
+{"data":{"bookingsByUser":[{"id":"1","userId":"test-user-2","promoCode":"TESTCODE1","discountPercent":10,"hotel":{"id":"test-hotel-1","name":"Modern hotel in Seoul downtown with spa and skybar.","city":"Seoul","stars":5}},{"id":"4","userId":"test-user-2","promoCode":"TESTCODE1","discountPercent":10,"hotel":{"id":"test-hotel-1","name":"Modern hotel in Seoul downtown with spa and skybar.","city":"Seoul","stars":5}}]}}
+
+
+## DENY: header userid: test-user-3
+{"errors": [{"message": "Access denied", "path": ["bookingsByUser"], "extensions": {"code": "FORBIDDEN", "serviceName": "booking"}}], "data": {"bookingsByUser": null}}
+
+## DENY: без заголовка
+{"errors": [{"message": "Access denied", "path": ["bookingsByUser"], "extensions": {"code": "FORBIDDEN", "serviceName": "booking"}}], "data": {"bookingsByUser": null}}
+
+## booking-subgraph log
+Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+✅ Booking subgraph ready at http://localhost:4001/
+bookingsByUser(test-user-2) -> 2 bookings
+ACL deny: header userid=test-user-3, requested userId=test-user-2
+bookingsByUser(test-user-2) -> 2 bookings
+ACL deny: header userid=test-user-3, requested userId=test-user-2
+ACL deny: header userid=undefined, requested userId=test-user-2
+
+## hotel-subgraph log
+Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+✅ Hotel subgraph ready at http://localhost:4002/
+hotel test-hotel-1 loaded from monolith
+hotel test-hotel-1 loaded from monolith
+hotel test-hotel-1 loaded from monolith
+hotel test-hotel-1 loaded from monolith

@@ -1,0 +1,7 @@
+NAME                                   READY   STATUS        RESTARTS   AGE
+pod/booking-service-76f5fddf79-thzqg   1/1     Terminating   0          5m34s
+pod/booking-service-cb9489bd6-r68dg    1/1     Running       0          6s
+
+NAME                      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+service/booking-service   ClusterIP   10.106.224.159   <none>        80/TCP    5m34s
+service/kubernetes        ClusterIP   10.96.0.1        <none>        443/TCP   6m24s
