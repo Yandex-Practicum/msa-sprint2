@@ -1,0 +1,40 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+title Hotelio To-Be (промежуточное состояние)
+
+Person(user, "User", "Web / Mobile")
+
+System_Boundary(hotelio, "Hotelio") {
+  Container(gateway, "GraphQL Gateway (BFF)", "Apollo Gateway", "Личный кабинет, ACL по userid")
+  Container(bookingSub, "booking-subgraph", "Node.js")
+  Container(hotelSub, "hotel-subgraph", "Node.js")
+
+  Container(monolith, "Monolith", "Spring Boot", "Users, Hotels, Promos, Reviews; REST-фасад /api/bookings -> gRPC-прокси")
+  ContainerDb(monoDb, "Monolith DB", "PostgreSQL", "app_user, hotel, promo_code, review")
+
+  Container(booking, "booking-service", "Node.js, gRPC", "Создание и список бронирований")
+  ContainerDb(bookingDb, "booking-db", "PostgreSQL", "booking")
+
+  ContainerQueue(kafka, "Kafka", "topic booking-events", "BookingCreated")
+
+  Container(history, "booking-history-service", "Node.js", "Статистика бронирований")
+  ContainerDb(historyDb, "history-db", "PostgreSQL", "booking_history + views статистики")
+}
+
+Rel(user, gateway, "GraphQL", "HTTP")
+Rel(user, monolith, "REST (legacy)", "HTTP")
+Rel(gateway, bookingSub, "GraphQL")
+Rel(gateway, hotelSub, "GraphQL")
+Rel(bookingSub, booking, "ListBookings", "gRPC")
+Rel(hotelSub, monolith, "GET /api/hotels/{id}", "REST")
+
+Rel(monolith, booking, "CreateBooking / ListBookings", "gRPC")
+Rel(monolith, monoDb, "R/W")
+Rel(booking, monolith, "users / hotels / reviews / promos", "REST")
+Rel(booking, bookingDb, "R/W")
+Rel(booking, kafka, "BookingCreated")
+Rel(history, kafka, "consume")
+Rel(history, historyDb, "R/W")
+@enduml

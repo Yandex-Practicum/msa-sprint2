@@ -13,15 +13,22 @@ func main() {
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "pong")
 	})
+	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "ok")
+	})
 
-	// TODO: Feature flag route
-	// if ENABLE_FEATURE_X=true, expose /feature
-	if enableFeatureX {
-		http.HandleFunc("/feature", func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprintf(w, "Feature X is enabled!")
-		})
-	}
+	http.HandleFunc("/ready", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "ready")
+	})
 
-	log.Println("Server running on :8080")
+	http.HandleFunc("/feature", func(w http.ResponseWriter, r *http.Request) {
+		if !enableFeatureX {
+			http.Error(w, "Feature X is disabled", http.StatusNotFound)
+			return
+		}
+		fmt.Fprintf(w, "Feature X is enabled!")
+	})
+
+	log.Printf("Server running on :8080 (ENABLE_FEATURE_X=%v)", enableFeatureX)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

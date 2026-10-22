@@ -1,0 +1,9 @@
+▶️ Testing fallback route...
+▶️ Удаляем под booking-service-v1-64548d74c5-8xcwp
+pod "booking-service-v1-64548d74c5-8xcwp" deleted from default namespace
+  48 200 pong v1
+   2 200 pong v2
+NAME                                  READY   STATUS     RESTARTS   AGE
+booking-service-v1-64548d74c5-fqfpx   2/2     Running    0          36s
+booking-service-v1-64548d74c5-zhv9g   0/2     Init:1/2   0          1s
+booking-service-v2-6865c468c4-fcdg5   2/2     Running    0          36s

@@ -16,6 +16,9 @@ services:
       SPRING_DATASOURCE_PASSWORD: hotelio
       BOOKING_SERVICE_EXTERNAL_HOST: booking-service
       BOOKING_SERVICE_EXTERNAL_PORT: 9090
+    depends_on:
+      - monolith-db
+    restart: on-failure
 
   monolith-db:
     image: postgres:15
@@ -40,6 +43,9 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+    restart: on-failure
     networks:
       - hotelio-net
   zookeeper:
@@ -49,6 +55,59 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - hotelio-net
+
+  booking-service:
+    build: ./results/booking-service
+    container_name: booking-service
+    ports:
+      - "9090:9090"
+    environment:
+      DATABASE_URL: postgres://booking:booking@booking-db:5432/booking
+      MONOLITH_URL: http://hotelio-monolith:8080
+      KAFKA_BROKERS: kafka:9092
+    depends_on:
+      - booking-db
+      - kafka
+    restart: on-failure
+    networks:
+      - hotelio-net
+
+  booking-db:
+    image: postgres:15
+    container_name: booking-db
+    environment:
+      POSTGRES_USER: booking
+      POSTGRES_PASSWORD: booking
+      POSTGRES_DB: booking
+    ports:
+      - "5433:5432"
+    networks:
+      - hotelio-net
+
+  booking-history-service:
+    build: ./results/booking-history-service
+    container_name: booking-history-service
+    environment:
+      DATABASE_URL: postgres://history:history@history-db:5432/history
+      KAFKA_BROKERS: kafka:9092
+    depends_on:
+      - history-db
+      - kafka
+    restart: on-failure
+    networks:
+      - hotelio-net
+
+  history-db:
+    image: postgres:15
+    container_name: history-db
+    environment:
+      POSTGRES_USER: history
+      POSTGRES_PASSWORD: history
+      POSTGRES_DB: history
+    ports:
+      - "5434:5432"
     networks:
       - hotelio-net
 

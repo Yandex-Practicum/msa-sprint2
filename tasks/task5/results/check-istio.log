@@ -1,0 +1,12 @@
+▶️ Проверка установки Istio...
+NAME                                   READY   STATUS    RESTARTS   AGE
+istio-egressgateway-5f778cbf8b-dkwgf   1/1     Running   0          56s
+istio-ingressgateway-7498b6878-jw47x   1/1     Running   0          56s
+istiod-5b97c568c5-485lv                1/1     Running   0          72s
+▶️ Проверка Istio инъекции в default namespace...
+"enabled"
+▶️ Sidecar в подах booking-service (READY 2/2):
+NAME                                  READY   STATUS    RESTARTS   AGE
+booking-service-v1-64548d74c5-8xcwp   2/2     Running   0          26s
+booking-service-v1-64548d74c5-fqfpx   2/2     Running   0          32s
+booking-service-v2-6865c468c4-fcdg5   2/2     Running   0          32s

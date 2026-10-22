@@ -1,0 +1,21 @@
+▶️ Checking booking-service deployment...
+NAME                              READY   STATUS    RESTARTS   AGE
+booking-service-cb9489bd6-r68dg   1/1     Running   0          17s
+
+▶️ Checking service...
+NAME              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+booking-service   ClusterIP   10.106.224.159   <none>        80/TCP    5m45s
+
+▶️ Helm release:
+booking-service	default  	2       	2026-10-22 13:37:10.036272 +0400 +04	deployed	booking-service-0.1.0	1.0        
+
+▶️ Port-forward to test service locally:
+  kubectl port-forward svc/booking-service 8080:80
+  Then in another terminal:
+    curl http://localhost:8080/ping
+
+▶️ Quick curl (if port-forward already running):
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100     4  100     4    0     0   1025      0 --:--:-- --:--:-- --:--:--  1333
+pong✅ Reachable

@@ -1,0 +1,4 @@
+➡️  BookingService beans:
+    - bookingService: class com.hotelio.monolith.service.BookingService
+    - grpcBookingService: class com.hotelio.GrpcBookingService
+2026-10-22T09:22:38.897Z  INFO 1 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
