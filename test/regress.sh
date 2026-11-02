@@ -129,4 +129,27 @@ curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE}/api/bookings?userId=test
 curl -s -o /dev/null -w "%{http_code}" -X POST "${BASE}/api/bookings?userId=test-user-2&hotelId=test-hotel-2" | grep -q '500' \
   && pass "Отклонено: отель полностью забронирован" \
   || fail "Ошибка: сервер принял бронирование в полностью занятом отеле"
-echo "✅ Все HTTP-тесты пройдены!"
+
+echo ""
+echo "Тесты микросервисов (базы данных и Kafka)..."
+
+# ВОТ ЗДЕСЬ МЫ УБРАЛИ DOCKER И ИСПОЛЬЗУЕМ PSQL НАПРЯМУЮ
+BOOKING_COUNT=$(PGPASSWORD="hotelio" psql -h booking-db -p 5432 -U hotelio -d hotelio_booking -t -c "SELECT count(*) FROM booking WHERE user_id='test-user-3';" | tr -d '[:space:]')
+if [[ "$BOOKING_COUNT" -ge 1 ]]; then
+  pass "Бронь физически сохранена в booking-db"
+else
+  fail "Ошибка: бронь НЕ найдена в booking-db"
+fi
+
+echo "⏳ Ожидание обработки события Kafka (3 секунды)..."
+sleep 3
+
+HISTORY_COUNT=$(PGPASSWORD="hotelio" psql -h booking-history-db -p 5432 -U hotelio -d hotelio_booking_history -t -c "SELECT count(*) FROM booking WHERE user_id='test-user-3';" | tr -d '[:space:]')
+if [[ "$HISTORY_COUNT" -ge 1 ]]; then
+  pass "Событие бронирования успешно записано в booking-history-db (Kafka работает)"
+else
+  fail "Ошибка: событие НЕ найдено в booking-history-db. Проверьте Kafka."
+fi
+
+echo ""
+echo "✅ Все HTTP-тесты и тесты микросервисов пройдены!"

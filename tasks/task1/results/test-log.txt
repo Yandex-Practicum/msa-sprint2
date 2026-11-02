@@ -1,0 +1,260 @@
+﻿=== Hotelio test-log ===
+Дата: 2026-10-19 18:45:10
+Окружение: Windows, Docker, PowerShell 5.1.26100.9711
+Сервис: http://localhost:8084
+Фикстуры: test\init-fixtures.sql
+
+=== 0. docker compose ps ===
+docker : no configuration file provided: not found
+строка:1 знак:1
++ docker compose ps 2>&1 | Out-File $log -Append -Encoding utf8
++ ~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (no configuratio...ided: not found:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+=== 1.1 GET /api/users/test-user-1 (200) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+{"id":"test-user-1","status":"ACTIVE","blacklisted":true,"active":true,"name":"Alice","email":"alice@test.com","city":"Seoul"}
+
+=== 1.2 GET /api/users/test-user-1/status (200) ===
+HTTP/1.1 200 
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 6
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+ACTIVE
+
+=== 1.3 GET /api/users/test-user-1/blacklisted (true) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+true
+
+=== 1.4 GET /api/users/test-user-1/active (true) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+true
+
+=== 1.5 GET /api/users/test-user-1/authorized (false — в блэклисте) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+false
+
+=== 1.6 GET /api/users/test-user-3/vip (true — Clara VIP) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+true
+
+=== 1.7 NEGATIVE: GET /api/users/no-such-user (404) ===
+HTTP/1.1 404 
+Content-Length: 0
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+
+=== 2.1 GET /api/hotels/test-hotel-1 (200) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+{"id":"test-hotel-1","operational":true,"fullyBooked":false,"city":"Seoul","rating":4.7,"description":"Modern hotel in Seoul downtown with spa and skybar."}
+
+=== 2.2 GET /api/hotels/test-hotel-1/operational (true) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+true
+
+=== 2.3 GET /api/hotels/test-hotel-3/operational (false) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+false
+
+=== 2.4 GET /api/hotels/test-hotel-2/fully-booked (true) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+true
+
+=== 2.5 GET /api/hotels/by-city?city=Seoul (200) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+[{"id":"test-hotel-1","operational":true,"fullyBooked":false,"city":"Seoul","rating":4.7,"description":"Modern hotel in Seoul downtown with spa and skybar."}]
+
+=== 2.6 GET /api/hotels/top-rated?city=Seoul&limit=1 (200) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+[{"id":"test-hotel-1","operational":true,"fullyBooked":false,"city":"Seoul","rating":4.7,"description":"Modern hotel in Seoul downtown with spa and skybar."}]
+
+=== 2.7 NEGATIVE: GET /api/hotels/no-such-hotel (404) ===
+HTTP/1.1 404 
+Content-Length: 0
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+
+=== 3.1 GET /api/reviews/hotel/test-hotel-1 (200) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+[{"id":"rev-001","hotelId":"test-hotel-1","userId":"test-user-1","text":"Amazing experience!","rating":5,"createdAt":"2024-01-01"},{"id":"rev-002","hotelId":"test-hotel-1","userId":"test-user-1","text":"Loved it!","rating":4,"createdAt":"2024-01-03"},{"id":"rev-003","hotelId":"test-hotel-1","userId":"test-user-1","text":"Very good stay","rating":5,"createdAt":"2024-01-07"},{"id":"rev-004","hotelId":"test-hotel-1","userId":"test-user-2","text":"Comfortable and clean","rating":4,"createdAt":"2024-01-10"},{"id":"rev-005","hotelId":"test-hotel-1","userId":"test-user-2","text":"Great service","rating":4,"createdAt":"2024-01-12"},{"id":"rev-006","hotelId":"test-hotel-1","userId":"test-user-2","text":"Modern rooms","rating":4,"createdAt":"2024-01-14"},{"id":"rev-007","hotelId":"test-hotel-1","userId":"test-user-2","text":"Nice ambiance","rating":4,"createdAt":"2024-01-16"},{"id":"rev-008","hotelId":"test-hotel-1","userId":"test-user-3","text":"Cozy and quiet","rating":4,"createdAt":"2024-01-18"},{"id":"rev-009","hotelId":"test-hotel-1","userId":"test-user-3","text":"Perfect location","rating":4,"createdAt":"2024-01-20"},{"id":"rev-010","hotelId":"test-hotel-1","userId":"test-user-3","text":"Will come again","rating":4,"createdAt":"2024-01-22"}]
+
+=== 3.2 GET /api/reviews/hotel/test-hotel-1/trusted (true) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+true
+
+=== 3.3 GET /api/reviews/hotel/test-hotel-3/trusted (false) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+false
+
+=== 4.1 GET /api/promos/TESTCODE1 (200) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+{"code":"TESTCODE1","discount":10.0,"vipOnly":false,"expired":false,"validUntil":"2099-12-31","description":"?????????????? ????????????????"}
+
+=== 4.2 GET /api/promos/TESTCODE-VIP/valid?isVipUser=true (true) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+true
+
+=== 4.3 GET /api/promos/TESTCODE-VIP/valid?isVipUser=false (false) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+false
+
+=== 4.4 GET /api/promos/TESTCODE-OLD/valid (false — истёк) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:11 GMT
+
+false
+
+=== 4.5 POST /api/promos/validate?code=TESTCODE1&userId=test-user-2 (200) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:12 GMT
+
+{"code":"TESTCODE1","discount":10.0,"vipOnly":false,"expired":false,"validUntil":"2099-12-31","description":"?????????????? ????????????????"}
+
+=== 4.6 NEGATIVE: GET /api/promos/NOPE (404) ===
+HTTP/1.1 404 
+Content-Length: 0
+Date: Mon, 19 Oct 2026 16:45:12 GMT
+
+
+=== 5.1 GET /api/bookings (200) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:12 GMT
+
+[{"id":1,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":10.0,"price":90.0,"createdAt":"2026-10-19T16:44:23.288394Z"},{"id":2,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":null,"discountPercent":0.0,"price":80.0,"createdAt":"2026-10-19T16:44:23.288394Z"}]
+
+=== 5.2 GET /api/bookings?userId=test-user-2 (200) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:12 GMT
+
+[{"id":1,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":10.0,"price":90.0,"createdAt":"2026-10-19T16:44:23.288394Z"}]
+
+=== 5.3 POST /api/bookings (test-user-3 + test-hotel-1, без промо) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:12 GMT
+
+{"id":3,"userId":"test-user-3","hotelId":"test-hotel-1","promoCode":null,"discountPercent":0.0,"price":80.0,"createdAt":null}
+
+=== 5.4 POST /api/bookings (test-user-2 + test-hotel-1 + TESTCODE1) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:12 GMT
+
+{"id":4,"userId":"test-user-2","hotelId":"test-hotel-1","promoCode":"TESTCODE1","discountPercent":10.0,"price":90.0,"createdAt":null}
+
+=== 5.5 NEGATIVE: POST /api/bookings (test-user-0 — inactive) ===
+HTTP/1.1 500 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:12 GMT
+Connection: close
+
+{"timestamp":"2026-10-19T16:45:12.408+00:00","status":500,"error":"Internal Server Error","path":"/api/bookings"}
+
+=== 5.6 NEGATIVE: POST /api/bookings (test-hotel-2 — fully booked) ===
+HTTP/1.1 500 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:12 GMT
+Connection: close
+
+{"timestamp":"2026-10-19T16:45:12.459+00:00","status":500,"error":"Internal Server Error","path":"/api/bookings"}
+
+=== 5.7 NEGATIVE: POST /api/bookings (test-hotel-3 — untrusted) ===
+HTTP/1.1 500 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 19 Oct 2026 16:45:12 GMT
+Connection: close
+
+{"timestamp":"2026-10-19T16:45:12.502+00:00","status":500,"error":"Internal Server Error","path":"/api/bookings"}
+
+=== 6. Логи приложения (последние 50 строк) ===
+docker : no configuration file provided: not found
+строка:1 знак:1
++ docker compose logs --tail=50 2>&1 | Out-File $log -Append -Encoding  ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (no configuratio...ided: not found:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

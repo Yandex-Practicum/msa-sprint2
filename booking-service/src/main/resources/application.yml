@@ -1,0 +1,26 @@
+server:
+  port: 8085
+
+spring:
+  kafka:
+    bootstrap-servers: kafka:9092
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/hotelio_booking}
+    username: ${SPRING_DATASOURCE_USERNAME:hotelio}
+    password: ${SPRING_DATASOURCE_PASSWORD:hotelio}
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate.format_sql: false
+
+clients:
+  user:
+    url: http://monolith:8084/api/users
+  hotel:
+    url: http://monolith:8084/api/hotels
+  promo:
+    url: http://monolith:8084/api/promos
+  review:
+    url: http://monolith:8084/api/reviews

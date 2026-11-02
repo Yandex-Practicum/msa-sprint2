@@ -1,0 +1,20 @@
+server:
+  port: 8087
+
+spring:
+  kafka:
+    bootstrap-servers: kafka:9092
+    consumer:
+      group-id: booking-history-service
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/hotelio_booking_history}
+    username: ${SPRING_DATASOURCE_USERNAME:hotelio}
+    password: ${SPRING_DATASOURCE_PASSWORD:hotelio}
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate.format_sql: false

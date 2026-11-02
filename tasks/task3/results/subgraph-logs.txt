@@ -1,0 +1,5 @@
+﻿booking-subgraph-1  | Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+booking-subgraph-1  | тЬЕ Booking subgraph ready at http://localhost:4001/
+booking-subgraph-1  | Received request for bookings by userId: test-user-2
+booking-subgraph-1  | Received request for bookings by userId: test-user-2
+booking-subgraph-1  | Access denied for userId: test-user-2

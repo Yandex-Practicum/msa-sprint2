@@ -1,0 +1,80 @@
+stages:
+  - build
+  - test
+  - deploy
+  - tag
+
+variables:
+  IMAGE_NAME: booking-service
+  IMAGE_TAG: $CI_COMMIT_SHORT_SHA
+  APP_PORT: "8080"
+  HELM_CHART: ./helm/booking-service
+  HELM_RELEASE: booking-release
+
+build:
+  stage: build
+  image: docker:24
+  services:
+    - docker:24-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+    - docker save $IMAGE_NAME:$IMAGE_TAG -o image.tar
+  artifacts:
+    paths:
+      - image.tar
+    expire_in: 1 day
+
+test:
+  stage: test
+  image: docker:24
+  services:
+    - docker:24-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - docker load -i image.tar
+    - docker run -d --name booking-app -p ${APP_PORT}:${APP_PORT} $IMAGE_NAME:$IMAGE_TAG
+    - |
+      for i in $(seq 1 30); do
+        if wget -q -O /dev/null "http://docker:${APP_PORT}/ping"; then
+          echo "✓ /ping OK"
+          exit 0
+        fi
+        sleep 2
+      done
+      echo "✗ /ping не ответил"
+      docker logs booking-app
+      exit 1
+  after_script:
+    - docker rm -f booking-app || true
+
+deploy:
+  stage: deploy
+  tags:
+    - minikube-runner
+  script:
+    - minikube image load image.tar
+    - helm upgrade --install $HELM_RELEASE $HELM_CHART --set image.pullPolicy=Never --wait --timeout 5m
+  environment:
+    name: production
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+tag:
+  stage: tag
+  image: alpine:3.20
+  before_script:
+    - apk add --no-cache git
+  script:
+    - TAG="v$(date -u +%Y%m%d-%H%M%S)"
+    - echo "Creating tag $TAG"
+    - git config user.email "ci@${CI_SERVER_HOST}"
+    - git config user.name  "GitLab CI"
+    - git tag -a "$TAG" -m "Release $TAG (commit $CI_COMMIT_SHORT_SHA)"
+    - git push "https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git" "$TAG"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

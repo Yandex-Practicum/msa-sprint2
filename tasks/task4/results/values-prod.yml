@@ -1,0 +1,25 @@
+replicaCount: 2
+
+image:
+  name: booking-service
+  tag: latest
+  pullPolicy: Never
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+enableFeatureX: true
+
+env:
+  - name: ENV_TYPE
+    value: "prod"
+
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "100m"
+  limits:
+    memory: "256Mi"
+    cpu: "200m"

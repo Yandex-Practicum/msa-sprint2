@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: hotelio-monolith
     ports:
-      - "8084:8080"
+      - "8084:8084"
     networks:
       - hotelio-net
     environment:
@@ -15,7 +15,35 @@ services:
       SPRING_DATASOURCE_USERNAME: hotelio
       SPRING_DATASOURCE_PASSWORD: hotelio
       BOOKING_SERVICE_EXTERNAL_HOST: booking-service
-      BOOKING_SERVICE_EXTERNAL_PORT: 9090
+      BOOKING_SERVICE_EXTERNAL_PORT: 8085
+
+  booking:
+    build:
+      context: ../booking
+      dockerfile: Dockerfile
+    container_name: booking-service
+    ports:
+      - "8085:8085"
+    networks:
+      - hotelio-net
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://booking-db:5432/hotelio_booking
+      SPRING_DATASOURCE_USERNAME: hotelio
+      SPRING_DATASOURCE_PASSWORD: hotelio
+
+  booking-history:
+    build:
+      context: ../bookingHistory
+      dockerfile: Dockerfile
+    container_name: booking-history-service
+    ports:
+      - "8087:8087"
+    networks:
+      - hotelio-net
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://booking-history-db:5432/hotelio_booking_history
+      SPRING_DATASOURCE_USERNAME: hotelio
+      SPRING_DATASOURCE_PASSWORD: hotelio
 
   monolith-db:
     image: postgres:15
@@ -31,6 +59,35 @@ services:
     networks:
       - hotelio-net
 
+  booking-db:
+    image: postgres:15
+    container_name: booking-db
+    environment:
+      POSTGRES_USER: hotelio
+      POSTGRES_PASSWORD: hotelio
+      POSTGRES_DB: hotelio_booking
+    ports:
+      - "5433:5432"
+    volumes:
+      - booking-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+
+
+  booking-history-db:
+    image: postgres:15
+    container_name: booking-history-db
+    environment:
+      POSTGRES_USER: hotelio
+      POSTGRES_PASSWORD: hotelio
+      POSTGRES_DB: hotelio_booking_history
+    ports:
+      - "5434:5432"
+    volumes:
+      - booking-history-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+
   kafka:
     image: confluentinc/cp-kafka:7.2.1
     ports:
@@ -42,6 +99,20 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
       - hotelio-net
+
+  kafka-ui:
+    image: ghcr.io/kafbat/kafka-ui:v1.2.0
+    container_name: kafka-ui
+    ports:
+      - "8086:8080"
+    networks:
+      - hotelio-net
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_CLUSTERS_0_NAME: hotelio
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.2.1
     ports:
@@ -54,6 +125,8 @@ services:
 
 volumes:
   monolith-db-data:
+  booking-db-data:
+  booking-history-db-data:
 
 networks:
   hotelio-net:

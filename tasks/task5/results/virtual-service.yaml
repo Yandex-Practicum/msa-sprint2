@@ -1,0 +1,38 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: booking-service
+spec:
+  hosts:
+    - booking-service
+  http:
+    - match:
+        - headers:
+            x-feature-routed:
+              exact: "true"
+      route:
+        - destination:
+            host: booking-v2
+            port:
+              number: 80
+
+    - route:
+        - destination:
+            host: booking-v1
+            port:
+              number: 80
+          weight: 90
+        - destination:
+            host: booking-v2
+            port:
+              number: 80
+          weight: 10
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+        retryOn: "5xx,reset,connect-failure"
+      fallback:
+        - destination:
+            host: booking-v2
+            port:
+              number: 80

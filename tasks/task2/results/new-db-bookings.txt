@@ -1,0 +1,27 @@
+﻿ discount_percent | price | created_at | id |   hotel_id   | promo_code |   user_id   
+------------------+-------+------------+----+--------------+------------+-------------
+               10 |    90 |            |  1 | test-hotel-1 | TESTCODE1  | test-user-2
+                0 |    80 |            |  2 | test-hotel-1 |            | test-user-3
+               10 |    90 |            |  3 | test-hotel-1 | TESTCODE1  | test-user-2
+                0 |    80 |            |  4 | test-hotel-1 |            | test-user-3
+               10 |    90 |            |  5 | test-hotel-1 | TESTCODE1  | test-user-2
+                0 |    80 |            |  6 | test-hotel-1 |            | test-user-3
+               10 |    90 |            |  7 | test-hotel-1 | TESTCODE1  | test-user-2
+                0 |    80 |            |  8 | test-hotel-1 |            | test-user-3
+               10 |    90 |            |  9 | test-hotel-1 | TESTCODE1  | test-user-2
+                0 |    80 |            | 10 | test-hotel-1 |            | test-user-3
+               10 |    90 |            | 11 | test-hotel-1 | TESTCODE1  | test-user-2
+                0 |    80 |            | 12 | test-hotel-1 |            | test-user-3
+               10 |    90 |            | 13 | test-hotel-1 | TESTCODE1  | test-user-2
+                0 |    80 |            | 14 | test-hotel-1 |            | test-user-3
+               10 |    90 |            | 15 | test-hotel-1 | TESTCODE1  | test-user-2
+                0 |    80 |            | 16 | test-hotel-1 |            | test-user-3
+               10 |    90 |            | 17 | test-hotel-1 | TESTCODE1  | test-user-2
+                0 |    80 |            | 18 | test-hotel-1 |            | test-user-3
+               10 |    90 |            | 19 | test-hotel-1 | TESTCODE1  | test-user-2
+                0 |    80 |            | 20 | test-hotel-1 |            | test-user-3
+               10 |    90 |            | 21 | test-hotel-1 | TESTCODE1  | test-user-2
+               10 |    70 |            | 22 | test-hotel-1 | TESTCODE1  | test-user-3
+                0 |   100 |            | 23 | test-hotel-1 |            | test-user-2
+(23 rows)
+

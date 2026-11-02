@@ -1,0 +1,15 @@
+﻿=== REST API из монолита (создание брони) ===
+HTTP/1.1 200 
+Content-Type: application/json
+Content-Length: 167
+Date: Sat, 24 Oct 2026 13:03:57 GMT
+
+{
+  "id": "22",
+  "userId": "test-user-3",
+  "hotelId": "test-hotel-1",
+  "promoCode": "TESTCODE1",
+  "discountPercent": 10.0,
+  "price": 70.0,
+  "createdAt": "null"
+}

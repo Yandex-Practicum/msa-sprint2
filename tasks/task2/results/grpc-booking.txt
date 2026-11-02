@@ -1,0 +1,28 @@
+﻿=== gRPC вызов (создание брони) ===
+docker : Unable to find image 'fullstorydev/grpcurl:latest' locally
+строка:1 знак:1
++ docker run --rm --network hotelio-net fullstorydev/grpcurl -plaintext ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Unable to find ...latest' locally:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+latest: Pulling from fullstorydev/grpcurl
+8337f9494803: Pulling fs layer
+7b07c97a0383: Pulling fs layer
+274eeaf435de: Pulling fs layer
+f4cadfe66cf5: Download complete
+274eeaf435de: Download complete
+7b07c97a0383: Download complete
+274eeaf435de: Pull complete
+7b07c97a0383: Pull complete
+8337f9494803: Download complete
+8337f9494803: Pull complete
+Digest: sha256:085e183ca334eb4e81ca81ee12cbb2b2737505d1d77f5e33dabc5d066593d998
+Status: Downloaded newer image for fullstorydev/grpcurl:latest
+{
+  "id": "23",
+  "user_id": "test-user-2",
+  "hotel_id": "test-hotel-1",
+  "price": 100,
+  "created_at": "null"
+}
