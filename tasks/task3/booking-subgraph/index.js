@@ -6,10 +6,15 @@ import gql from 'graphql-tag';
 const typeDefs = gql`
   type Booking @key(fields: "id") {
     id: ID!
+    hotel: Hotel
     userId: String!
     hotelId: String!
     promoCode: String
     discountPercent: Int
+  }
+  
+  type Hotel @key(fields: "id") {
+    id: ID!
   }
 
   type Query {
@@ -21,6 +26,7 @@ const typeDefs = gql`
 const resolvers = {
     Query: {
         bookingsByUser: async (_, { userId }, { req }) => {
+            console.log(`Received request for bookings by userId: ${userId}`);
             const currentUserId = req.user?.id || req.headers['x-user-id'];
 
             if (!currentUserId) {
@@ -28,6 +34,7 @@ const resolvers = {
             }
 
             if (userId !== currentUserId) {
+                console.log(`Access denied for userId: ${userId}`);
                 throw new Error("Доступ запрещен: вы можете смотреть только свои бронирования");
             }
 
@@ -50,6 +57,9 @@ const resolvers = {
     Booking: {
         __resolveReference: async (booking) => {
             return booking;
+        },
+        hotel: (booking) => {
+            return { __typename: "Hotel", id: booking.hotelId };
         }
     },
 };

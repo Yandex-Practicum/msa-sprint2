@@ -6,9 +6,11 @@ import gql from 'graphql-tag';
 const typeDefs = gql`
   type Hotel @key(fields: "id") {
     id: ID!
-    name: String
-    city: String
-    stars: Int
+    operational: Boolean!
+    fullyBooked: Boolean!
+    city: String!
+    rating: Float!
+    description: String!
   }
 
   type Query {
