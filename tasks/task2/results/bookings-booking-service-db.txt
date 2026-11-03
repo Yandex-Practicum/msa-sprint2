@@ -1,0 +1,11 @@
+-- Новая система: booking-db (booking-service), SELECT * FROM booking ORDER BY id
+  id  |   user_id   |   hotel_id   |  promo_code  | discount_percent | price |          created_at           
+------+-------------+--------------+--------------+------------------+-------+-------------------------------
+    9 | test-user-2 | test-hotel-1 | TESTCODE1    |               10 |    90 | 2026-11-03 13:21:41.787961+00
+   10 | test-user-3 | test-hotel-1 |              |                0 |    80 | 2026-11-03 13:21:41.787961+00
+ 1018 | test-user-2 | test-hotel-1 |              |                0 |   100 | 2026-11-03 13:21:42.523522+00
+ 1019 | test-user-2 | test-hotel-1 | TESTCODE1    |               10 |    90 | 2026-11-03 13:21:42.584601+00
+ 1020 | test-user-3 | test-hotel-1 | TESTCODE-VIP |               20 |    60 | 2026-11-03 13:21:42.636828+00
+ 1021 | test-user-2 | test-hotel-1 |              |                0 |   100 | 2026-11-03 13:21:42.689024+00
+(6 rows)
+

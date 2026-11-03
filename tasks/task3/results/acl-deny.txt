@@ -1,0 +1,11 @@
+== Deny по ACL: userid: test-user-2 запрашивает бронирования test-user-3
+Запрос: {"query":"query { bookingsByUser(userId: \"test-user-3\") { id userId hotelId promoCode discountPercent price createdAt hotel { id name city stars } } }"}
+
+Ответ:
+{"errors":[{"message":"Forbidden: you can see only your own bookings","path":["bookingsByUser"],"extensions":{"code":"FORBIDDEN","serviceName":"booking"}}],"data":{"bookingsByUser":null}}
+
+
+== Deny по ACL: запрос без заголовка userid
+Ответ:
+{"errors":[{"message":"Unauthorized: userid header is required","path":["bookingsByUser"],"extensions":{"code":"UNAUTHENTICATED","serviceName":"booking"}}],"data":{"bookingsByUser":null}}
+

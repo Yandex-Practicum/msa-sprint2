@@ -10,10 +10,14 @@ services:
       - "8084:8080"
     networks:
       - hotelio-net
+    depends_on:
+      - monolith-db
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://monolith-db:5432/hotelio
       SPRING_DATASOURCE_USERNAME: hotelio
       SPRING_DATASOURCE_PASSWORD: hotelio
+      # Без этого каждый перезапуск монолита пересоздаёт схему и стирает данные (ddl-auto: create).
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
       BOOKING_SERVICE_EXTERNAL_HOST: booking-service
       BOOKING_SERVICE_EXTERNAL_PORT: 9090
 
@@ -31,10 +35,92 @@ services:
     networks:
       - hotelio-net
 
+  booking-service:
+    build:
+      context: ./results
+      dockerfile: booking-service/Dockerfile
+    container_name: booking-service
+    ports:
+      - "9090:9090"
+      - "8085:8080"
+    networks:
+      - hotelio-net
+    depends_on:
+      booking-db:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    environment:
+      BOOKING_DB_URL: jdbc:postgresql://booking-db:5432/booking
+      BOOKING_DB_USER: booking
+      BOOKING_DB_PASSWORD: booking
+      MONOLITH_URL: http://hotelio-monolith:8080
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+  booking-db:
+    image: postgres:15
+    container_name: booking-db
+    environment:
+      POSTGRES_USER: booking
+      POSTGRES_PASSWORD: booking
+      POSTGRES_DB: booking
+    ports:
+      - "5433:5432"
+    volumes:
+      - booking-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U booking -d booking"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  booking-history-service:
+    build:
+      context: ./results
+      dockerfile: booking-history-service/Dockerfile
+    container_name: booking-history-service
+    ports:
+      - "8086:8080"
+    networks:
+      - hotelio-net
+    depends_on:
+      booking-history-db:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    environment:
+      HISTORY_DB_URL: jdbc:postgresql://booking-history-db:5432/booking_history
+      HISTORY_DB_USER: history
+      HISTORY_DB_PASSWORD: history
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+  booking-history-db:
+    image: postgres:15
+    container_name: booking-history-db
+    environment:
+      POSTGRES_USER: history
+      POSTGRES_PASSWORD: history
+      POSTGRES_DB: booking_history
+    ports:
+      - "5434:5432"
+    volumes:
+      - booking-history-db-data:/var/lib/postgresql/data
+    networks:
+      - hotelio-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U history -d booking_history"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   kafka:
     image: confluentinc/cp-kafka:7.2.1
     ports:
       - "9092:9092"
+    depends_on:
+      - zookeeper
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -42,6 +128,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
       - hotelio-net
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.2.1
     ports:
@@ -54,6 +141,8 @@ services:
 
 volumes:
   monolith-db-data:
+  booking-db-data:
+  booking-history-db-data:
 
 networks:
   hotelio-net:

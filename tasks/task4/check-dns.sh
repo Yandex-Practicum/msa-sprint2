@@ -4,7 +4,8 @@ set -e
 
 echo "▶️ Running in-cluster DNS test..."
 
-kubectl run dns-test --rm -it \
+# -i без -t: скрипт работает и без интерактивного терминала (CI, IDE)
+kubectl run dns-test --rm -i \
   --image=busybox \
   --restart=Never \
-  -- wget -qO- http://booking-service/ping && echo "✅ Success" || echo "❌ Failed"
+  -- wget -qO- http://booking-service/ping && echo && echo "✅ Success" || echo "❌ Failed"

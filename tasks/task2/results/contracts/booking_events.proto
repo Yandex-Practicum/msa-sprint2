@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package booking.events;
+
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+option java_package = "com.hotelio.proto.booking.events";
+option java_outer_classname = "BookingEventsProto";
+
+// Владелец схемы — booking-service. Менять только обратно совместимо:
+// новые поля получают новые номера, номера удалённых полей помечаются reserved.
+
+// Бронирование создано. Публикуется в топик booking.created, ключ сообщения — booking_id.
+message BookingCreated {
+  string event_id = 1;                       // UUID события, для логов и трассировки
+  string booking_id = 2;                     // ключ идемпотентности: одно событие на бронь
+  string user_id = 3;
+  string hotel_id = 4;
+  google.protobuf.Timestamp created_at = 5;  // UTC, по нему считается статистика по дням
+  double base_price = 6;                     // цена до скидки
+  double discount = 7;                       // абсолютная скидка
+  double price = 8;                          // итоговая цена
+  string promo_code = 9;                     // пусто, если промокод не применён
+  string user_status = 10;                   // статус пользователя на момент брони
+  string hotel_city = 11;                    // город отеля на момент брони
+}

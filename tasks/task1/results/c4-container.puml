@@ -1,0 +1,38 @@
+@startuml c4-container
+!include <C4/C4_Container>
+
+title Hotelio — контейнеры (To-Be)
+
+Person(client, "Клиент, партнёрский канал")
+Person(admin, "Администратор, партнёр")
+Person(analyst, "Отдел аналитики")
+
+System_Boundary(hotelio, "Hotelio") {
+  Container(monolith, "hotelio-monolith", "Java, Spring Boot", "Пользователи, отели, отзывы, промокоды. Проксирует /api/bookings в booking-service")
+  ContainerDb(monolithDb, "hotelio-db", "PostgreSQL", "Пользователи, отели, отзывы, промокоды. Таблица booking — только чтение до удаления")
+
+  Container(booking, "booking-service", "Java, Spring Boot, Caffeine, Resilience4j", "Проверки, расчёт цены, создание и список броней. Кэш справочных данных с TTL")
+  ContainerDb(bookingDb, "booking-db", "PostgreSQL", "Бронирования")
+
+  ContainerQueue(kafka, "Kafka", "топик booking.created", "События о созданных бронях")
+
+  Container(history, "booking-history-service", "Java, Spring Boot", "История и статистика бронирований")
+  ContainerDb(historyDb, "booking-history-db", "PostgreSQL", "История и агрегаты по пользователям, отелям, дням")
+}
+
+Rel(client, monolith, "POST /api/bookings, GET /api/bookings", "REST")
+Rel(admin, monolith, "Управляет справочниками", "REST")
+Rel(analyst, history, "Получает статистику", "REST")
+
+Rel(monolith, monolithDb, "Читает и пишет", "JDBC")
+Rel(monolith, booking, "CreateBooking, ListBookings", "gRPC")
+
+Rel(booking, monolith, "Пользователь, отель, заполненность, доверие, промокод", "REST, таймаут 1 с, circuit breaker")
+Rel(booking, bookingDb, "Читает и пишет", "JDBC")
+Rel(booking, kafka, "Публикует BookingCreated", "Kafka")
+
+Rel(history, kafka, "Читает BookingCreated", "Kafka")
+Rel(history, historyDb, "Читает и пишет", "JDBC")
+
+SHOW_LEGEND()
+@enduml

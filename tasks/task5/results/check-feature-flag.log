@@ -1,0 +1,9 @@
+▶️ Проверка Feature Flag (X-Feature-Enabled: true)...
+HTTP/1.1 200 OK
+x-app-version: v2
+
+Фича X на v2: Feature X is enabled!
+С X-Feature-Enabled: true — v2 ответила 20 из 20
+Без заголовка — v2 ответила 3 из 20 (канарейка 10%)
+С подделанным x-booking-route: v2 — v2 ответила 1 из 20 (заголовок удаляется EnvoyFilter)
+✅ Фича-флаг направляет трафик на v2

@@ -1,0 +1,17 @@
+# staging: один под, фича X включена для проверки до выкатки в prod
+replicaCount: 1
+
+featureFlags:
+  enableFeatureX: true
+
+env:
+  - name: APP_ENV
+    value: staging
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 32Mi
+  limits:
+    cpu: 200m
+    memory: 64Mi

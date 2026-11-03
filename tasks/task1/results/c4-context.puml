@@ -1,0 +1,18 @@
+@startuml c4-context
+!include <C4/C4_Context>
+
+title Hotelio — контекст (To-Be)
+
+Person(client, "Клиент", "Ищет и бронирует отели")
+Person(admin, "Администратор, партнёр", "Управляет отелями, промокодами, пользователями")
+Person(analyst, "Отдел аналитики", "Изучает статистику бронирований")
+System_Ext(partner, "Партнёрский канал", "Бронирует через API Hotelio")
+
+System(hotelio, "Hotelio", "Монолит и выделенные из него сервисы бронирования и истории бронирований")
+
+Rel(client, hotelio, "Бронирует, смотрит брони", "REST")
+Rel(partner, hotelio, "Бронирует", "REST")
+Rel(admin, hotelio, "Управляет справочниками", "REST")
+Rel(analyst, hotelio, "Получает статистику бронирований", "REST")
+
+@enduml

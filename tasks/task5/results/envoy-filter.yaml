@@ -1,0 +1,37 @@
+# Фича-флаг на входе в mesh. Если клиент прислал X-Feature-Enabled: true, Envoy ingress-шлюза ставит
+# внутренний заголовок x-booking-route: v2, по которому VirtualService направляет запрос в v2.
+# Пришедший от клиента x-booking-route удаляется: управлять маршрутом можно только через фича-флаг.
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: booking-feature-flag
+  namespace: istio-system
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+    - applyTo: HTTP_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+              subFilter:
+                name: envoy.filters.http.router
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: booking.feature_flag
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+            inlineCode: |
+              function envoy_on_request(request_handle)
+                local headers = request_handle:headers()
+                headers:remove("x-booking-route")
+                local flag = headers:get("x-feature-enabled")
+                if flag ~= nil and string.lower(flag) == "true" then
+                  headers:add("x-booking-route", "v2")
+                end
+              end

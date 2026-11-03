@@ -1,0 +1,19 @@
+-- Проверка деградации: монолит остановлен (docker stop hotelio-monolith)
+
+-- 1. Пользователь и отель в кэше, промокод проверить нельзя: бронь создаётся без скидки, промокод не сохраняется
+{
+  "id": "1024",
+  "user_id": "test-user-2",
+  "hotel_id": "test-hotel-1",
+  "price": 100,
+  "created_at": "2026-11-03T13:22:44.017317597Z"
+}
+
+-- 2. Пользователя нет в кэше: отказ UNAVAILABLE, без проверки чёрного списка бронировать нельзя
+ERROR:
+  Code: Unavailable
+  Message: Monolith is unavailable, booking data cannot be verified
+
+-- Логи booking-service:
+2026-11-03T13:22:45.397Z ERROR 1 --- [booking-service] [ault-executor-1] c.h.booking.grpc.GrpcExceptionAdvice     : Booking failed: monolith is unavailable
+com.hotelio.booking.exception.MonolithUnavailableException: Monolith is unavailable, booking data cannot be verified

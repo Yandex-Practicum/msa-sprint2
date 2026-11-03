@@ -1,0 +1,57 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: booking-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "*"
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: booking-service
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - booking-gateway
+  http:
+    # Фича-флаг: заголовок x-booking-route выставляет EnvoyFilter, если в запросе X-Feature-Enabled: true
+    - name: feature-flag
+      match:
+        - headers:
+            x-booking-route:
+              exact: v2
+      route:
+        - destination:
+            host: booking-service
+            subset: v2
+      retries:
+        attempts: 2
+        perTryTimeout: 2s
+        retryOn: connect-failure,refused-stream,reset,503
+
+    # Канареечный релиз 90 / 10. Основная доля идёт в v1-with-fallback:
+    # это v1, а если v1 отказал — v2 (см. DestinationRule)
+    - name: canary
+      route:
+        - destination:
+            host: booking-service
+            subset: v1-with-fallback
+          weight: 90
+        - destination:
+            host: booking-service
+            subset: v2
+          weight: 10
+      timeout: 5s
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+        retryOn: 5xx,connect-failure,refused-stream,reset,gateway-error

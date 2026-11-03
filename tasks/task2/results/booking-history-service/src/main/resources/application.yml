@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: booking-history-service
+  datasource:
+    url: ${HISTORY_DB_URL:jdbc:postgresql://localhost:5434/booking_history}
+    username: ${HISTORY_DB_USER:history}
+    password: ${HISTORY_DB_PASSWORD:history}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+  sql:
+    init:
+      mode: always
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: booking-history-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      properties:
+        # Топиком владеет booking-service. Если потребитель создаст его сам, топик получит одну партицию,
+        # а партиции, добавленные позже, потребитель заметит только при обновлении метаданных.
+        allow.auto.create.topics: false
+        metadata.max.age.ms: 30000
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics

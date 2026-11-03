@@ -16,7 +16,11 @@ VALUES
 INSERT INTO hotel (id, operational, fully_booked, city, rating, description) VALUES
   ('test-hotel-1', true, false, 'Seoul', 4.7, 'Modern hotel in Seoul downtown with spa and skybar.'),
   ('test-hotel-2', true, true, 'Busan', 4.5, 'Luxury beach resort in Busan with ocean view.'),
-  ('test-hotel-3', false, false, 'Daegu', 3.8, 'Affordable business hotel in Daegu center.');
+  ('test-hotel-3', false, false, 'Daegu', 3.8, 'Affordable business hotel in Daegu center.'),
+  -- Работает, но мало отзывов: отказ именно из-за недоверия, а не из-за закрытия
+  ('test-hotel-4', true, false, 'Incheon', 4.0, 'New airport hotel in Incheon.'),
+  -- Работает и надёжен, но мест нет: отказ именно из-за fullyBooked
+  ('test-hotel-5', true, true, 'Jeju', 4.9, 'Popular island resort in Jeju.');
   
 -- Отзывы (Review)
 INSERT INTO review (id, user_id, hotel_id, text, rating, created_at) VALUES
@@ -33,7 +37,21 @@ INSERT INTO review (id, user_id, hotel_id, text, rating, created_at) VALUES
 
   -- Прочие отели
   ('rev-011', 'test-user-1', 'test-hotel-2', 'Nice but noisy', 3, '2024-02-01'),
-  ('rev-012', 'test-user-1', 'test-hotel-3', 'Could be cleaner', 2, '2024-03-10');
+  ('rev-012', 'test-user-1', 'test-hotel-3', 'Could be cleaner', 2, '2024-03-10'),
+  ('rev-013', 'test-user-2', 'test-hotel-4', 'Good start', 5, '2024-04-01'),
+  ('rev-014', 'test-user-3', 'test-hotel-4', 'Fine', 4, '2024-04-02'),
+
+  -- test-hotel-5: 10 отзывов со средней оценкой >= 4.0
+  ('rev-021', 'test-user-1', 'test-hotel-5', 'Stunning views', 5, '2024-05-01'),
+  ('rev-022', 'test-user-1', 'test-hotel-5', 'Great pool', 5, '2024-05-02'),
+  ('rev-023', 'test-user-1', 'test-hotel-5', 'Friendly staff', 4, '2024-05-03'),
+  ('rev-024', 'test-user-2', 'test-hotel-5', 'Clean rooms', 4, '2024-05-04'),
+  ('rev-025', 'test-user-2', 'test-hotel-5', 'Tasty breakfast', 5, '2024-05-05'),
+  ('rev-026', 'test-user-2', 'test-hotel-5', 'Quiet nights', 4, '2024-05-06'),
+  ('rev-027', 'test-user-3', 'test-hotel-5', 'Perfect stay', 5, '2024-05-07'),
+  ('rev-028', 'test-user-3', 'test-hotel-5', 'Would return', 4, '2024-05-08'),
+  ('rev-029', 'test-user-3', 'test-hotel-5', 'Lovely garden', 5, '2024-05-09'),
+  ('rev-030', 'test-user-0', 'test-hotel-5', 'Nice spa', 4, '2024-05-10');
 
 -- Промокоды (для тестов PromoCodeController)
 INSERT INTO promo_code (code, discount, vip_only, expired, valid_until, description)

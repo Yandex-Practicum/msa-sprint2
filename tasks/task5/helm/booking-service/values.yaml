@@ -1,0 +1,49 @@
+replicaCount: 1
+
+image:
+  name: booking-service
+  tag: latest
+  # Образ загружается в Minikube через `minikube image load`, из реестра его не тянем
+  pullPolicy: Never
+
+# Имя приложения: общая метка app и имя Service для всех версий
+appName: ""
+# Версия: метка version и переменная APP_VERSION
+version: ""
+
+service:
+  enabled: true
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+# Фича-флаг: превращается в переменную окружения ENABLE_FEATURE_X
+featureFlags:
+  enableFeatureX: false
+
+# Дополнительные переменные окружения
+env: []
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 32Mi
+  limits:
+    cpu: 200m
+    memory: 64Mi
+
+livenessProbe:
+  httpGet:
+    path: /ping
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /ping
+    port: http
+  initialDelaySeconds: 2
+  periodSeconds: 5
+  failureThreshold: 3

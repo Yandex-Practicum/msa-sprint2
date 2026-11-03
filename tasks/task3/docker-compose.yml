@@ -1,20 +1,41 @@
 version: '3.8'
 
+# Подграфы ходят в реальные сервисы задания 2 (booking-service по gRPC, монолит по REST),
+# поэтому все контейнеры в общей сети hotelio-net. Перед запуском поднимите tasks/task2.
 services:
   apollo-gateway:
     build: ./gateway
+    container_name: apollo-gateway
     ports:
       - "4000:4000"
     depends_on:
       - booking-subgraph
       - hotel-subgraph
+    # Шлюз собирает суперграф при старте и падает, если подграфы ещё не готовы
+    restart: on-failure
+    networks:
+      - hotelio-net
 
   booking-subgraph:
     build: ./booking-subgraph
+    container_name: booking-subgraph
     ports:
       - "4001:4001"
+    environment:
+      BOOKING_SERVICE_ADDRESS: booking-service:9090
+    networks:
+      - hotelio-net
 
   hotel-subgraph:
     build: ./hotel-subgraph
+    container_name: hotel-subgraph
     ports:
       - "4002:4002"
+    environment:
+      MONOLITH_URL: http://hotelio-monolith:8080
+    networks:
+      - hotelio-net
+
+networks:
+  hotelio-net:
+    external: true

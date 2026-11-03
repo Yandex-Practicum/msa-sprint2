@@ -1,0 +1,17 @@
+# prod: несколько подов для отказоустойчивости, фича X выключена до решения о запуске
+replicaCount: 3
+
+featureFlags:
+  enableFeatureX: false
+
+env:
+  - name: APP_ENV
+    value: prod
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 500m
+    memory: 128Mi

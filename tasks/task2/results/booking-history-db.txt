@@ -1,0 +1,18 @@
+-- booking-history-db (booking-history-service), SELECT * FROM booking_history ORDER BY created_at
+ booking_id |               event_id               |   user_id   |   hotel_id   |          created_at           | base_price | discount | price |  promo_code  | user_status | hotel_city |          received_at          
+------------+--------------------------------------+-------------+--------------+-------------------------------+------------+----------+-------+--------------+-------------+------------+-------------------------------
+ 1018       | f4043611-8c34-42ad-b5eb-60f4170ca784 | test-user-2 | test-hotel-1 | 2026-11-03 13:21:42.523522+00 |        100 |        0 |   100 |              | ACTIVE      | Seoul      | 2026-11-03 13:21:42.551062+00
+ 1019       | fbc53c72-7f6e-4834-b5b8-bd09d93bb37d | test-user-2 | test-hotel-1 | 2026-11-03 13:21:42.584601+00 |        100 |       10 |    90 | TESTCODE1    | ACTIVE      | Seoul      | 2026-11-03 13:21:42.601787+00
+ 1020       | 13699cc5-0b50-4f18-9dc9-0863b7be4947 | test-user-3 | test-hotel-1 | 2026-11-03 13:21:42.636828+00 |         80 |       20 |    60 | TESTCODE-VIP | VIP         | Seoul      | 2026-11-03 13:21:42.655716+00
+ 1021       | 74d5c689-0d9b-4f73-aafa-3251097f8928 | test-user-2 | test-hotel-1 | 2026-11-03 13:21:42.689024+00 |        100 |        0 |   100 |              | ACTIVE      | Seoul      | 2026-11-03 13:21:42.705065+00
+(4 rows)
+
+
+-- GET /api/stats/users
+[{"dimension":"test-user-2","bookings":3,"revenue":290.0,"discounts":10.0},{"dimension":"test-user-3","bookings":1,"revenue":60.0,"discounts":20.0}]
+-- GET /api/stats/hotels
+[{"dimension":"test-hotel-1","bookings":4,"revenue":350.0,"discounts":30.0}]
+-- GET /api/stats/days
+[{"dimension":"2026-11-03","bookings":4,"revenue":350.0,"discounts":30.0}]
+-- GET /api/stats/cities
+[{"dimension":"Seoul","bookings":4,"revenue":350.0,"discounts":30.0}]

@@ -1,0 +1,7 @@
+== Успешный вызов через apollo-gateway (http://localhost:4000/)
+Заголовок: userid: test-user-3
+Запрос: {"query":"query { bookingsByUser(userId: \"test-user-3\") { id userId hotelId promoCode discountPercent price createdAt hotel { id name city stars } } }"}
+
+Ответ:
+{"data":{"bookingsByUser":[{"id":"10","userId":"test-user-3","hotelId":"test-hotel-1","promoCode":null,"discountPercent":0,"price":80,"createdAt":"2026-11-03T13:21:41.787961Z","hotel":{"id":"test-hotel-1","name":"Modern hotel in Seoul downtown with spa and skybar.","city":"Seoul","stars":5}},{"id":"1020","userId":"test-user-3","hotelId":"test-hotel-1","promoCode":"TESTCODE-VIP","discountPercent":20,"price":60,"createdAt":"2026-11-03T13:21:42.636828Z","hotel":{"id":"test-hotel-1","name":"Modern hotel in Seoul downtown with spa and skybar.","city":"Seoul","stars":5}}]}}
+

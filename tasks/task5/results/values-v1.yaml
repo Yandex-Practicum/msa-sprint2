@@ -1,0 +1,15 @@
+# v1 — основная версия. Релиз: helm upgrade --install booking-service-v1 helm/booking-service -f results/values-v1.yaml
+appName: booking-service
+version: v1
+replicaCount: 2
+
+# Общий Service booking-service создаёт релиз основной версии
+service:
+  enabled: true
+
+featureFlags:
+  enableFeatureX: false
+
+env:
+  - name: APP_ENV
+    value: prod

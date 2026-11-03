@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: booking-service
+  datasource:
+    url: ${BOOKING_DB_URL:jdbc:postgresql://localhost:5433/booking}
+    username: ${BOOKING_DB_USER:booking}
+    password: ${BOOKING_DB_PASSWORD:booking}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+  sql:
+    init:
+      mode: always
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+      acks: all
+      properties:
+        # Без ограничения недоступная Kafka задержала бы ответ клиенту на 60 с.
+        max.block.ms: 2000
+
+server:
+  port: 8080
+
+grpc:
+  server:
+    port: 9090
+
+monolith:
+  base-url: ${MONOLITH_URL:http://localhost:8084}
+  timeout: 1s
+  users:
+    ttl: 5m
+    max-stale: 0s
+  hotels:
+    ttl: 1h
+    max-stale: 24h
+  fully-booked:
+    ttl: 1m
+    max-stale: 24h
+  trusted-hotels:
+    ttl: 1h
+    max-stale: 24h
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics

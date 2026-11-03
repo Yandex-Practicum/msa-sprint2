@@ -1,0 +1,106 @@
+npm notice run booking-ci@1.0.0 npx
+npm notice run gitlab-ci-local build test deploy
+parsing and downloads finished in 296 ms.
+json schema validated in 452 ms
+build  starting shell (build)
+build  $ docker build -t "$IMAGE_NAME:$IMAGE_TAG" booking-service
+build  > #0 building with "desktop-linux" instance using docker driver
+build  > 
+build  > #1 [internal] load build definition from Dockerfile
+build  > #1 transferring dockerfile: 664B 0.0s done
+build  > #1 DONE 0.0s
+build  > 
+build  > #2 [internal] load metadata for docker.io/library/golang:1.21-alpine
+build  > #2 DONE 0.8s
+build  > 
+build  > #3 [internal] load .dockerignore
+build  > #3 transferring context: 2B done
+build  > #3 DONE 0.0s
+build  > 
+build  > #4 [1/5] FROM docker.io/library/golang:1.21-alpine@sha256:2414035b086e3c42b99654c8b26e6f5b1b1598080d65fd03c7f499552ff4dc94
+build  > #4 DONE 0.0s
+build  > 
+build  > #5 [internal] load build context
+build  > #5 transferring context: 29B done
+build  > #5 DONE 0.0s
+build  > 
+build  > #6 [3/5] WORKDIR /app
+build  > #6 CACHED
+build  > 
+build  > #7 [4/5] COPY main.go .
+build  > #7 CACHED
+build  > 
+build  > #8 [2/5] RUN apk add --no-cache curl
+build  > #8 CACHED
+build  > 
+build  > #9 [5/5] RUN go build -o booking-service main.go
+build  > #9 CACHED
+build  > 
+build  > #10 exporting to image
+build  > #10 exporting layers done
+build  > #10 writing image sha256:c0d50794c2df6ffc0c568348f55d98e7c93511bfdde180c62564d2b8c2ba214f done
+build  > #10 naming to docker.io/library/booking-service:latest done
+build  > #10 DONE 0.0s
+build  > 
+build  > View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/p9mb3ypfzzimvlytyxtrxtwue
+build  $ docker image inspect "$IMAGE_NAME:$IMAGE_TAG" --format 'Built {{.RepoTags}} {{.Id}}'
+build  > Built [booking-service:latest] sha256:c0d50794c2df6ffc0c568348f55d98e7c93511bfdde180c62564d2b8c2ba214f
+build  finished in 2.84 s
+test   starting shell (test)
+test   $ docker rm -f "$TEST_CONTAINER" > /dev/null 2>&1 || true
+test   $ docker run -d --name "$TEST_CONTAINER" -p "$TEST_PORT:8080" -e ENABLE_FEATURE_X=true "$IMAGE_NAME:$IMAGE_TAG"
+test   > fbb8919b238f0f69e245301361b8c19216032f0f013d189e9c12ad07022df95d
+test   $ for attempt in $(seq 1 20); do # collapsed multi-line command
+test   $ test "$(curl -sf http://localhost:$TEST_PORT/ping)" = "pong"
+test   $ echo "✅ /ping -> pong"
+test   > ✅ /ping -> pong
+test   $ test "$(curl -sf http://localhost:$TEST_PORT/feature)" = "Feature X is enabled!"
+test   $ echo "✅ ENABLE_FEATURE_X=true -> /feature доступен"
+test   > ✅ ENABLE_FEATURE_X=true -> /feature доступен
+test   $ docker rm -f "$TEST_CONTAINER" > /dev/null
+test   Running after script...
+test   $ docker rm -f "$TEST_CONTAINER" > /dev/null 2>&1 || true
+test   finished in 3.45 s
+deploy starting shell (deploy)
+deploy $ minikube image load "$IMAGE_NAME:$IMAGE_TAG" --overwrite=true
+deploy $ helm upgrade --install "$RELEASE_NAME" "$HELM_CHART" -f "$HELM_CHART/values-$DEPLOY_ENV.yaml" --set image.tag="$IMAGE_TAG" --wait --timeout 120s
+deploy > Release "booking-service" has been upgraded. Happy Helming!
+deploy > NAME: booking-service
+deploy > LAST DEPLOYED: Tue Nov  3 17:46:43 2026
+deploy > NAMESPACE: default
+deploy > STATUS: deployed
+deploy > REVISION: 2
+deploy > DESCRIPTION: Upgrade complete
+deploy > TEST SUITE: None
+deploy $ kubectl rollout restart "deployment/$RELEASE_NAME"
+deploy > deployment.apps/booking-service restarted
+deploy $ kubectl rollout status "deployment/$RELEASE_NAME" --timeout=120s
+deploy > Waiting for deployment "booking-service" rollout to finish: 1 old replicas are pending termination...
+deploy > Waiting for deployment "booking-service" rollout to finish: 1 old replicas are pending termination...
+deploy > deployment "booking-service" successfully rolled out
+deploy $ kubectl get pods -l "app=$RELEASE_NAME"
+deploy > NAME                               READY   STATUS        RESTARTS   AGE
+deploy > booking-service-7d48d655c8-8rlgn   1/1     Running       0          6s
+deploy > booking-service-7d59f5d5bd-kwxwb   1/1     Terminating   0          2m2s
+deploy finished in 50 s
+ PASS  build 
+ PASS  test  
+ PASS  deploy
+===== tag
+npm notice run booking-ci@1.0.0 npx
+npm notice run gitlab-ci-local tag
+parsing and downloads finished in 343 ms.
+json schema validated in 446 ms
+tag starting shell (tag)
+tag $ TAG_NAME="$IMAGE_NAME-$(date +%Y%m%d-%H%M%S)"
+tag $ git tag -a "$TAG_NAME" -m "CI build $IMAGE_NAME:$IMAGE_TAG deployed to $DEPLOY_ENV"
+tag > gpg: skipped "<git user>": No secret key
+tag > gpg: signing failed: No secret key
+tag > error: gpg failed to sign the data
+tag > error: unable to sign the tag
+tag > The tag message has been left in .git/TAG_EDITMSG
+tag finished in 358 ms  FAIL 128 
+ FAIL  tag
+  > error: gpg failed to sign the data
+  > error: unable to sign the tag
+  > The tag message has been left in .git/TAG_EDITMSG

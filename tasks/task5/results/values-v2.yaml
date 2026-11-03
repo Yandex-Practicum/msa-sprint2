@@ -1,0 +1,15 @@
+# v2 — новая версия с фичей X. Релиз: helm upgrade --install booking-service-v2 helm/booking-service -f results/values-v2.yaml
+appName: booking-service
+version: v2
+replicaCount: 1
+
+# Service общий и создаётся релизом v1
+service:
+  enabled: false
+
+featureFlags:
+  enableFeatureX: true
+
+env:
+  - name: APP_ENV
+    value: prod

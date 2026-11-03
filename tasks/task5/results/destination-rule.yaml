@@ -1,0 +1,45 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: booking-service
+spec:
+  host: booking-service
+  trafficPolicy:
+    # Circuit breaking: ограничиваем соединения и очередь, чтобы перегруженный сервис не утянул за собой вызывающих
+    connectionPool:
+      tcp:
+        maxConnections: 100
+        connectTimeout: 1s
+      http:
+        http1MaxPendingRequests: 50
+        maxRequestsPerConnection: 10
+        # Не больше 3 одновременных повторов на весь кластер: повторы не должны превращаться в шквал
+        maxRetries: 3
+    # Выбрасываем из балансировки под, который подряд отвечает ошибками
+    outlierDetection:
+      consecutive5xxErrors: 3
+      interval: 5s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 100
+  subsets:
+    - name: v1
+      labels:
+        version: v1
+    - name: v2
+      labels:
+        version: v2
+    # v1 с запасным вариантом на v2: все поды сервиса, но приоритет у version=v1.
+    # Пока у v1 есть здоровые поды, трафик идёт только на них. Если v1 отказал (поды упали
+    # или выброшены outlierDetection), Envoy переключает трафик на следующий приоритет — поды v2.
+    - name: v1-with-fallback
+      trafficPolicy:
+        loadBalancer:
+          localityLbSetting:
+            enabled: true
+            failoverPriority:
+              - "version=v1"
+        outlierDetection:
+          consecutive5xxErrors: 3
+          interval: 5s
+          baseEjectionTime: 30s
+          maxEjectionPercent: 100

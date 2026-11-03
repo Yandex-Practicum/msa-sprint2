@@ -1,25 +1,19 @@
 # Используем официальный минимальный образ Go
 FROM golang:1.21-alpine
 
-# TODO: Добавить необходимые пакеты (например, curl)
-# Ожидаемый код:
+# curl нужен для проверок изнутри контейнера
 RUN apk add --no-cache curl
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем Go-файл и скрипт проверки DNS
+# Копируем исходник. check-dns.sh в образ не нужен: он запускает kubectl с машины разработчика
 COPY main.go .
-COPY check-dns.sh .
 
-# TODO: Сделать скрипт исполняемым
-# Ожидаемый код:
-RUN chmod +x check-dns.sh
-
-# TODO: Собрать бинарник из main.go
-# Ожидаемый код:
+# Собираем бинарник из main.go
 RUN go build -o booking-service main.go
 
-# TODO: Задать команду запуска
-# Ожидаемый код:
+EXPOSE 8080
+
+# Команда запуска
 CMD ["./booking-service"]

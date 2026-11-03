@@ -1,0 +1,18 @@
+== docker logs booking-subgraph (после запросов: успешный, deny чужих броней, deny без заголовка)
+Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+✅ Booking subgraph ready at http://localhost:4001/ (booking-service: booking-service:9090)
+[bookingsByUser] userId=test-user-3, header userid=test-user-3
+[bookingsByUser] allow: returned 2 bookings of test-user-3
+[ACL] deny: user test-user-2 requested bookings of test-user-3
+[bookingsByUser] userId=test-user-3, header userid=test-user-2
+[bookingsByUser] userId=test-user-3, header userid=<none>
+[ACL] deny: no userid header, requested bookings of test-user-3
+
+== docker logs hotel-subgraph
+Enabling inline tracing for this subgraph. To disable, use ApolloServerPluginInlineTraceDisabled.
+✅ Hotel subgraph ready at http://localhost:4002/ (monolith: http://hotelio-monolith:8080)
+[Hotel.__resolveReference] id=test-hotel-1
+[Hotel.__resolveReference] id=test-hotel-1
+
+== docker logs apollo-gateway
+🚀 Gateway ready at http://localhost:4000/

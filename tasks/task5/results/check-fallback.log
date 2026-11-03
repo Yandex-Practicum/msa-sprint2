@@ -1,0 +1,13 @@
+▶️ Testing fallback route...
+Гасим v1: kubectl scale deployment/booking-service-v1 --replicas=0
+deployment.apps/booking-service-v1 scaled
+pod/booking-service-v1-58cc896654-77snb condition met
+pod/booking-service-v1-58cc896654-ddtpx condition met
+Ответов 200: 20 из 20, из них от v2: 20
+Возвращаем v1: kubectl scale deployment/booking-service-v1 --replicas=2
+deployment.apps/booking-service-v1 scaled
+Waiting for deployment "booking-service-v1" rollout to finish: 0 out of 2 new replicas have been updated...
+Waiting for deployment "booking-service-v1" rollout to finish: 0 of 2 updated replicas are available...
+Waiting for deployment "booking-service-v1" rollout to finish: 1 of 2 updated replicas are available...
+deployment "booking-service-v1" successfully rolled out
+✅ Fallback route working: при недоступной v1 весь трафик обслужила v2
